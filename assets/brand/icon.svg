@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title id="title">GeoRelay project icon</title>
+  <rect width="128" height="128" rx="28" fill="#102724"/>
+  <path d="M34 84h60V43H34" fill="none" stroke="#57726A" stroke-width="3" stroke-dasharray="4 6"/>
+  <path d="M34 84V64h28V43h32" fill="none" stroke="#C3F477" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="34" cy="84" r="7" fill="#102724" stroke="#C3F477" stroke-width="4"/>
+  <circle cx="94" cy="43" r="8" fill="#C3F477"/>
+  <path d="m73 79 10 10m0-10L73 89" stroke="#FFAE84" stroke-width="3.5" stroke-linecap="round"/>
+</svg>

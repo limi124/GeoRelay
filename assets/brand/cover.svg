@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">GeoRelay</title>
+  <desc id="desc">A lime route bends around a blocked road on a schematic community map.</desc>
+  <defs>
+    <clipPath id="frame"><rect width="1200" height="360" rx="18"/></clipPath>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0v20" fill="none" stroke="#2A4943" stroke-width="1"/></pattern>
+    <pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><path d="M0 0v7" stroke="#FFAE84" stroke-opacity=".22" stroke-width="2"/></pattern>
+  </defs>
+  <g clip-path="url(#frame)">
+    <rect width="1200" height="360" fill="#102724"/>
+    <rect x="680" width="520" height="360" fill="#16332E"/>
+    <rect x="680" width="520" height="360" fill="url(#grid)"/>
+    <path d="M680 0v360" stroke="#365A51"/>
+    <g transform="translate(52 49)">
+      <rect width="52" height="52" rx="11" fill="#102724" stroke="#507166"/>
+      <g transform="scale(.40625)">
+        <path d="M34 84h60V43H34" fill="none" stroke="#57726A" stroke-width="3" stroke-dasharray="4 6"/>
+        <path d="M34 84V64h28V43h32" fill="none" stroke="#C3F477" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="34" cy="84" r="7" fill="#102724" stroke="#C3F477" stroke-width="4"/>
+        <circle cx="94" cy="43" r="8" fill="#C3F477"/>
+        <path d="m73 79 10 10m0-10L73 89" stroke="#FFAE84" stroke-width="3.5" stroke-linecap="round"/>
+      </g>
+    </g>
+    <g font-family="Segoe UI, Arial, sans-serif">
+      <text x="122" y="81" fill="#B9CBC3" font-size="14" font-weight="600" letter-spacing="2.3">COMMUNITY EMERGENCY RESPONSE</text>
+      <text x="48" y="211" fill="#F4F8EF" font-size="111" font-weight="700" letter-spacing="-5">Geo<tspan fill="#C3F477">Relay</tspan></text>
+      <text x="54" y="257" fill="#BDCEC6" font-size="23">Disaster simulation and adaptive dispatch</text>
+      <path d="M54 292h574" stroke="#365A51"/>
+      <text x="54" y="322" fill="#ACC1B7" font-size="12" font-weight="600" letter-spacing="2">SIMULATE</text>
+      <text x="194" y="322" fill="#ACC1B7" font-size="12" font-weight="600" letter-spacing="2">RESCHEDULE</text>
+      <text x="364" y="322" fill="#ACC1B7" font-size="12" font-weight="600" letter-spacing="2">DISPATCH</text>
+      <path d="M150 318h18m-4-4 4 4-4 4m156-4h18m-4-4 4 4-4 4" fill="none" stroke="#C3F477" stroke-width="1.5"/>
+    </g>
+    <path d="M752 78h41v27h-41zM813 76h77v29h-77zM923 78h45v27h-45zM988 75h54v30h-54zM1093 110h55v32h-55zM752 151h34v46h-34zM828 151h63v36h-63zM827 201h35v45h-35zM923 151h33v43h-33zM977 151h60v42h-60zM1093 162h32v64h-32zM1142 172h34v48h-34zM770 270h49v27h-49zM839 271h48v26h-48zM999 272h39v23h-39zM1094 272h48v24h-48z" fill="#284A41" stroke="#3C6256"/>
+    <path d="M724 123h422l34 23M724 253h453M802 61v251M905 61v251M1065 61v251M723 217h79m263 0h112M905 209h160" fill="none" stroke="#5B7C70" stroke-width="2" stroke-linecap="round"/>
+    <path d="M905 253h160V123" fill="none" stroke="#B4C7BD" stroke-opacity=".75" stroke-width="2.5" stroke-dasharray="5 7"/>
+    <path d="M929 231q20-5 34 2t36-1l14 20-15 17-66-3-12-18z" fill="#754B3C"/>
+    <path d="M929 231q20-5 34 2t36-1l14 20-15 17-66-3-12-18z" fill="url(#hatch)" stroke="#E49A77" stroke-opacity=".75"/>
+    <path d="m961 248 10 10m0-10-10 10" fill="none" stroke="#FFD3BA" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M761 253h144V123h160" fill="none" stroke="#102724" stroke-width="10" stroke-linejoin="round"/>
+    <path d="M761 253h144V123h160" fill="none" stroke="#C3F477" stroke-width="4" stroke-linejoin="round"/>
+    <circle cx="761" cy="253" r="6" fill="#16332E" stroke="#C3F477" stroke-width="3"/>
+    <circle cx="1065" cy="123" r="8" fill="#C3F477" stroke="#102724" stroke-width="3"/>
+    <path d="m992 118 6 5-6 5" fill="none" stroke="#C3F477" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <g font-family="Consolas, monospace" font-size="12" letter-spacing="1.25">
+      <text x="715" y="39" fill="#C0D0C7">01 / FLOOD SCENARIO</text>
+      <path d="M716 329h19" stroke="#C3F477" stroke-width="3"/>
+      <text x="745" y="333" fill="#C3F477">REROUTE</text>
+      <path d="m855 325 8 8m0-8-8 8" stroke="#FFAE84" stroke-width="2"/>
+      <text x="873" y="333" fill="#FFBC9B">ROAD BLOCKED</text>
+    </g>
+  </g>
+</svg>
