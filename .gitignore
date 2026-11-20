@@ -8,3 +8,27 @@ __pycache__/
 *.log
 .DS_Store
 Thumbs.db
+
+# 验证产物（端到端截图等），不入库
+artifacts/
+
+# 求解器安装目录与 Python 虚拟环境（体积大、平台相关，可复跑安装）
+.tools/
+.venv-oq/
+.venv-*/
+
+# FDS 求解器产生的烟气/场数据（单个算例可达几十 MB，归档只保留 devc/out/csv）
+models/**/*.smv
+models/**/*.sf
+models/**/*.bf
+models/**/*.s3d
+models/**/*.s3dd
+models/**/*.restart
+models/**/*.end
+models/**/*.slice
+models/**/*.log
+
+# 临时脚本与编辑器/工具临时目录（出现过 scripts/_fix_*.py 这类一次性脚本）
+scripts/_*
+**/*.tmpdir/
+*.tmp

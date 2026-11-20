@@ -1,0 +1,34 @@
+{
+  "model": "fds",
+  "metric": "visibility",
+  "unit": "m",
+  "notes": [
+    "这些是 GeoRelay 的演练通行规则，不是 FDS 的结论。FDS 只给出探针处的能见度时程，是否判为受阻由本文件决定。",
+    "阈值参照常规疏散指引里“能见度低于约 10 m 视为难以通行”的量级，属于演练假设；换成别的阈值只需改这里并重跑 model:ingest。",
+    "规则与模型输出分开保存：界面上同时显示能见度数值（模型层）与这条规则（判据层）。"
+  ],
+  "rules": [
+    {
+      "id": "fire-vis-blocked",
+      "label": "能见度 < 10 m 判为不可通行",
+      "metric": "visibility",
+      "comparator": "lt",
+      "threshold": 10,
+      "unit": "m",
+      "consequence": "blocked",
+      "appliesTo": ["entrance", "road", "staging"],
+      "note": "演练阈值；达到即触发入口/路段受阻事件"
+    },
+    {
+      "id": "fire-vis-restricted",
+      "label": "能见度 < 25 m 判为受限但可通行",
+      "metric": "visibility",
+      "comparator": "lt",
+      "threshold": 25,
+      "unit": "m",
+      "consequence": "restricted",
+      "appliesTo": ["entrance", "road", "staging"],
+      "note": "演练阈值；只做提示与图层着色，不改派单"
+    }
+  ]
+}

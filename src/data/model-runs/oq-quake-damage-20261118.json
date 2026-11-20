@@ -1,0 +1,1338 @@
+{
+  "provenance": {
+    "level": "model",
+    "label": "模型计算结果回放",
+    "model": "openquake",
+    "disaster": "earthquake",
+    "runId": "oq-quake-damage-20261118",
+    "caseId": "quake_scenario_damage_v1",
+    "engineVersion": "OpenQuake 3.26.2",
+    "solverCommand": ".venv-oq/Scripts/python.exe artifacts/model-runs/oq-quake-damage-20261118/_driver/run_via_engine_api.py job.ini <out> (等价于 oq engine --run job.ini；CLI 的 psutil 内存门限在本机 82–94% 占用下不放行，见 _driver 脚本注释)",
+    "inputs": [
+      {
+        "path": "models/quake_oq/job.ini",
+        "sha256": "8502257917e7f17e386bee516f9cda17ffbb01bf62c0ce76f0bf964eeb6c2b3a",
+        "note": "算例主配置（scenario_damage）"
+      },
+      {
+        "path": "models/quake_oq/exposure.csv",
+        "sha256": "a9324e2805ee75048b7e743a755645eaacfaa2b1fac7808843255410eb5f95d3"
+      },
+      {
+        "path": "models/quake_oq/exposure_model.xml",
+        "sha256": "a3beaa55c3bc9dae1bb428c47d43517ab88e00ebc427daa6dcc3bce84742efec"
+      },
+      {
+        "path": "models/quake_oq/fragility.xml",
+        "sha256": "b1a2e5ccaa150607781667b8aeb496cb05477686437c820124c8dd0d01316e55"
+      },
+      {
+        "path": "models/quake_oq/site_model.csv",
+        "sha256": "bd2a663a28e4a4efecf78c4730640f7087de5888dd58ba1dbaa51979a9343477"
+      },
+      {
+        "path": "models/quake_oq/rupture_model.xml",
+        "sha256": "511a3557c2c868345dce8d2ae7557e8482e44a113e2ff5b372b77155dc7c2cf6"
+      }
+    ],
+    "outputs": [
+      {
+        "path": "artifacts/model-runs/oq-quake-damage-20261118/output/avg_damages-rlz-000_5.csv",
+        "sha256": "e153de5d3bc011650f73efeea06204d9b24b05e2c9bc17d1886ce216088725a0",
+        "unit": "probability",
+        "note": "oQ damages-rlzs 导出：逐资产各受损状态概率（本算例的主输出）"
+      },
+      {
+        "path": "artifacts/model-runs/oq-quake-damage-20261118/output/avg_gmf_5.csv",
+        "sha256": "9d7654c5825b015557dd6952ee0728d67d1304061f4a9bc625b3c3290dc90d5f",
+        "unit": "g",
+        "note": "场景地震动（PGA，g），来自 GMPE"
+      },
+      {
+        "path": "artifacts/model-runs/oq-quake-damage-20261118/output/site_model_5.csv",
+        "sha256": "a2972ad8b919e1a09b1be151598f7d89472e8a14c68b2113c696bc72ea0f4d95",
+        "unit": "",
+        "note": "所用场地参数"
+      },
+      {
+        "path": "artifacts/model-runs/oq-quake-damage-20261118/output/realizations_5.csv",
+        "sha256": "f727b6b0fba51b3ee9b4be6bf9f361a07ebf00b2ec51cf87bceed716b810f0fc",
+        "unit": "",
+        "note": "GMPE 实现"
+      },
+      {
+        "path": "artifacts/model-runs/oq-quake-damage-20261118/output/aggrisk-_5.csv",
+        "sha256": "8423e244b0bd797f176e6923f77a256beaad8049ca835ec4a394201c3a271c44",
+        "unit": "",
+        "note": "聚合风险"
+      },
+      {
+        "path": "artifacts/model-runs/oq-quake-damage-20261118/output/risk_by_event_5.csv",
+        "sha256": "3927159d9db4765430b796be4b386dee807567f0dd6f3f99a924680a33d74d08",
+        "unit": "",
+        "note": "按事件风险"
+      },
+      {
+        "path": "artifacts/model-runs/oq-quake-damage-20261118/output/sigma_epsilon_5.csv",
+        "sha256": "268cfa0525125715a12da0be335bb61e2a9b0bba834997726d21003e9bf86551",
+        "unit": "",
+        "note": "离散度"
+      },
+      {
+        "path": "artifacts/model-runs/oq-quake-damage-20261118/output/events_5.csv",
+        "sha256": "98533fa89ee4b192ea7f4dc3e0d7823d559c26c6a2a6f0b080897350b02b27ca",
+        "unit": "",
+        "note": "事件清单"
+      },
+      {
+        "path": "artifacts/model-runs/oq-quake-damage-20261118/output/gmf-data_5.csv",
+        "sha256": "479f4e6843dbb09b8ecb3c5ecdd65e9643dd09da3d0b276586db02b18f550ef7",
+        "unit": "g",
+        "note": "逐站地震动"
+      },
+      {
+        "path": "artifacts/model-runs/oq-quake-damage-20261118/output/sitemesh_5.csv",
+        "sha256": "05a5405f8137b64aa1b8750587b8281a2bdfd8f64cadaa8aff1175f8f01c7a34",
+        "unit": "",
+        "note": "场地网格"
+      }
+    ],
+    "notes": [
+      "算例类型：OpenQuake Scenario Damage（单场景地震动 + 逐资产受损状态分布）。",
+      "主输出为官方 damages-rlzs 导出的 CSV（artifacts/model-runs/oq-quake-damage-20261118/output/avg_damages-rlz-000_5.csv），未做任何数值改写。",
+      "本机系统内存占用长期 82–94%，oq CLI 的 psutil 80% 门限会无限等待，因此改用 Engine API 驱动脚本；未改 GMPE / 脆弱性曲线 / 随机种子 / 输出内容。",
+      "oQ 输出的是震后静态受损分布，没有时程；GeoRelay 演练中把它作为 t=60s 已发生的灾情导入。",
+      "资产 → 楼栋映射见 models/quake_oq/mapping.json；道路/接驳点关闭见 closures.json（人工设定，不由受损分布推导）。",
+      "startedAt 取自官方导出 CSV 头行 start_date；finishedAt 取该 CSV 文件修改时间。run.log 为 PowerShell 重定向的 UTF-16 产物，未记录精确总耗时，故 wallClockS 留空（计算本身为秒级）。",
+      "楼栋受损等级由 oQ 的受损状态分布按本文件的演练规则换算，仅用于界面分级与事件文案。",
+      "道路与接驳点的关闭**不**由楼栋受损推导：见 closures.json，那里是可单独修改的人工设定/独立规则。"
+    ],
+    "scope": "适用范围：单个 Scene Damage 算例的逐资产受损状态分布，用来演练“按受损等级分级、单独设定道路关闭”的应急流程；不是本社区的地震安全评估。",
+    "ranAt": "2026-11-18T12:46:21.818Z"
+  },
+  "rules": [
+    {
+      "id": "oq-prob-complete",
+      "label": "倒塌概率 ≥ 0.5 判为「倒塌」",
+      "metric": "damage_complete",
+      "comparator": "gte",
+      "threshold": 0.5,
+      "unit": "probability",
+      "consequence": "restricted",
+      "appliesTo": [
+        "building"
+      ],
+      "note": "演练分级阈值；只影响楼栋分级展示，不影响道路通行"
+    },
+    {
+      "id": "oq-prob-extensive",
+      "label": "严重及以上概率 ≥ 0.5 判为「严重」",
+      "metric": "damage_extensive_plus",
+      "comparator": "gte",
+      "threshold": 0.5,
+      "unit": "probability",
+      "consequence": "restricted",
+      "appliesTo": [
+        "building"
+      ],
+      "note": "演练分级阈值"
+    },
+    {
+      "id": "oq-prob-moderate",
+      "label": "中等及以上概率 ≥ 0.5 判为「中等」",
+      "metric": "damage_moderate_plus",
+      "comparator": "gte",
+      "threshold": 0.5,
+      "unit": "probability",
+      "consequence": "restricted",
+      "appliesTo": [
+        "building"
+      ],
+      "note": "演练分级阈值"
+    },
+    {
+      "id": "oq-prob-slight",
+      "label": "轻微及以上概率 ≥ 0.5 判为「轻微」",
+      "metric": "damage_slight_plus",
+      "comparator": "gte",
+      "threshold": 0.5,
+      "unit": "probability",
+      "consequence": "restricted",
+      "appliesTo": [
+        "building"
+      ],
+      "note": "演练分级阈值"
+    }
+  ],
+  "samples": [],
+  "assets": [
+    {
+      "assetId": "B01",
+      "targetId": "bld-preset6",
+      "targetName": "1 号楼",
+      "taxonomy": "RC_8",
+      "states": [
+        "no_damage",
+        "slight",
+        "moderate",
+        "extensive",
+        "complete"
+      ],
+      "probs": [
+        0.1655262,
+        0.1440622,
+        0.2326982,
+        0.2364662,
+        0.2212473
+      ],
+      "level": "中等",
+      "footprint": [
+        [
+          121.47414143874082,
+          31.23125517212003
+        ],
+        [
+          121.47437256125917,
+          31.23125517212003
+        ],
+        [
+          121.47437256125917,
+          31.23139082787997
+        ],
+        [
+          121.47414143874082,
+          31.23139082787997
+        ]
+      ]
+    },
+    {
+      "assetId": "B02",
+      "targetId": "bld-preset7",
+      "targetName": "2 号楼",
+      "taxonomy": "RC_8",
+      "states": [
+        "no_damage",
+        "slight",
+        "moderate",
+        "extensive",
+        "complete"
+      ],
+      "probs": [
+        0.1722996,
+        0.1541248,
+        0.251544,
+        0.2373856,
+        0.1846459
+      ],
+      "level": "中等",
+      "footprint": [
+        [
+          121.47385043912118,
+          31.23094417212003
+        ],
+        [
+          121.47408156087883,
+          31.23094417212003
+        ],
+        [
+          121.47408156087883,
+          31.23107982787997
+        ],
+        [
+          121.47385043912118,
+          31.23107982787997
+        ]
+      ]
+    },
+    {
+      "assetId": "B03",
+      "targetId": "bld-preset8",
+      "targetName": "3 号楼",
+      "taxonomy": "RC_8",
+      "states": [
+        "no_damage",
+        "slight",
+        "moderate",
+        "extensive",
+        "complete"
+      ],
+      "probs": [
+        0.1775371,
+        0.154349,
+        0.243771,
+        0.2307204,
+        0.1936224
+      ],
+      "level": "中等",
+      "footprint": [
+        [
+          121.47441079150829,
+          31.230912519109374
+        ],
+        [
+          121.47441079150829,
+          31.231111480890625
+        ],
+        [
+          121.47425320849172,
+          31.231111480890625
+        ],
+        [
+          121.47425320849172,
+          31.230912519109374
+        ]
+      ]
+    },
+    {
+      "assetId": "B04",
+      "targetId": "bld-preset9",
+      "targetName": "4 号楼",
+      "taxonomy": "RC_8",
+      "states": [
+        "no_damage",
+        "slight",
+        "moderate",
+        "extensive",
+        "complete"
+      ],
+      "probs": [
+        0.1902349,
+        0.1690026,
+        0.2626765,
+        0.2133405,
+        0.1647456
+      ],
+      "level": "中等",
+      "footprint": [
+        [
+          121.47475379137572,
+          31.230753519109374
+        ],
+        [
+          121.47475379137572,
+          31.230952480890625
+        ],
+        [
+          121.47459620862429,
+          31.230952480890625
+        ],
+        [
+          121.47459620862429,
+          31.230753519109374
+        ]
+      ]
+    },
+    {
+      "assetId": "B05",
+      "targetId": "bld-preseta",
+      "targetName": "5 号楼",
+      "taxonomy": "RC_8",
+      "states": [
+        "no_damage",
+        "slight",
+        "moderate",
+        "extensive",
+        "complete"
+      ],
+      "probs": [
+        0.1728812,
+        0.1599164,
+        0.2687897,
+        0.2469978,
+        0.1514148
+      ],
+      "level": "中等",
+      "footprint": [
+        [
+          121.47254679124147,
+          31.230592519109376
+        ],
+        [
+          121.47254679124147,
+          31.230791480890627
+        ],
+        [
+          121.47238920875854,
+          31.230791480890627
+        ],
+        [
+          121.47238920875854,
+          31.230592519109376
+        ]
+      ]
+    },
+    {
+      "assetId": "B06",
+      "targetId": "bld-presetb",
+      "targetName": "6 号楼",
+      "taxonomy": "RC_8",
+      "states": [
+        "no_damage",
+        "slight",
+        "moderate",
+        "extensive",
+        "complete"
+      ],
+      "probs": [
+        0.2108548,
+        0.1822194,
+        0.2762058,
+        0.2208012,
+        0.1099188
+      ],
+      "level": "中等",
+      "footprint": [
+        [
+          121.47356043950641,
+          31.23062917212003
+        ],
+        [
+          121.47379156049358,
+          31.23062917212003
+        ],
+        [
+          121.47379156049358,
+          31.23076482787997
+        ],
+        [
+          121.47356043950641,
+          31.23076482787997
+        ]
+      ]
+    },
+    {
+      "assetId": "B07",
+      "targetId": "bld-presetc",
+      "targetName": "7 号楼",
+      "taxonomy": "RC_8",
+      "states": [
+        "no_damage",
+        "slight",
+        "moderate",
+        "extensive",
+        "complete"
+      ],
+      "probs": [
+        0.1885741,
+        0.1654794,
+        0.2652429,
+        0.2417413,
+        0.1389623
+      ],
+      "level": "中等",
+      "footprint": [
+        [
+          121.47412279124147,
+          31.230592519109376
+        ],
+        [
+          121.47412279124147,
+          31.230791480890627
+        ],
+        [
+          121.47396520875854,
+          31.230791480890627
+        ],
+        [
+          121.47396520875854,
+          31.230592519109376
+        ]
+      ]
+    },
+    {
+      "assetId": "B08",
+      "targetId": "bld-presetd",
+      "targetName": "8 号楼",
+      "taxonomy": "RC_8",
+      "states": [
+        "no_damage",
+        "slight",
+        "moderate",
+        "extensive",
+        "complete"
+      ],
+      "probs": [
+        0.1990453,
+        0.174417,
+        0.2735881,
+        0.2314435,
+        0.1215061
+      ],
+      "level": "中等",
+      "footprint": [
+        [
+          121.4728897910947,
+          31.230416519109376
+        ],
+        [
+          121.4728897910947,
+          31.230615480890627
+        ],
+        [
+          121.47273220890528,
+          31.230615480890627
+        ],
+        [
+          121.47273220890528,
+          31.230416519109376
+        ]
+      ]
+    },
+    {
+      "assetId": "B09",
+      "targetId": "bld-presete",
+      "targetName": "9 号楼",
+      "taxonomy": "RC_8",
+      "states": [
+        "no_damage",
+        "slight",
+        "moderate",
+        "extensive",
+        "complete"
+      ],
+      "probs": [
+        0.2256927,
+        0.1859719,
+        0.2697177,
+        0.2120923,
+        0.1065253
+      ],
+      "level": "中等",
+      "footprint": [
+        [
+          121.47322879109554,
+          31.230417519109373
+        ],
+        [
+          121.47322879109554,
+          31.230616480890625
+        ],
+        [
+          121.47307120890447,
+          31.230616480890625
+        ],
+        [
+          121.47307120890447,
+          31.230417519109373
+        ]
+      ]
+    },
+    {
+      "assetId": "B10",
+      "targetId": "bld-presetf",
+      "targetName": "10 号楼",
+      "taxonomy": "URM_5",
+      "states": [
+        "no_damage",
+        "slight",
+        "moderate",
+        "extensive",
+        "complete"
+      ],
+      "probs": [
+        0.09371185,
+        0.08509718,
+        0.1519351,
+        0.2198216,
+        0.4494343
+      ],
+      "level": "严重",
+      "footprint": [
+        [
+          121.47446579109136,
+          31.230412519109375
+        ],
+        [
+          121.47446579109136,
+          31.230611480890627
+        ],
+        [
+          121.47430820890862,
+          31.230611480890627
+        ],
+        [
+          121.47430820890862,
+          31.230412519109375
+        ]
+      ]
+    },
+    {
+      "assetId": "B11",
+      "targetId": "bld-presetg",
+      "targetName": "11 号楼",
+      "taxonomy": "URM_5",
+      "states": [
+        "no_damage",
+        "slight",
+        "moderate",
+        "extensive",
+        "complete"
+      ],
+      "probs": [
+        0.07443935,
+        0.06785426,
+        0.1227604,
+        0.1879754,
+        0.5469706
+      ],
+      "level": "倒塌",
+      "footprint": [
+        [
+          121.47480779109303,
+          31.230414519109374
+        ],
+        [
+          121.47480779109303,
+          31.230613480890625
+        ],
+        [
+          121.47465020890697,
+          31.230613480890625
+        ],
+        [
+          121.47465020890697,
+          31.230414519109374
+        ]
+      ]
+    },
+    {
+      "assetId": "B12",
+      "targetId": "bld-preseth",
+      "targetName": "12 号楼",
+      "taxonomy": "URM_5",
+      "states": [
+        "no_damage",
+        "slight",
+        "moderate",
+        "extensive",
+        "complete"
+      ],
+      "probs": [
+        0.07810265,
+        0.07232364,
+        0.1334981,
+        0.2101131,
+        0.5059625
+      ],
+      "level": "倒塌",
+      "footprint": [
+        [
+          121.4725467909638,
+          31.230259519109374
+        ],
+        [
+          121.4725467909638,
+          31.230458480890626
+        ],
+        [
+          121.47238920903621,
+          31.230458480890626
+        ],
+        [
+          121.47238920903621,
+          31.230259519109374
+        ]
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "oq:building:bld-preset6",
+      "disaster": "earthquake",
+      "at": 60,
+      "targetType": "building",
+      "targetId": "bld-preset6",
+      "targetName": "1 号楼",
+      "traffic": "restricted",
+      "level": "中等",
+      "basis": [
+        "oQ 输出：damage_moderate_plus = 0.690（no_damage/slight/moderate/extensive/complete 分布，RC_8）",
+        "演练规则：中等及以上概率 ≥ 0.5 判为「中等」",
+        "算例 quake_scenario_damage_v1，引擎 OpenQuake 3.26.2（震后静态结果，无时程）"
+      ],
+      "reason": "1 号楼 受损等级「中等」（模型受损分布 + 演练分级规则）",
+      "metrics": {
+        "damageRatio": 0.2212
+      },
+      "geometry": {
+        "kind": "point",
+        "at": [
+          121.474257,
+          31.231323
+        ]
+      },
+      "evidence": {
+        "runId": "oq-quake-damage-20261118",
+        "model": "openquake",
+        "engineVersion": "OpenQuake 3.26.2",
+        "caseId": "quake_scenario_damage_v1",
+        "assetId": "B01",
+        "metric": "damage_moderate_plus",
+        "value": 0.690412,
+        "unit": "probability",
+        "comparator": "gte",
+        "threshold": 0.5,
+        "ruleId": "oq-prob-moderate",
+        "ruleLabel": "中等及以上概率 ≥ 0.5 判为「中等」",
+        "atS": 60,
+        "layers": {
+          "model": "oQ 资产 B01：no_damage=0.166 / slight=0.144 / moderate=0.233 / extensive=0.236 / complete=0.221",
+          "rule": "演练分级规则 oq-prob-moderate：中等及以上概率 ≥ 0.5 判为「中等」（演练分级阈值）"
+        }
+      }
+    },
+    {
+      "id": "oq:building:bld-preset7",
+      "disaster": "earthquake",
+      "at": 60,
+      "targetType": "building",
+      "targetId": "bld-preset7",
+      "targetName": "2 号楼",
+      "traffic": "restricted",
+      "level": "中等",
+      "basis": [
+        "oQ 输出：damage_moderate_plus = 0.674（no_damage/slight/moderate/extensive/complete 分布，RC_8）",
+        "演练规则：中等及以上概率 ≥ 0.5 判为「中等」",
+        "算例 quake_scenario_damage_v1，引擎 OpenQuake 3.26.2（震后静态结果，无时程）"
+      ],
+      "reason": "2 号楼 受损等级「中等」（模型受损分布 + 演练分级规则）",
+      "metrics": {
+        "damageRatio": 0.1846
+      },
+      "geometry": {
+        "kind": "point",
+        "at": [
+          121.473966,
+          31.231012
+        ]
+      },
+      "evidence": {
+        "runId": "oq-quake-damage-20261118",
+        "model": "openquake",
+        "engineVersion": "OpenQuake 3.26.2",
+        "caseId": "quake_scenario_damage_v1",
+        "assetId": "B02",
+        "metric": "damage_moderate_plus",
+        "value": 0.673575,
+        "unit": "probability",
+        "comparator": "gte",
+        "threshold": 0.5,
+        "ruleId": "oq-prob-moderate",
+        "ruleLabel": "中等及以上概率 ≥ 0.5 判为「中等」",
+        "atS": 60,
+        "layers": {
+          "model": "oQ 资产 B02：no_damage=0.172 / slight=0.154 / moderate=0.252 / extensive=0.237 / complete=0.185",
+          "rule": "演练分级规则 oq-prob-moderate：中等及以上概率 ≥ 0.5 判为「中等」（演练分级阈值）"
+        }
+      }
+    },
+    {
+      "id": "oq:building:bld-preset8",
+      "disaster": "earthquake",
+      "at": 60,
+      "targetType": "building",
+      "targetId": "bld-preset8",
+      "targetName": "3 号楼",
+      "traffic": "restricted",
+      "level": "中等",
+      "basis": [
+        "oQ 输出：damage_moderate_plus = 0.668（no_damage/slight/moderate/extensive/complete 分布，RC_8）",
+        "演练规则：中等及以上概率 ≥ 0.5 判为「中等」",
+        "算例 quake_scenario_damage_v1，引擎 OpenQuake 3.26.2（震后静态结果，无时程）"
+      ],
+      "reason": "3 号楼 受损等级「中等」（模型受损分布 + 演练分级规则）",
+      "metrics": {
+        "damageRatio": 0.1936
+      },
+      "geometry": {
+        "kind": "point",
+        "at": [
+          121.474332,
+          31.231012
+        ]
+      },
+      "evidence": {
+        "runId": "oq-quake-damage-20261118",
+        "model": "openquake",
+        "engineVersion": "OpenQuake 3.26.2",
+        "caseId": "quake_scenario_damage_v1",
+        "assetId": "B03",
+        "metric": "damage_moderate_plus",
+        "value": 0.668114,
+        "unit": "probability",
+        "comparator": "gte",
+        "threshold": 0.5,
+        "ruleId": "oq-prob-moderate",
+        "ruleLabel": "中等及以上概率 ≥ 0.5 判为「中等」",
+        "atS": 60,
+        "layers": {
+          "model": "oQ 资产 B03：no_damage=0.178 / slight=0.154 / moderate=0.244 / extensive=0.231 / complete=0.194",
+          "rule": "演练分级规则 oq-prob-moderate：中等及以上概率 ≥ 0.5 判为「中等」（演练分级阈值）"
+        }
+      }
+    },
+    {
+      "id": "oq:building:bld-preset9",
+      "disaster": "earthquake",
+      "at": 60,
+      "targetType": "building",
+      "targetId": "bld-preset9",
+      "targetName": "4 号楼",
+      "traffic": "restricted",
+      "level": "中等",
+      "basis": [
+        "oQ 输出：damage_moderate_plus = 0.641（no_damage/slight/moderate/extensive/complete 分布，RC_8）",
+        "演练规则：中等及以上概率 ≥ 0.5 判为「中等」",
+        "算例 quake_scenario_damage_v1，引擎 OpenQuake 3.26.2（震后静态结果，无时程）"
+      ],
+      "reason": "4 号楼 受损等级「中等」（模型受损分布 + 演练分级规则）",
+      "metrics": {
+        "damageRatio": 0.1647
+      },
+      "geometry": {
+        "kind": "point",
+        "at": [
+          121.474675,
+          31.230853
+        ]
+      },
+      "evidence": {
+        "runId": "oq-quake-damage-20261118",
+        "model": "openquake",
+        "engineVersion": "OpenQuake 3.26.2",
+        "caseId": "quake_scenario_damage_v1",
+        "assetId": "B04",
+        "metric": "damage_moderate_plus",
+        "value": 0.640763,
+        "unit": "probability",
+        "comparator": "gte",
+        "threshold": 0.5,
+        "ruleId": "oq-prob-moderate",
+        "ruleLabel": "中等及以上概率 ≥ 0.5 判为「中等」",
+        "atS": 60,
+        "layers": {
+          "model": "oQ 资产 B04：no_damage=0.190 / slight=0.169 / moderate=0.263 / extensive=0.213 / complete=0.165",
+          "rule": "演练分级规则 oq-prob-moderate：中等及以上概率 ≥ 0.5 判为「中等」（演练分级阈值）"
+        }
+      }
+    },
+    {
+      "id": "oq:building:bld-preseta",
+      "disaster": "earthquake",
+      "at": 60,
+      "targetType": "building",
+      "targetId": "bld-preseta",
+      "targetName": "5 号楼",
+      "traffic": "restricted",
+      "level": "中等",
+      "basis": [
+        "oQ 输出：damage_moderate_plus = 0.667（no_damage/slight/moderate/extensive/complete 分布，RC_8）",
+        "演练规则：中等及以上概率 ≥ 0.5 判为「中等」",
+        "算例 quake_scenario_damage_v1，引擎 OpenQuake 3.26.2（震后静态结果，无时程）"
+      ],
+      "reason": "5 号楼 受损等级「中等」（模型受损分布 + 演练分级规则）",
+      "metrics": {
+        "damageRatio": 0.1514
+      },
+      "geometry": {
+        "kind": "point",
+        "at": [
+          121.472468,
+          31.230692
+        ]
+      },
+      "evidence": {
+        "runId": "oq-quake-damage-20261118",
+        "model": "openquake",
+        "engineVersion": "OpenQuake 3.26.2",
+        "caseId": "quake_scenario_damage_v1",
+        "assetId": "B05",
+        "metric": "damage_moderate_plus",
+        "value": 0.667202,
+        "unit": "probability",
+        "comparator": "gte",
+        "threshold": 0.5,
+        "ruleId": "oq-prob-moderate",
+        "ruleLabel": "中等及以上概率 ≥ 0.5 判为「中等」",
+        "atS": 60,
+        "layers": {
+          "model": "oQ 资产 B05：no_damage=0.173 / slight=0.160 / moderate=0.269 / extensive=0.247 / complete=0.151",
+          "rule": "演练分级规则 oq-prob-moderate：中等及以上概率 ≥ 0.5 判为「中等」（演练分级阈值）"
+        }
+      }
+    },
+    {
+      "id": "oq:building:bld-presetb",
+      "disaster": "earthquake",
+      "at": 60,
+      "targetType": "building",
+      "targetId": "bld-presetb",
+      "targetName": "6 号楼",
+      "traffic": "restricted",
+      "level": "中等",
+      "basis": [
+        "oQ 输出：damage_moderate_plus = 0.607（no_damage/slight/moderate/extensive/complete 分布，RC_8）",
+        "演练规则：中等及以上概率 ≥ 0.5 判为「中等」",
+        "算例 quake_scenario_damage_v1，引擎 OpenQuake 3.26.2（震后静态结果，无时程）"
+      ],
+      "reason": "6 号楼 受损等级「中等」（模型受损分布 + 演练分级规则）",
+      "metrics": {
+        "damageRatio": 0.1099
+      },
+      "geometry": {
+        "kind": "point",
+        "at": [
+          121.473676,
+          31.230697
+        ]
+      },
+      "evidence": {
+        "runId": "oq-quake-damage-20261118",
+        "model": "openquake",
+        "engineVersion": "OpenQuake 3.26.2",
+        "caseId": "quake_scenario_damage_v1",
+        "assetId": "B06",
+        "metric": "damage_moderate_plus",
+        "value": 0.606926,
+        "unit": "probability",
+        "comparator": "gte",
+        "threshold": 0.5,
+        "ruleId": "oq-prob-moderate",
+        "ruleLabel": "中等及以上概率 ≥ 0.5 判为「中等」",
+        "atS": 60,
+        "layers": {
+          "model": "oQ 资产 B06：no_damage=0.211 / slight=0.182 / moderate=0.276 / extensive=0.221 / complete=0.110",
+          "rule": "演练分级规则 oq-prob-moderate：中等及以上概率 ≥ 0.5 判为「中等」（演练分级阈值）"
+        }
+      }
+    },
+    {
+      "id": "oq:building:bld-presetc",
+      "disaster": "earthquake",
+      "at": 60,
+      "targetType": "building",
+      "targetId": "bld-presetc",
+      "targetName": "7 号楼",
+      "traffic": "restricted",
+      "level": "中等",
+      "basis": [
+        "oQ 输出：damage_moderate_plus = 0.646（no_damage/slight/moderate/extensive/complete 分布，RC_8）",
+        "演练规则：中等及以上概率 ≥ 0.5 判为「中等」",
+        "算例 quake_scenario_damage_v1，引擎 OpenQuake 3.26.2（震后静态结果，无时程）"
+      ],
+      "reason": "7 号楼 受损等级「中等」（模型受损分布 + 演练分级规则）",
+      "metrics": {
+        "damageRatio": 0.139
+      },
+      "geometry": {
+        "kind": "point",
+        "at": [
+          121.474044,
+          31.230692
+        ]
+      },
+      "evidence": {
+        "runId": "oq-quake-damage-20261118",
+        "model": "openquake",
+        "engineVersion": "OpenQuake 3.26.2",
+        "caseId": "quake_scenario_damage_v1",
+        "assetId": "B07",
+        "metric": "damage_moderate_plus",
+        "value": 0.645946,
+        "unit": "probability",
+        "comparator": "gte",
+        "threshold": 0.5,
+        "ruleId": "oq-prob-moderate",
+        "ruleLabel": "中等及以上概率 ≥ 0.5 判为「中等」",
+        "atS": 60,
+        "layers": {
+          "model": "oQ 资产 B07：no_damage=0.189 / slight=0.165 / moderate=0.265 / extensive=0.242 / complete=0.139",
+          "rule": "演练分级规则 oq-prob-moderate：中等及以上概率 ≥ 0.5 判为「中等」（演练分级阈值）"
+        }
+      }
+    },
+    {
+      "id": "oq:building:bld-presetd",
+      "disaster": "earthquake",
+      "at": 60,
+      "targetType": "building",
+      "targetId": "bld-presetd",
+      "targetName": "8 号楼",
+      "traffic": "restricted",
+      "level": "中等",
+      "basis": [
+        "oQ 输出：damage_moderate_plus = 0.627（no_damage/slight/moderate/extensive/complete 分布，RC_8）",
+        "演练规则：中等及以上概率 ≥ 0.5 判为「中等」",
+        "算例 quake_scenario_damage_v1，引擎 OpenQuake 3.26.2（震后静态结果，无时程）"
+      ],
+      "reason": "8 号楼 受损等级「中等」（模型受损分布 + 演练分级规则）",
+      "metrics": {
+        "damageRatio": 0.1215
+      },
+      "geometry": {
+        "kind": "point",
+        "at": [
+          121.472811,
+          31.230516
+        ]
+      },
+      "evidence": {
+        "runId": "oq-quake-damage-20261118",
+        "model": "openquake",
+        "engineVersion": "OpenQuake 3.26.2",
+        "caseId": "quake_scenario_damage_v1",
+        "assetId": "B08",
+        "metric": "damage_moderate_plus",
+        "value": 0.626538,
+        "unit": "probability",
+        "comparator": "gte",
+        "threshold": 0.5,
+        "ruleId": "oq-prob-moderate",
+        "ruleLabel": "中等及以上概率 ≥ 0.5 判为「中等」",
+        "atS": 60,
+        "layers": {
+          "model": "oQ 资产 B08：no_damage=0.199 / slight=0.174 / moderate=0.274 / extensive=0.231 / complete=0.122",
+          "rule": "演练分级规则 oq-prob-moderate：中等及以上概率 ≥ 0.5 判为「中等」（演练分级阈值）"
+        }
+      }
+    },
+    {
+      "id": "oq:building:bld-presete",
+      "disaster": "earthquake",
+      "at": 60,
+      "targetType": "building",
+      "targetId": "bld-presete",
+      "targetName": "9 号楼",
+      "traffic": "restricted",
+      "level": "中等",
+      "basis": [
+        "oQ 输出：damage_moderate_plus = 0.588（no_damage/slight/moderate/extensive/complete 分布，RC_8）",
+        "演练规则：中等及以上概率 ≥ 0.5 判为「中等」",
+        "算例 quake_scenario_damage_v1，引擎 OpenQuake 3.26.2（震后静态结果，无时程）"
+      ],
+      "reason": "9 号楼 受损等级「中等」（模型受损分布 + 演练分级规则）",
+      "metrics": {
+        "damageRatio": 0.1065
+      },
+      "geometry": {
+        "kind": "point",
+        "at": [
+          121.47315,
+          31.230517
+        ]
+      },
+      "evidence": {
+        "runId": "oq-quake-damage-20261118",
+        "model": "openquake",
+        "engineVersion": "OpenQuake 3.26.2",
+        "caseId": "quake_scenario_damage_v1",
+        "assetId": "B09",
+        "metric": "damage_moderate_plus",
+        "value": 0.588335,
+        "unit": "probability",
+        "comparator": "gte",
+        "threshold": 0.5,
+        "ruleId": "oq-prob-moderate",
+        "ruleLabel": "中等及以上概率 ≥ 0.5 判为「中等」",
+        "atS": 60,
+        "layers": {
+          "model": "oQ 资产 B09：no_damage=0.226 / slight=0.186 / moderate=0.270 / extensive=0.212 / complete=0.107",
+          "rule": "演练分级规则 oq-prob-moderate：中等及以上概率 ≥ 0.5 判为「中等」（演练分级阈值）"
+        }
+      }
+    },
+    {
+      "id": "oq:building:bld-presetf",
+      "disaster": "earthquake",
+      "at": 60,
+      "targetType": "building",
+      "targetId": "bld-presetf",
+      "targetName": "10 号楼",
+      "traffic": "restricted",
+      "level": "严重",
+      "basis": [
+        "oQ 输出：damage_extensive_plus = 0.669（no_damage/slight/moderate/extensive/complete 分布，URM_5）",
+        "演练规则：严重及以上概率 ≥ 0.5 判为「严重」",
+        "算例 quake_scenario_damage_v1，引擎 OpenQuake 3.26.2（震后静态结果，无时程）"
+      ],
+      "reason": "10 号楼 受损等级「严重」（模型受损分布 + 演练分级规则）",
+      "metrics": {
+        "damageRatio": 0.4494
+      },
+      "geometry": {
+        "kind": "point",
+        "at": [
+          121.474387,
+          31.230512
+        ]
+      },
+      "evidence": {
+        "runId": "oq-quake-damage-20261118",
+        "model": "openquake",
+        "engineVersion": "OpenQuake 3.26.2",
+        "caseId": "quake_scenario_damage_v1",
+        "assetId": "B10",
+        "metric": "damage_extensive_plus",
+        "value": 0.669256,
+        "unit": "probability",
+        "comparator": "gte",
+        "threshold": 0.5,
+        "ruleId": "oq-prob-extensive",
+        "ruleLabel": "严重及以上概率 ≥ 0.5 判为「严重」",
+        "atS": 60,
+        "layers": {
+          "model": "oQ 资产 B10：no_damage=0.094 / slight=0.085 / moderate=0.152 / extensive=0.220 / complete=0.449",
+          "rule": "演练分级规则 oq-prob-extensive：严重及以上概率 ≥ 0.5 判为「严重」（演练分级阈值）"
+        }
+      }
+    },
+    {
+      "id": "oq:building:bld-presetg",
+      "disaster": "earthquake",
+      "at": 60,
+      "targetType": "building",
+      "targetId": "bld-presetg",
+      "targetName": "11 号楼",
+      "traffic": "restricted",
+      "level": "倒塌",
+      "basis": [
+        "oQ 输出：damage_complete = 0.547（no_damage/slight/moderate/extensive/complete 分布，URM_5）",
+        "演练规则：倒塌概率 ≥ 0.5 判为「倒塌」",
+        "算例 quake_scenario_damage_v1，引擎 OpenQuake 3.26.2（震后静态结果，无时程）"
+      ],
+      "reason": "11 号楼 受损等级「倒塌」（模型受损分布 + 演练分级规则）",
+      "metrics": {
+        "damageRatio": 0.547
+      },
+      "geometry": {
+        "kind": "point",
+        "at": [
+          121.474729,
+          31.230514
+        ]
+      },
+      "evidence": {
+        "runId": "oq-quake-damage-20261118",
+        "model": "openquake",
+        "engineVersion": "OpenQuake 3.26.2",
+        "caseId": "quake_scenario_damage_v1",
+        "assetId": "B11",
+        "metric": "damage_complete",
+        "value": 0.546971,
+        "unit": "probability",
+        "comparator": "gte",
+        "threshold": 0.5,
+        "ruleId": "oq-prob-complete",
+        "ruleLabel": "倒塌概率 ≥ 0.5 判为「倒塌」",
+        "atS": 60,
+        "layers": {
+          "model": "oQ 资产 B11：no_damage=0.074 / slight=0.068 / moderate=0.123 / extensive=0.188 / complete=0.547",
+          "rule": "演练分级规则 oq-prob-complete：倒塌概率 ≥ 0.5 判为「倒塌」（演练分级阈值；只影响楼栋分级展示，不影响道路通行）"
+        }
+      }
+    },
+    {
+      "id": "oq:building:bld-preseth",
+      "disaster": "earthquake",
+      "at": 60,
+      "targetType": "building",
+      "targetId": "bld-preseth",
+      "targetName": "12 号楼",
+      "traffic": "restricted",
+      "level": "倒塌",
+      "basis": [
+        "oQ 输出：damage_complete = 0.506（no_damage/slight/moderate/extensive/complete 分布，URM_5）",
+        "演练规则：倒塌概率 ≥ 0.5 判为「倒塌」",
+        "算例 quake_scenario_damage_v1，引擎 OpenQuake 3.26.2（震后静态结果，无时程）"
+      ],
+      "reason": "12 号楼 受损等级「倒塌」（模型受损分布 + 演练分级规则）",
+      "metrics": {
+        "damageRatio": 0.506
+      },
+      "geometry": {
+        "kind": "point",
+        "at": [
+          121.472468,
+          31.230359
+        ]
+      },
+      "evidence": {
+        "runId": "oq-quake-damage-20261118",
+        "model": "openquake",
+        "engineVersion": "OpenQuake 3.26.2",
+        "caseId": "quake_scenario_damage_v1",
+        "assetId": "B12",
+        "metric": "damage_complete",
+        "value": 0.505962,
+        "unit": "probability",
+        "comparator": "gte",
+        "threshold": 0.5,
+        "ruleId": "oq-prob-complete",
+        "ruleLabel": "倒塌概率 ≥ 0.5 判为「倒塌」",
+        "atS": 60,
+        "layers": {
+          "model": "oQ 资产 B12：no_damage=0.078 / slight=0.072 / moderate=0.133 / extensive=0.210 / complete=0.506",
+          "rule": "演练分级规则 oq-prob-complete：倒塌概率 ≥ 0.5 判为「倒塌」（演练分级阈值；只影响楼栋分级展示，不影响道路通行）"
+        }
+      }
+    },
+    {
+      "id": "oq:road:road-preseti",
+      "disaster": "earthquake",
+      "at": 120,
+      "targetType": "road",
+      "targetId": "road-preseti",
+      "targetName": "西门主动脉",
+      "traffic": "blocked",
+      "level": "人工设定关闭",
+      "basis": [
+        "来源：人工演练设定（models/quake_oq/closures.json）",
+        "说明：不由 oQ 楼栋受损分布推导"
+      ],
+      "reason": "西门主动脉：演练设定：西门主动脉因巡查判定路面开裂关闭（人工判定，非 oQ 输出）",
+      "geometry": {
+        "kind": "road",
+        "roadId": "road-preseti"
+      }
+    },
+    {
+      "id": "oq:staging:中央接驳点",
+      "disaster": "earthquake",
+      "at": 180,
+      "targetType": "staging",
+      "targetId": "中央接驳点",
+      "targetName": "中央接驳点",
+      "traffic": "blocked",
+      "level": "人工设定关闭",
+      "basis": [
+        "来源：人工演练设定（models/quake_oq/closures.json）",
+        "说明：不由 oQ 楼栋受损分布推导"
+      ],
+      "reason": "中央接驳点：演练设定：中央接驳点暂停使用（人工判定，非 oQ 输出）",
+      "geometry": {
+        "kind": "point",
+        "at": [
+          121.47349,
+          31.23049
+        ]
+      }
+    }
+  ],
+  "closures": [
+    {
+      "targetType": "road",
+      "targetId": "road-preseti",
+      "targetName": "西门主动脉",
+      "at": 120,
+      "mode": "manual",
+      "note": "演练设定：西门主动脉因巡查判定路面开裂关闭（人工判定，非 oQ 输出）",
+      "path": [
+        [
+          121.472229,
+          31.23022
+        ],
+        [
+          121.472355,
+          31.230221
+        ],
+        [
+          121.472481,
+          31.230222
+        ],
+        [
+          121.472607,
+          31.230223
+        ],
+        [
+          121.472733,
+          31.230223
+        ],
+        [
+          121.47286,
+          31.230224
+        ],
+        [
+          121.472986,
+          31.230225
+        ],
+        [
+          121.473112,
+          31.230226
+        ],
+        [
+          121.473238,
+          31.230227
+        ],
+        [
+          121.473364,
+          31.230227
+        ],
+        [
+          121.47349,
+          31.230228
+        ],
+        [
+          121.473616,
+          31.230229
+        ],
+        [
+          121.473742,
+          31.23023
+        ],
+        [
+          121.473868,
+          31.23023
+        ],
+        [
+          121.473994,
+          31.230231
+        ],
+        [
+          121.47412,
+          31.230232
+        ],
+        [
+          121.474246,
+          31.230233
+        ],
+        [
+          121.474372,
+          31.230234
+        ],
+        [
+          121.474498,
+          31.230234
+        ],
+        [
+          121.474624,
+          31.230235
+        ],
+        [
+          121.47475,
+          31.230236
+        ],
+        [
+          121.474877,
+          31.230237
+        ],
+        [
+          121.475003,
+          31.230237
+        ],
+        [
+          121.475129,
+          31.230238
+        ]
+      ]
+    },
+    {
+      "targetType": "staging",
+      "targetId": "中央接驳点",
+      "targetName": "中央接驳点",
+      "at": 180,
+      "mode": "manual",
+      "note": "演练设定：中央接驳点暂停使用（人工判定，非 oQ 输出）"
+    }
+  ],
+  "status": "ok"
+}

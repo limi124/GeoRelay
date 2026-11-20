@@ -1,0 +1,41 @@
+{
+  "model": "fds",
+  "caseId": "fire_entrance_smoke_v1",
+  "samples": [
+    {
+      "sampleId": "S1_ENTRANCE",
+      "targetType": "entrance",
+      "targetId": "entrance:bld-preset6",
+      "targetName": "1 号楼 主入口",
+      "influenceRadiusM": 8
+    },
+    {
+      "sampleId": "S2_CORRIDOR_A",
+      "targetType": "road",
+      "targetId": "road-preseti",
+      "targetName": "西门 主动脉",
+      "influenceRadiusM": 6
+    },
+    {
+      "sampleId": "S3_CORRIDOR_B",
+      "targetType": "road",
+      "targetId": "road-presetm",
+      "targetName": "3 号楼 入口支线",
+      "influenceRadiusM": 6
+    },
+    {
+      "sampleId": "S4_EXIT",
+      "targetType": "entrance",
+      "targetId": "entrance:bld-preset7",
+      "targetName": "2 号楼 主入口",
+      "influenceRadiusM": 8
+    }
+  ],
+  "assets": [],
+  "notes": [
+    "采样点是 FDS 房间内的烟气探针，坐标为 FDS 局部坐标；这里人工映射到预置演练社区（buildPresetCommunity）的入口与路段 ID。",
+    "映射不是物理对应：FDS 房间没有社区坐标，S2/S3 的“走廊”被映射到演练社区的主干道与楼栋支线，只是为了把烟气时程落到可调度的对象上。",
+    "影响圈半径是地图示意用的固定值，不是 FDS 算出的烟气扩散范围；FDS 输出只有探针处的时程值。",
+    "映射对象仅对预置演练社区有效；换成用户自建社区时需要在界面里重新选择目标。"
+  ]
+}

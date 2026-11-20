@@ -1,0 +1,53 @@
+{
+  "model": "openquake",
+  "notes": [
+    "楼栋受损等级由 oQ 的受损状态分布按本文件的演练规则换算，仅用于界面分级与事件文案。",
+    "道路与接驳点的关闭**不**由楼栋受损推导：见 closures.json，那里是可单独修改的人工设定/独立规则。"
+  ],
+  "rules": [
+    {
+      "id": "oq-prob-complete",
+      "label": "倒塌概率 ≥ 0.5 判为「倒塌」",
+      "metric": "damage_complete",
+      "comparator": "gte",
+      "threshold": 0.5,
+      "unit": "probability",
+      "consequence": "restricted",
+      "appliesTo": ["building"],
+      "note": "演练分级阈值；只影响楼栋分级展示，不影响道路通行"
+    },
+    {
+      "id": "oq-prob-extensive",
+      "label": "严重及以上概率 ≥ 0.5 判为「严重」",
+      "metric": "damage_extensive_plus",
+      "comparator": "gte",
+      "threshold": 0.5,
+      "unit": "probability",
+      "consequence": "restricted",
+      "appliesTo": ["building"],
+      "note": "演练分级阈值"
+    },
+    {
+      "id": "oq-prob-moderate",
+      "label": "中等及以上概率 ≥ 0.5 判为「中等」",
+      "metric": "damage_moderate_plus",
+      "comparator": "gte",
+      "threshold": 0.5,
+      "unit": "probability",
+      "consequence": "restricted",
+      "appliesTo": ["building"],
+      "note": "演练分级阈值"
+    },
+    {
+      "id": "oq-prob-slight",
+      "label": "轻微及以上概率 ≥ 0.5 判为「轻微」",
+      "metric": "damage_slight_plus",
+      "comparator": "gte",
+      "threshold": 0.5,
+      "unit": "probability",
+      "consequence": "restricted",
+      "appliesTo": ["building"],
+      "note": "演练分级阈值"
+    }
+  ]
+}

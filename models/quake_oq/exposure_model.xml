@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  GeoRelay demo community - exposure model wrapper.
+
+  In OpenQuake (3.26.2) a "CSV exposure" is an NRML exposureModel whose
+  <assets> element names the CSV file holding the actual asset rows; the XML
+  carries the model metadata and the cost-type declarations. The 12 assets
+  themselves live in exposure.csv (id, number, taxonomy, lon, lat, structural).
+
+  Values are hypothetical order-of-magnitude replacement costs in USD
+  (see README.md); scenario_damage damage-state probabilities do not depend on
+  them, only the loss/cost aggregations would.
+-->
+<nrml xmlns="http://openquake.org/xmlns/nrml/0.4">
+  <exposureModel id="quake_scenario_damage_v1" category="buildings">
+    <description>GeoRelay demo community - 12 hypothetical buildings</description>
+    <conversions>
+      <costTypes>
+        <costType name="structural" type="per_asset" unit="USD"/>
+      </costTypes>
+    </conversions>
+    <assets>exposure.csv</assets>
+  </exposureModel>
+</nrml>

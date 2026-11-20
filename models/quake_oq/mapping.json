@@ -1,0 +1,24 @@
+{
+  "model": "openquake",
+  "caseId": "quake_scenario_damage_v1",
+  "samples": [],
+  "assets": [
+    { "assetId": "B01", "targetType": "building", "targetId": "bld-preset6", "targetName": "1 号楼" },
+    { "assetId": "B02", "targetType": "building", "targetId": "bld-preset7", "targetName": "2 号楼" },
+    { "assetId": "B03", "targetType": "building", "targetId": "bld-preset8", "targetName": "3 号楼" },
+    { "assetId": "B04", "targetType": "building", "targetId": "bld-preset9", "targetName": "4 号楼" },
+    { "assetId": "B05", "targetType": "building", "targetId": "bld-preseta", "targetName": "5 号楼" },
+    { "assetId": "B06", "targetType": "building", "targetId": "bld-presetb", "targetName": "6 号楼" },
+    { "assetId": "B07", "targetType": "building", "targetId": "bld-presetc", "targetName": "7 号楼" },
+    { "assetId": "B08", "targetType": "building", "targetId": "bld-presetd", "targetName": "8 号楼" },
+    { "assetId": "B09", "targetType": "building", "targetId": "bld-presete", "targetName": "9 号楼" },
+    { "assetId": "B10", "targetType": "building", "targetId": "bld-presetf", "targetName": "10 号楼" },
+    { "assetId": "B11", "targetType": "building", "targetId": "bld-presetg", "targetName": "11 号楼" },
+    { "assetId": "B12", "targetType": "building", "targetId": "bld-preseth", "targetName": "12 号楼" }
+  ],
+  "notes": [
+    "资产 B01–B12 是 oQ exposure 里的资产，这里人工映射到预置演练社区的 12 栋楼。",
+    "映射只用于把受损状态分布显示到楼栋上，不代表这些楼栋的真实抗震能力。",
+    "道路/接驳点是否关闭不从这里推导，见 closures.json（人工设定或独立规则）。"
+  ]
+}

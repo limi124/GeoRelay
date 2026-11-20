@@ -1,0 +1,61 @@
+&HEAD CHID='fire_entrance_smoke_v1', TITLE='GeoRelay community entrance hall / corridor - 500 kW steady fire, smoke visibility case' /
+
+!------------------------------------------------------------------------------
+! Case ID  : fire_entrance_smoke_v1
+! Purpose  : fixed, reproducible FDS smoke case for GeoRelay fire drill visuals.
+! Domain   : 12 m (x, entrance -> exit) x 8 m (y) x 3 m (z)
+! Fire     : 500 kW steady, 1.0 m x 1.0 m burner centred at (5.5, 4.0)
+! Duration : T_END = 300 s
+! Mesh     : 0.25 m uniform, 48 x 32 x 12 = 18,432 cells
+!------------------------------------------------------------------------------
+
+&TIME T_END=300.0 /
+
+&MISC TMPA=20.0, CFL_MAX=1.0, RADIATION=.TRUE. /
+
+&DUMP DT_DEVC=5.0, DT_HRR=5.0, DT_RESTART=10000.0 /
+
+! Propane surrogate for a mixed upholstery / plastic fire load.
+! SOOT_YIELD is what drives the extinction coefficient and therefore visibility.
+&REAC ID='PROPANE_GM', FUEL='PROPANE', SOOT_YIELD=0.10, CO_YIELD=0.01 /
+
+! Default solid surface: inert, isothermal at 20 C (no wall thermal inertia).
+&SURF ID='INERT_WALL', DEFAULT=.TRUE., TMP_FRONT=20.0, COLOR='GRAY' /
+
+! 500 kW over 1.0 m2 of top face  ->  HRRPUA = 500 kW/m2  ->  500 kW total.
+&SURF ID='BURNER', HRRPUA=500.0, COLOR='RED' /
+
+&MESH IJK=48,32,12, XB=0.0,12.0,0.0,8.0,0.0,3.0 /
+
+! Fire source: a 1.0 x 1.0 x 0.1 m pad. Only the top face burns
+! (SURF_IDS = top / sides / bottom), so the burning area is exactly 1.0 m2.
+&OBST XB=5.0,6.0,3.5,4.5,0.0,0.1, SURF_IDS='BURNER','INERT_WALL','INERT_WALL' /
+
+! Entrance door (x = 0 wall) and exit door (x = 12 wall): both open, 1.2 m x 2.1 m.
+&VENT XB=0.0,0.0,3.4,4.6,0.0,2.1, SURF_ID='OPEN' /
+&VENT XB=12.0,12.0,3.4,4.6,0.0,2.1, SURF_ID='OPEN' /
+
+!------------------------------------------------------------------------------
+! Sampling points at 1.7 m (breathing height), on the centre line y = 4.0
+!------------------------------------------------------------------------------
+! S1_ENTRANCE : 0.5 m inside the entrance door
+&DEVC ID='S1_ENTRANCE', XYZ=0.5,4.0,1.7, QUANTITY='VISIBILITY' /
+&DEVC ID='S1_ENTRANCE_TEMP', XYZ=0.5,4.0,1.7, QUANTITY='TEMPERATURE' /
+&DEVC ID='S1_ENTRANCE_EXT', XYZ=0.5,4.0,1.7, QUANTITY='EXTINCTION COEFFICIENT' /
+
+! S2_CORRIDOR_A : corridor, 2.0 m upstream (entrance side) of the fire edge
+&DEVC ID='S2_CORRIDOR_A', XYZ=3.5,4.0,1.7, QUANTITY='VISIBILITY' /
+&DEVC ID='S2_CORRIDOR_A_TEMP', XYZ=3.5,4.0,1.7, QUANTITY='TEMPERATURE' /
+&DEVC ID='S2_CORRIDOR_A_EXT', XYZ=3.5,4.0,1.7, QUANTITY='EXTINCTION COEFFICIENT' /
+
+! S3_CORRIDOR_B : corridor, 2.5 m downstream (exit side) of the fire edge
+&DEVC ID='S3_CORRIDOR_B', XYZ=8.5,4.0,1.7, QUANTITY='VISIBILITY' /
+&DEVC ID='S3_CORRIDOR_B_TEMP', XYZ=8.5,4.0,1.7, QUANTITY='TEMPERATURE' /
+&DEVC ID='S3_CORRIDOR_B_EXT', XYZ=8.5,4.0,1.7, QUANTITY='EXTINCTION COEFFICIENT' /
+
+! S4_EXIT : 0.5 m inside the exit door
+&DEVC ID='S4_EXIT', XYZ=11.5,4.0,1.7, QUANTITY='VISIBILITY' /
+&DEVC ID='S4_EXIT_TEMP', XYZ=11.5,4.0,1.7, QUANTITY='TEMPERATURE' /
+&DEVC ID='S4_EXIT_EXT', XYZ=11.5,4.0,1.7, QUANTITY='EXTINCTION COEFFICIENT' /
+
+&TAIL /

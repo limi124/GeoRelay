@@ -1,0 +1,266 @@
+/* =============================================================================
+   GeoRelay · 专业模型算例回放（模型证据）局部样式
+   只新增本组件的类，不改写 src/styles/app.css 里既有的规则；
+   颜色全部取自设计令牌（app.css :root 的 --gr-* 变量）。
+   ============================================================================= */
+
+/* 侧栏滚动区是 flex 列，面板默认 min-height:0 会被压扁到只剩表头（内容多时读不了）。
+   让侧栏直接子面板保持自身高度，由 .panel-scroll 负责滚动；嵌套面板不受影响。 */
+.side-panel > .panel-scroll > .panel {
+  flex: 0 0 auto;
+}
+
+/* 证据面板定位锚点：保持自身高度，避免被侧栏 flex 压扁 */
+.evidence-anchor {
+  flex: 0 0 auto;
+  scroll-margin-top: var(--gr-s2);
+}
+
+/* 专业模型算例按钮：普通按钮（.btn-group 会把子按钮变成无边框分段控件） */
+.model-run-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.model-run-list .btn {
+  height: auto;
+  min-height: 26px;
+  padding: 4px 8px;
+  white-space: normal;
+  text-align: left;
+  line-height: 1.25;
+}
+
+/* 来源徽标（完整文案，含引擎版本与算例 ID） */
+.provenance-line {
+  padding: var(--gr-s1) var(--gr-s2);
+  border: 1px solid var(--gr-border-strong);
+  border-radius: var(--gr-r-sm);
+  background: var(--gr-well);
+  color: var(--gr-text);
+  font-family: var(--gr-mono);
+  font-size: var(--gr-fs-xs);
+  line-height: var(--gr-lh-tight);
+  overflow-wrap: anywhere;
+}
+
+.provenance-line.is-model {
+  border-left: 3px solid var(--gr-brand);
+}
+
+.provenance-line.is-simplified {
+  border-left: 3px solid var(--gr-text-3);
+  color: var(--gr-text-2);
+}
+
+/* 来源徽标 / 复盘来源小字 */
+.replay-provenance {
+  margin: 0 0 var(--gr-s2);
+  color: var(--gr-text-3);
+  border-left: 2px solid var(--gr-border-strong);
+  padding-left: var(--gr-s2);
+}
+
+/* 算例入口分组 */
+.model-run-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gr-s2);
+  padding: var(--gr-s2);
+  border: 1px solid var(--gr-border);
+  border-radius: var(--gr-r-md);
+  background: var(--gr-sunken-soft);
+}
+
+.model-run-group .field-label {
+  color: var(--gr-text-2);
+  font-family: var(--gr-mono);
+  font-size: var(--gr-fs-xs);
+  letter-spacing: 0.06em;
+}
+
+/* 证据面板：算例范围 / 两层分区 */
+.evidence-scope {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gr-s1);
+  padding: var(--gr-s2);
+  border: 1px solid var(--gr-border);
+  border-left: 3px solid var(--gr-info);
+  border-radius: var(--gr-r-md);
+  background: var(--gr-info-a10);
+}
+
+.evidence-scope .field-hint,
+.evidence-scope .mono {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.evidence-layer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gr-s2);
+  padding: var(--gr-s2);
+  border: 1px solid var(--gr-border);
+  border-radius: var(--gr-r-md);
+  background: var(--gr-sunken-soft);
+}
+
+.evidence-layer-title {
+  font-size: var(--gr-fs-md);
+  color: var(--gr-text);
+}
+
+/* 模型事件行（可点击定位） */
+.evidence-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gr-s1);
+  width: 100%;
+  padding: var(--gr-s2);
+  text-align: left;
+  font: inherit;
+  color: var(--gr-text);
+  border: 1px solid var(--gr-border);
+  border-radius: var(--gr-r-sm);
+  background: var(--gr-surface);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.evidence-row:hover {
+  border-color: var(--gr-brand-a40);
+  background: var(--gr-hover);
+}
+
+.evidence-row:focus-visible {
+  outline: 2px solid var(--gr-brand-a45);
+  outline-offset: 1px;
+}
+
+.evidence-row .field-hint,
+.evidence-rule .field-hint,
+.evidence-closure .field-hint {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* 规则判定行：与模型层用左侧警示色区分 */
+.evidence-rule {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gr-s1);
+  padding: var(--gr-s2);
+  border: 1px solid var(--gr-border);
+  border-left: 3px solid var(--gr-warn);
+  border-radius: var(--gr-r-sm);
+  background: var(--gr-warn-a10);
+}
+
+.evidence-rule .btn {
+  align-self: flex-start;
+}
+
+.evidence-closure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gr-s1);
+  padding: var(--gr-s2);
+  border: 1px dashed var(--gr-warn-a40);
+  border-radius: var(--gr-r-sm);
+  background: var(--gr-sunken-soft);
+}
+
+.evidence-rules-config summary {
+  cursor: pointer;
+  color: var(--gr-text-2);
+}
+
+/* 极简 SVG 时程图 */
+.evidence-chart-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gr-s2);
+  margin-top: var(--gr-s2);
+}
+
+.evidence-chart {
+  padding: var(--gr-s2);
+  border: 1px solid var(--gr-border);
+  border-radius: var(--gr-r-sm);
+  background: var(--gr-sunken);
+}
+
+.evidence-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 168px;
+}
+
+.evidence-chart .field-hint {
+  margin: var(--gr-s2) 0 0;
+}
+
+.evidence-axis {
+  stroke: var(--gr-border-strong);
+  stroke-width: 1;
+}
+
+.evidence-grid {
+  stroke: var(--gr-grid-line);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+
+.evidence-tick {
+  fill: var(--gr-text-3);
+  font-family: var(--gr-mono);
+  font-size: 9px;
+}
+
+.evidence-line {
+  fill: none;
+  stroke: var(--gr-brand);
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.evidence-threshold {
+  stroke: var(--gr-warn);
+  stroke-width: 1.2;
+  stroke-dasharray: 5 3;
+}
+
+.evidence-threshold-text {
+  fill: var(--gr-warn-soft);
+  font-family: var(--gr-mono);
+  font-size: 9px;
+}
+
+.evidence-crossing-line {
+  stroke: var(--gr-warn-a40);
+  stroke-width: 1.2;
+  stroke-dasharray: 2 2;
+}
+
+.evidence-crossing-dot {
+  fill: var(--gr-warn);
+  stroke: var(--gr-bg);
+  stroke-width: 1;
+}
+
+.evidence-crossing-text {
+  fill: var(--gr-warn-soft);
+  font-family: var(--gr-mono);
+  font-size: 9px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .evidence-row {
+    transition: none;
+  }
+}

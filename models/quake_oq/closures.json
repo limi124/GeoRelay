@@ -1,0 +1,27 @@
+{
+  "model": "openquake",
+  "mode": "manual",
+  "notes": [
+    "这是**独立于模型**的演练设定：道路与接驳点是否关闭由这里决定，不由 oQ 的楼栋受损分布推导。",
+    "oQ Scenario Damage 只算资产受损状态；把它直接当成道路中断结论是不成立的外推，所以这里显式分开。",
+    "要改演练设定，改本文件后重跑 npm run model:ingest 即可，不需要重跑求解器。"
+  ],
+  "closures": [
+    {
+      "targetType": "road",
+      "targetId": "road-preseti",
+      "targetName": "西门主动脉",
+      "at": 120,
+      "mode": "manual",
+      "note": "演练设定：西门主动脉因巡查判定路面开裂关闭（人工判定，非 oQ 输出）"
+    },
+    {
+      "targetType": "staging",
+      "targetId": "中央接驳点",
+      "targetName": "中央接驳点",
+      "at": 180,
+      "mode": "manual",
+      "note": "演练设定：中央接驳点暂停使用（人工判定，非 oQ 输出）"
+    }
+  ]
+}

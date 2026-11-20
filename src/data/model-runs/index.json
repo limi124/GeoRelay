@@ -1,0 +1,41 @@
+{
+  "generatedFrom": "artifacts/model-runs",
+  "runs": [
+    {
+      "runId": "fds-fire-entrance-20261118",
+      "model": "fds",
+      "disaster": "fire",
+      "caseId": "fire_entrance_smoke_v1",
+      "engineVersion": "FDS 6.11.2 (SMV 6.11.3)",
+      "solverCommand": "fds fire_entrance_smoke_v1.fds",
+      "status": "ok",
+      "level": "model",
+      "label": "模型计算结果回放",
+      "ranAt": "2026-11-18T20:45:53+08:00",
+      "title": "火灾（FDS 算例）· fire_entrance_smoke_v1",
+      "sampleCount": 4,
+      "assetCount": 0,
+      "eventCount": 4,
+      "closureCount": 0,
+      "available": true
+    },
+    {
+      "runId": "oq-quake-damage-20261118",
+      "model": "openquake",
+      "disaster": "earthquake",
+      "caseId": "quake_scenario_damage_v1",
+      "engineVersion": "OpenQuake 3.26.2",
+      "solverCommand": ".venv-oq/Scripts/python.exe artifacts/model-runs/oq-quake-damage-20261118/_driver/run_via_engine_api.py job.ini <out> (等价于 oq engine --run job.ini；CLI 的 psutil 内存门限在本机 82–94% 占用下不放行，见 _driver 脚本注释)",
+      "status": "ok",
+      "level": "model",
+      "label": "模型计算结果回放",
+      "ranAt": "2026-11-18T12:46:21.818Z",
+      "title": "地震（OpenQuake 算例）· quake_scenario_damage_v1",
+      "sampleCount": 0,
+      "assetCount": 12,
+      "eventCount": 14,
+      "closureCount": 2,
+      "available": true
+    }
+  ]
+}

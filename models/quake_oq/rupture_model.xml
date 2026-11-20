@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  GeoRelay demo community - fixed scenario rupture (HYPOTHETICAL).
+
+  A vertical strike-slip fault trace ~3.8 km north of the demo community centre
+  (121.4737, 31.2304), magnitude 6.2, top of rupture at the surface, bottom at
+  15 km. The geometry is invented for this exercise: it is NOT a mapped fault
+  and NOT a recurrence model. See models/quake_oq/README.md.
+-->
+<nrml xmlns:gml="http://www.opengis.net/gml" xmlns="http://openquake.org/xmlns/nrml/0.5">
+  <simpleFaultRupture>
+    <magnitude>6.2</magnitude>
+    <rake>0.0</rake>
+    <hypocenter lat="31.2650" lon="121.4737" depth="8.0"/>
+    <simpleFaultGeometry>
+      <gml:LineString>
+        <gml:posList>
+          121.4400 31.2650
+          121.5300 31.2650
+        </gml:posList>
+      </gml:LineString>
+      <dip>90.0</dip>
+      <upperSeismoDepth>0.0</upperSeismoDepth>
+      <lowerSeismoDepth>15.0</lowerSeismoDepth>
+    </simpleFaultGeometry>
+  </simpleFaultRupture>
+</nrml>

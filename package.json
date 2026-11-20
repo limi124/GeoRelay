@@ -1,0 +1,40 @@
+{
+  "name": "georelay",
+  "private": true,
+  "version": "0.1.0",
+  "description": "GeoRelay — 社区应急演练 Web 指挥台",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "dev": "node server/dev.mjs",
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.node.json && vite build",
+    "preview": "node server/preview.mjs",
+    "start": "node server/preview.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.node.json --noEmit",
+    "sim": "node --experimental-strip-types --no-warnings scripts/sim.ts",
+    "test": "node --experimental-strip-types --no-warnings scripts/test.ts",
+    "test:e2e": "python scripts/e2e_check.py",
+    "compare": "node --experimental-strip-types --no-warnings scripts/compare.ts",
+    "rl:train": "node --experimental-strip-types --no-warnings scripts/train_dispatch_rl.ts",
+    "check:disaster": "node --experimental-strip-types --no-warnings scripts/disaster_check.ts",
+    "check:secrets": "node scripts/secrets_check.mjs",
+    "ai:bank": "node --experimental-strip-types --no-warnings scripts/ai_bank.ts",
+    "model:ingest": "node --experimental-strip-types --no-warnings scripts/model_ingest.ts",
+    "model:verify": "node --experimental-strip-types --no-warnings scripts/model_verify.ts",
+    "model:run:fds": "node --experimental-strip-types --no-warnings scripts/model_run_fds.ts",
+    "model:run:oq": "node --experimental-strip-types --no-warnings scripts/model_run_oq.ts"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "~5.6.3",
+    "vite": "^5.4.11"
+  }
+}
