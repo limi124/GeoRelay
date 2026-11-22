@@ -1,0 +1,81 @@
+{
+  "runId": "fds-fire-entrance-20261118",
+  "model": "fds",
+  "caseId": "fire_entrance_smoke_v1",
+  "engineVersion": "FDS 6.11.2 (SMV 6.11.3)",
+  "solverCommand": "fds fire_entrance_smoke_v1.fds",
+  "status": "ok",
+  "startedAt": "2026-11-18T20:37:13+08:00",
+  "finishedAt": "2026-11-18T20:45:53+08:00",
+  "wallClockS": 520.2,
+  "inputs": [
+    {
+      "path": "models/fire_fds/fire_entrance_smoke_v1.fds",
+      "sha256": "8f22cadfd6d52e29a7b60df4afdb430a98a80f530b85bc9d81bc57275ceba7a2",
+      "note": "FDS 输入文件"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "artifacts/model-runs/fds-fire-entrance-20261118/fire_entrance_smoke_v1_devc.csv",
+      "sha256": "5f592d3ef883da0c3638d62bca6130b8bedb645e07b5bb3fb728e881a7ee508d",
+      "unit": "visibility: m",
+      "note": "DEVC 采样输出"
+    },
+    {
+      "path": "artifacts/model-runs/fds-fire-entrance-20261118/fire_entrance_smoke_v1_hrr.csv",
+      "sha256": "c178f122022d2243350cc15da7ec164804524a0994968265af057bdf39ef775f",
+      "unit": "kW",
+      "note": "热释放速率输出（稳态 HRR ≈ 500.4 kW，验证 500 kW 设计火源）"
+    },
+    {
+      "path": "artifacts/model-runs/fds-fire-entrance-20261118/fire_entrance_smoke_v1.out",
+      "sha256": "4106e26bcf5ade66b6cae9d37804fe498fcf4ff049a3ad1952e9954e7ac503b2",
+      "unit": "n/a",
+      "note": "FDS 求解日志（版本/网格/稳定性/警告）"
+    },
+    {
+      "path": "artifacts/model-runs/fds-fire-entrance-20261118/run.log",
+      "sha256": "3b4cbb08c4394fa6d807d811ebad8ddba8e7e6b769d251c3eec320d91120173d",
+      "unit": "n/a",
+      "note": "FDS 控制台输出（已剥离 pwsh 的 NativeCommandError 前缀；原文见 run-raw-console.log）"
+    }
+  ],
+  "samples": [
+    {
+      "sampleId": "S1_ENTRANCE",
+      "quantity": "visibility",
+      "unit": "m",
+      "lngLatHint": null
+    },
+    {
+      "sampleId": "S2_CORRIDOR_A",
+      "quantity": "visibility",
+      "unit": "m",
+      "lngLatHint": null
+    },
+    {
+      "sampleId": "S3_CORRIDOR_B",
+      "quantity": "visibility",
+      "unit": "m",
+      "lngLatHint": null
+    },
+    {
+      "sampleId": "S4_EXIT",
+      "quantity": "visibility",
+      "unit": "m",
+      "lngLatHint": null
+    }
+  ],
+  "notes": [
+    "网格：单一 &MESH，0.25 m 均匀网格，48×32×12 = 18,432 单元格；计算域 12×8×3 m。",
+    "时长：T_END=300 s，实际推进 8748 个时间步，DT_DEVC=5 s（FDS 实际输出时刻为 5.03/10.03/…/300.00 s，因 DT 由 CFL 自适应步长决定）。",
+    "边界条件：入口门(x=0)与出口门(x=12)各 1.2×2.1 m，SURF_ID='OPEN'；其余墙面/地面/顶棚为惰性定温 20 °C 面（TMP_FRONT=20，不模拟墙体材料热惯性）；TMPA=20 °C，辐射开启。",
+    "火源：1.0×1.0 m 顶面燃烧器，HRRPUA=500 kW/m²（燃烧面积恰为 1.0 m²，故 500 kW 总量），稳态无增长段；燃料丙烷 SOOT_YIELD=0.10、CO_YIELD=0.01。",
+    "采样点：z=1.7 m（呼吸高度）、y=4.0 m 中轴线，x=0.5/3.5/8.5/11.5 m；每点 3 个 DEVC（VISIBILITY/TEMPERATURE/EXTINCTION COEFFICIENT），共 12 个 DEVC。",
+    "未做网格无关性验证。0.25 m 网格对 1 m 火源仅 4×4 个单元，羽流解析偏粗，绝对能见度值不宜作为设计依据。",
+    "未做敏感性分析（SOOT_YIELD、火源功率、门洞开度为能见度主导参数）。单一确定性 LES 计算。",
+    "lngLatHint 为 null：本源算例使用局部米制坐标，尚未绑定到 WGS-84 经纬度。",
+    "求解器验证：fds.exe -v 输出 'FDS revision : FDS-6.11.2-0-g8e4c2c4-release'；.out 记录 'STOP: FDS completed successfully'，进程退出码 0；FDS 内部计时 Total Elapsed Wall Clock Time = 519.961 s。"
+  ]
+}

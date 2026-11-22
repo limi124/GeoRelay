@@ -1,0 +1,158 @@
+{
+  "runId": "oq-quake-damage-20261118",
+  "model": "openquake",
+  "caseId": "quake_scenario_damage_v1",
+  "engineVersion": "OpenQuake 3.26.2",
+  "solverCommand": ".venv-oq/Scripts/python.exe artifacts/model-runs/oq-quake-damage-20261118/_driver/run_via_engine_api.py job.ini <out> (等价于 oq engine --run job.ini；CLI 的 psutil 内存门限在本机 82–94% 占用下不放行，见 _driver 脚本注释)",
+  "status": "ok",
+  "startedAt": "2026-11-18T20:46:21",
+  "finishedAt": "2026-11-18T12:46:21.818Z",
+  "wallClockS": null,
+  "inputs": [
+    {
+      "path": "models/quake_oq/job.ini",
+      "sha256": "8502257917e7f17e386bee516f9cda17ffbb01bf62c0ce76f0bf964eeb6c2b3a",
+      "note": "算例主配置（scenario_damage）"
+    },
+    {
+      "path": "models/quake_oq/exposure.csv",
+      "sha256": "a9324e2805ee75048b7e743a755645eaacfaa2b1fac7808843255410eb5f95d3"
+    },
+    {
+      "path": "models/quake_oq/exposure_model.xml",
+      "sha256": "a3beaa55c3bc9dae1bb428c47d43517ab88e00ebc427daa6dcc3bce84742efec"
+    },
+    {
+      "path": "models/quake_oq/fragility.xml",
+      "sha256": "b1a2e5ccaa150607781667b8aeb496cb05477686437c820124c8dd0d01316e55"
+    },
+    {
+      "path": "models/quake_oq/site_model.csv",
+      "sha256": "bd2a663a28e4a4efecf78c4730640f7087de5888dd58ba1dbaa51979a9343477"
+    },
+    {
+      "path": "models/quake_oq/rupture_model.xml",
+      "sha256": "511a3557c2c868345dce8d2ae7557e8482e44a113e2ff5b372b77155dc7c2cf6"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "artifacts/model-runs/oq-quake-damage-20261118/output/avg_damages-rlz-000_5.csv",
+      "sha256": "e153de5d3bc011650f73efeea06204d9b24b05e2c9bc17d1886ce216088725a0",
+      "unit": "probability",
+      "note": "oQ damages-rlzs 导出：逐资产各受损状态概率（本算例的主输出）"
+    },
+    {
+      "path": "artifacts/model-runs/oq-quake-damage-20261118/output/avg_gmf_5.csv",
+      "sha256": "9d7654c5825b015557dd6952ee0728d67d1304061f4a9bc625b3c3290dc90d5f",
+      "unit": "g",
+      "note": "场景地震动（PGA，g），来自 GMPE"
+    },
+    {
+      "path": "artifacts/model-runs/oq-quake-damage-20261118/output/site_model_5.csv",
+      "sha256": "a2972ad8b919e1a09b1be151598f7d89472e8a14c68b2113c696bc72ea0f4d95",
+      "unit": "",
+      "note": "所用场地参数"
+    },
+    {
+      "path": "artifacts/model-runs/oq-quake-damage-20261118/output/realizations_5.csv",
+      "sha256": "f727b6b0fba51b3ee9b4be6bf9f361a07ebf00b2ec51cf87bceed716b810f0fc",
+      "unit": "",
+      "note": "GMPE 实现"
+    },
+    {
+      "path": "artifacts/model-runs/oq-quake-damage-20261118/output/aggrisk-_5.csv",
+      "sha256": "8423e244b0bd797f176e6923f77a256beaad8049ca835ec4a394201c3a271c44",
+      "unit": "",
+      "note": "聚合风险"
+    },
+    {
+      "path": "artifacts/model-runs/oq-quake-damage-20261118/output/risk_by_event_5.csv",
+      "sha256": "3927159d9db4765430b796be4b386dee807567f0dd6f3f99a924680a33d74d08",
+      "unit": "",
+      "note": "按事件风险"
+    },
+    {
+      "path": "artifacts/model-runs/oq-quake-damage-20261118/output/sigma_epsilon_5.csv",
+      "sha256": "268cfa0525125715a12da0be335bb61e2a9b0bba834997726d21003e9bf86551",
+      "unit": "",
+      "note": "离散度"
+    },
+    {
+      "path": "artifacts/model-runs/oq-quake-damage-20261118/output/events_5.csv",
+      "sha256": "98533fa89ee4b192ea7f4dc3e0d7823d559c26c6a2a6f0b080897350b02b27ca",
+      "unit": "",
+      "note": "事件清单"
+    },
+    {
+      "path": "artifacts/model-runs/oq-quake-damage-20261118/output/gmf-data_5.csv",
+      "sha256": "479f4e6843dbb09b8ecb3c5ecdd65e9643dd09da3d0b276586db02b18f550ef7",
+      "unit": "g",
+      "note": "逐站地震动"
+    },
+    {
+      "path": "artifacts/model-runs/oq-quake-damage-20261118/output/sitemesh_5.csv",
+      "sha256": "05a5405f8137b64aa1b8750587b8281a2bdfd8f64cadaa8aff1175f8f01c7a34",
+      "unit": "",
+      "note": "场地网格"
+    }
+  ],
+  "assets": [
+    {
+      "assetId": "B01",
+      "taxonomy": "RC_8"
+    },
+    {
+      "assetId": "B02",
+      "taxonomy": "RC_8"
+    },
+    {
+      "assetId": "B03",
+      "taxonomy": "RC_8"
+    },
+    {
+      "assetId": "B04",
+      "taxonomy": "RC_8"
+    },
+    {
+      "assetId": "B05",
+      "taxonomy": "RC_8"
+    },
+    {
+      "assetId": "B06",
+      "taxonomy": "RC_8"
+    },
+    {
+      "assetId": "B07",
+      "taxonomy": "RC_8"
+    },
+    {
+      "assetId": "B08",
+      "taxonomy": "RC_8"
+    },
+    {
+      "assetId": "B09",
+      "taxonomy": "RC_8"
+    },
+    {
+      "assetId": "B10",
+      "taxonomy": "URM_5"
+    },
+    {
+      "assetId": "B11",
+      "taxonomy": "URM_5"
+    },
+    {
+      "assetId": "B12",
+      "taxonomy": "URM_5"
+    }
+  ],
+  "notes": [
+    "算例类型：OpenQuake Scenario Damage（单场景地震动 + 逐资产受损状态分布）。",
+    "主输出为官方 damages-rlzs 导出的 CSV（artifacts/model-runs/oq-quake-damage-20261118/output/avg_damages-rlz-000_5.csv），未做任何数值改写。",
+    "本机系统内存占用长期 82–94%，oq CLI 的 psutil 80% 门限会无限等待，因此改用 Engine API 驱动脚本；未改 GMPE / 脆弱性曲线 / 随机种子 / 输出内容。",
+    "oQ 输出的是震后静态受损分布，没有时程；GeoRelay 演练中把它作为 t=60s 已发生的灾情导入。",
+    "资产 → 楼栋映射见 models/quake_oq/mapping.json；道路/接驳点关闭见 closures.json（人工设定，不由受损分布推导）。",
+    "startedAt 取自官方导出 CSV 头行 start_date；finishedAt 取该 CSV 文件修改时间。run.log 为 PowerShell 重定向的 UTF-16 产物，未记录精确总耗时，故 wallClockS 留空（计算本身为秒级）。"
+  ]
+}

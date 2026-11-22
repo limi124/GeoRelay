@@ -36,13 +36,13 @@
       "delta": {
         "onTime": 1,
         "unfinished": -1,
-        "reroutes": 2,
-        "deliveryMeanS": 71
+        "reroutes": 1,
+        "deliveryMeanS": 50.7
       },
       "assertions": {
         "sameDisaster": {
           "ok": true,
-          "detail": "北门 主动脉@274s/0.30m"
+          "detail": "横向通道 1-28@183s/0.31m"
         },
         "staticNoReroute": {
           "ok": true,
@@ -66,100 +66,84 @@
           "finalClock": 2400,
           "closures": [
             {
-              "roadId": "road-s42j",
-              "roadName": "北门 主动脉",
-              "at": 274,
-              "depthM": 0.302,
+              "roadId": "road-s42y",
+              "roadName": "横向通道 1-28",
+              "at": 183,
+              "depthM": 0.306,
               "thresholdM": 0.3
             }
           ],
           "metrics": {
             "taskTotal": 6,
-            "delivered": 4,
-            "onTime": 4,
+            "delivered": 5,
+            "onTime": 5,
             "late": 0,
-            "unfinished": 2,
+            "unfinished": 1,
             "reroutes": 0,
-            "affectedTasks": 2,
+            "affectedTasks": 1,
             "tasksWithoutFeasible": 0,
-            "deliveryCount": 4,
-            "deliveryMeanS": 1845,
-            "deliveryMedianS": 1870,
-            "deliveryAfterDispatchMeanS": 1845
+            "deliveryCount": 5,
+            "deliveryMeanS": 1756,
+            "deliveryMedianS": 1825,
+            "deliveryAfterDispatchMeanS": 1756
           },
           "tasks": [
             {
-              "taskId": "task-bld-s424",
+              "taskId": "task-bld-s423",
               "code": "T01",
-              "targetName": "3 号楼",
+              "targetName": "2 号楼",
               "deadlineLabel": "09:10 前",
               "slaAt": 4200,
               "delivered": false,
               "deliveredAt": null,
               "onTime": null,
-              "planId": "plan:baseline:task-bld-s424",
-              "planOrigin": "baseline",
-              "planVersion": 1,
-              "agentName": "外部志愿者 乙组",
-              "confirmedAt": 0,
-              "deliverySecondsEndToEnd": null,
-              "deliverySecondsAfterDispatch": null,
-              "blockedRoadId": "road-s42j",
-              "roadsUsed": [
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42y",
-                "road-s42y",
-                "road-s42j",
-                "road-s42m",
-                "road-s42m"
-              ],
-              "crossedClosedRoads": [
-                "road-s42j"
-              ],
-              "finalPhase": "blocked",
-              "unfinishedReason": "blocked"
-            },
-            {
-              "taskId": "task-bld-s426",
-              "code": "T02",
-              "targetName": "5 号楼",
-              "deadlineLabel": "10:15 前",
-              "slaAt": 8100,
-              "delivered": false,
-              "deliveredAt": null,
-              "onTime": null,
-              "planId": "plan:baseline:task-bld-s426",
+              "planId": "plan:baseline:task-bld-s423",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 甲组",
               "confirmedAt": 0,
               "deliverySecondsEndToEnd": null,
               "deliverySecondsAfterDispatch": null,
-              "blockedRoadId": "road-s42j",
+              "blockedRoadId": "road-s42y",
               "roadsUsed": [
                 "road-s42i",
                 "road-s42i",
                 "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42y",
                 "road-s42y",
                 "road-s42j",
-                "road-s42o"
+                "road-s42l"
               ],
               "crossedClosedRoads": [
-                "road-s42j"
+                "road-s42y"
               ],
               "finalPhase": "blocked",
               "unfinishedReason": "blocked"
+            },
+            {
+              "taskId": "task-bld-s425",
+              "code": "T02",
+              "targetName": "4 号楼",
+              "deadlineLabel": "10:15 前",
+              "slaAt": 8100,
+              "delivered": true,
+              "deliveredAt": 1665,
+              "onTime": true,
+              "planId": "plan:baseline:task-bld-s425",
+              "planOrigin": "baseline",
+              "planVersion": 1,
+              "agentName": "外部志愿者 甲组",
+              "confirmedAt": 0,
+              "deliverySecondsEndToEnd": 1665,
+              "deliverySecondsAfterDispatch": 1665,
+              "blockedRoadId": null,
+              "roadsUsed": [
+                "road-s42i",
+                "road-s42i",
+                "road-s42n"
+              ],
+              "crossedClosedRoads": [],
+              "finalPhase": "delivered",
+              "unfinishedReason": null
             },
             {
               "taskId": "task-bld-s427",
@@ -168,15 +152,15 @@
               "deadlineLabel": "09:10 前",
               "slaAt": 4200,
               "delivered": true,
-              "deliveredAt": 1975,
+              "deliveredAt": 1825,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s427",
               "planOrigin": "baseline",
               "planVersion": 1,
-              "agentName": "外部志愿者 甲组",
+              "agentName": "外部志愿者 乙组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1975,
-              "deliverySecondsAfterDispatch": 1975,
+              "deliverySecondsEndToEnd": 1825,
+              "deliverySecondsAfterDispatch": 1825,
               "blockedRoadId": null,
               "roadsUsed": [
                 "road-s42i",
@@ -189,18 +173,7 @@
                 "road-s42i",
                 "road-s42i",
                 "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
+                "road-s42p",
                 "road-s42p"
               ],
               "crossedClosedRoads": [],
@@ -214,30 +187,17 @@
               "deadlineLabel": "10:15 前",
               "slaAt": 8100,
               "delivered": true,
-              "deliveredAt": 1765,
+              "deliveredAt": 1620,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s42a",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 甲组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1765,
-              "deliverySecondsAfterDispatch": 1765,
+              "deliverySecondsEndToEnd": 1620,
+              "deliverySecondsAfterDispatch": 1620,
               "blockedRoadId": null,
               "roadsUsed": [
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
                 "road-s42i",
                 "road-s42i",
                 "road-s42s"
@@ -253,38 +213,17 @@
               "deadlineLabel": "09:10 前",
               "slaAt": 4200,
               "delivered": true,
-              "deliveredAt": 1995,
+              "deliveredAt": 1830,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s42c",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 乙组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1995,
-              "deliverySecondsAfterDispatch": 1995,
+              "deliverySecondsEndToEnd": 1830,
+              "deliverySecondsAfterDispatch": 1830,
               "blockedRoadId": null,
               "roadsUsed": [
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
                 "road-s42u"
               ],
               "crossedClosedRoads": [],
@@ -298,18 +237,28 @@
               "deadlineLabel": "10:15 前",
               "slaAt": 8100,
               "delivered": true,
-              "deliveredAt": 1645,
+              "deliveredAt": 1840,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s42d",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 甲组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1645,
-              "deliverySecondsAfterDispatch": 1645,
+              "deliverySecondsEndToEnd": 1840,
+              "deliverySecondsAfterDispatch": 1840,
               "blockedRoadId": null,
               "roadsUsed": [
                 "road-s42i",
+                "road-s42i",
+                "road-s42i",
+                "road-s42i",
+                "road-s42i",
+                "road-s42i",
+                "road-s42i",
+                "road-s42i",
+                "road-s42i",
+                "road-s42i",
+                "road-s42v",
                 "road-s42v"
               ],
               "crossedClosedRoads": [],
@@ -319,23 +268,23 @@
           ],
           "chain": [
             {
-              "planSetId": "ps:road-s42j#274",
-              "at": 275,
-              "eventId": "road-s42j@274",
-              "stateSnapshot": "t=275s | 封路 北门 主动脉 水深 0.302m/0.3m | 受影响 2 项 | 在途派单：外部志愿者 乙组→TT01(blocked)，外部志愿者 甲组→TT02(blocked)，外部志愿者 甲组→TT03(external_enroute)，外部志愿者 甲组→TT04(external_enroute)，外部志愿者 乙组→TT05(external_enroute)，外部志愿者 甲组→TT06(external_enroute)",
+              "planSetId": "ps:road-s42y#183",
+              "at": 185,
+              "eventId": "road-s42y@183",
+              "stateSnapshot": "t=185s | 封路 横向通道 1-28 水深 0.306m/0.3m | 受影响 1 项 | 在途派单：外部志愿者 甲组→TT01(blocked)，外部志愿者 甲组→TT02(external_enroute)，外部志愿者 乙组→TT03(external_enroute)，外部志愿者 甲组→TT04(external_enroute)，外部志愿者 乙组→TT05(external_enroute)，外部志愿者 甲组→TT06(external_enroute)",
               "rankingMode": "rules",
               "candidates": [
                 {
-                  "id": "cand:task-bld-s426:reroute:gate-s42e",
-                  "taskId": "task-bld-s426",
+                  "id": "cand:task-bld-s423:reroute:gate-s42e",
+                  "taskId": "task-bld-s423",
                   "kind": "intra_reroute",
                   "title": "同组改道：外部 Agent 走未封闭大门与路段",
                   "feasible": true,
                   "rank": 1,
-                  "score": 92.8,
-                  "slackS": 5889.288097103367,
+                  "score": 17.9,
+                  "slackS": 2146.5827719345607,
                   "eta": [
-                    2210.7119028966326
+                    2053.4172280654393
                   ],
                   "isRelay": false,
                   "checks": [
@@ -343,19 +292,19 @@
                       "id": "reach",
                       "label": "目标可达（内部路网）",
                       "ok": true,
-                      "detail": "经内部路网 1653 米可达 5 号楼"
+                      "detail": "经内部路网 1596 米可达 2 号楼"
                     },
                     {
                       "id": "stock",
                       "label": "物资库存",
                       "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 6 / 需 2"
+                      "detail": "康宁大药房（演练） 演练库存 20 / 需 4"
                     },
                     {
                       "id": "capacity",
                       "label": "运力",
                       "ok": true,
-                      "detail": "外部志愿者 甲组 载重 45kg ≥ 22kg"
+                      "detail": "外部志愿者 甲组 载重 45kg ≥ 38kg"
                     },
                     {
                       "id": "gate",
@@ -367,13 +316,13 @@
                       "id": "route",
                       "label": "避让封闭路段",
                       "ok": true,
-                      "detail": "新路线不经过封闭路段 road-s42j"
+                      "detail": "新路线不经过封闭路段 road-s42y"
                     },
                     {
                       "id": "sla",
                       "label": "时限",
                       "ok": true,
-                      "detail": "10:15 前送达，余量 98.2 分钟"
+                      "detail": "09:10 前送达，余量 35.8 分钟"
                     }
                   ],
                   "reason": [
@@ -385,38 +334,22 @@
                     "road-s42i",
                     "road-s42i",
                     "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s4212",
-                    "road-s42o"
+                    "road-s42z",
+                    "road-s42j",
+                    "road-s42l"
                   ]
                 },
                 {
-                  "id": "cand:task-bld-s426:ext:agt-ext-2",
-                  "taskId": "task-bld-s426",
+                  "id": "cand:task-bld-s423:ext:agt-ext-2",
+                  "taskId": "task-bld-s423",
                   "kind": "ext_reroute",
                   "title": "换组：另一名外部 Agent 从药店接手",
                   "feasible": true,
                   "rank": 2,
-                  "score": 67,
-                  "slackS": 6098.561912326551,
+                  "score": -7.9,
+                  "slackS": 2353.356631164336,
                   "eta": [
-                    2001.4380876734492
+                    1846.6433688356642
                   ],
                   "isRelay": false,
                   "checks": [
@@ -424,7 +357,7 @@
                       "id": "reach",
                       "label": "目标可达（内部路网）",
                       "ok": true,
-                      "detail": "经内部路网 1448 米"
+                      "detail": "经内部路网 1391 米"
                     },
                     {
                       "id": "capacity",
@@ -436,325 +369,13 @@
                       "id": "stock",
                       "label": "物资库存",
                       "ok": true,
-                      "detail": "济仁药店（演练） 演练库存 8"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "10:15 前送达，余量 101.6 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "换组重新取货"
-                  ],
-                  "dispatchReason": "原 Agent 受阻：换另一名外部 Agent 从演练库存充足的药店重新取货",
-                  "roadIds": [
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s4212",
-                    "road-s42o"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s426:relay:stg-s42g",
-                  "taskId": "task-bld-s426",
-                  "kind": "staging_relay",
-                  "title": "接力：外部送到临时接驳点，内部 Agent 送达",
-                  "feasible": true,
-                  "rank": 3,
-                  "score": 61.1,
-                  "slackS": 6806.757103098337,
-                  "eta": [
-                    1293.242896901663
-                  ],
-                  "isRelay": true,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "中央接驳点 → 5 号楼，511 米"
-                    },
-                    {
-                      "id": "relay",
-                      "label": "接驳点可达",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 从驻守的接驳点可赶到 中央接驳点"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 6 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 载重 30kg ≥ 22kg"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "内部路线不经过封闭路段"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "10:15 前送达，余量 113.4 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "绕开封闭大门",
-                    "接驳点接力"
-                  ],
-                  "dispatchReason": "大门或主干道被淹：改用围栏临时接驳点，由内部 Agent 接力送达，外部安排不中断",
-                  "roadIds": [
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s4212",
-                    "road-s42o"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s426:relay:stg-s42h",
-                  "taskId": "task-bld-s426",
-                  "kind": "staging_relay",
-                  "title": "接力：外部送到临时接驳点，内部 Agent 送达",
-                  "feasible": true,
-                  "rank": 4,
-                  "score": 60.3,
-                  "slackS": 6763.067304147706,
-                  "eta": [
-                    1336.9326958522945
-                  ],
-                  "isRelay": true,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "北侧接驳点 → 5 号楼，580 米"
-                    },
-                    {
-                      "id": "relay",
-                      "label": "接驳点可达",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 已前置到可用接驳点，可赶到 北侧接驳点"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 6 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 载重 30kg ≥ 22kg"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "内部路线不经过封闭路段"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "10:15 前送达，余量 112.7 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "绕开封闭大门",
-                    "接驳点接力"
-                  ],
-                  "dispatchReason": "大门或主干道被淹：改用围栏临时接驳点，由内部 Agent 接力送达，外部安排不中断",
-                  "roadIds": [
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s4212",
-                    "road-s42o"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s424:reroute:gate-s42e",
-                  "taskId": "task-bld-s424",
-                  "kind": "intra_reroute",
-                  "title": "同组改道：外部 Agent 走未封闭大门与路段",
-                  "feasible": true,
-                  "rank": 5,
-                  "score": 10.3,
-                  "slackS": 1763.6149662102166,
-                  "eta": [
-                    2436.3850337897834
-                  ],
-                  "isRelay": false,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "经内部路网 1659 米可达 3 号楼"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 20 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "外部志愿者 乙组 载重 45kg ≥ 22kg"
-                    },
-                    {
-                      "id": "gate",
-                      "label": "出入口可用",
-                      "ok": true,
-                      "detail": "经 西门 进入"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "新路线不经过封闭路段 road-s42j"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "09:10 前送达，余量 29.4 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "外部段改道",
-                    "内部路网避让封闭路段"
-                  ],
-                  "dispatchReason": "外部 Agent 尚未进入封闭区域：改走未封闭的大门与内部路段即可继续执行",
-                  "roadIds": [
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s4212",
-                    "road-s42m",
-                    "road-s42m"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s424:ext:agt-ext-1",
-                  "taskId": "task-bld-s424",
-                  "kind": "ext_reroute",
-                  "title": "换组：另一名外部 Agent 从药店接手",
-                  "feasible": true,
-                  "rank": 6,
-                  "score": -18.2,
-                  "slackS": 1838.1127856363137,
-                  "eta": [
-                    2361.8872143636863
-                  ],
-                  "isRelay": false,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "经内部路网 1454 米"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "外部志愿者 甲组 载重 45kg"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
                       "detail": "济仁药店（演练） 演练库存 25"
                     },
                     {
                       "id": "sla",
                       "label": "时限",
                       "ok": true,
-                      "detail": "09:10 前送达，余量 30.6 分钟"
+                      "detail": "09:10 前送达，余量 39.2 分钟"
                     }
                   ],
                   "reason": [
@@ -765,190 +386,9 @@
                     "road-s42i",
                     "road-s42i",
                     "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s4212",
-                    "road-s42m",
-                    "road-s42m"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s424:relay:stg-s42g",
-                  "taskId": "task-bld-s424",
-                  "kind": "staging_relay",
-                  "title": "接力：外部送到临时接驳点，内部 Agent 送达",
-                  "feasible": true,
-                  "rank": 7,
-                  "score": -21.4,
-                  "slackS": 2681.391056809526,
-                  "eta": [
-                    1518.608943190474
-                  ],
-                  "isRelay": true,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "中央接驳点 → 3 号楼，518 米"
-                    },
-                    {
-                      "id": "relay",
-                      "label": "接驳点可达",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 从驻守的接驳点可赶到 中央接驳点"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 20 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 载重 30kg ≥ 22kg"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "内部路线不经过封闭路段"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "09:10 前送达，余量 44.7 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "绕开封闭大门",
-                    "接驳点接力"
-                  ],
-                  "dispatchReason": "大门或主干道被淹：改用围栏临时接驳点，由内部 Agent 接力送达，外部安排不中断",
-                  "roadIds": [
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s4212",
-                    "road-s42m",
-                    "road-s42m"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s424:relay:stg-s42h",
-                  "taskId": "task-bld-s424",
-                  "kind": "staging_relay",
-                  "title": "接力：外部送到临时接驳点，内部 Agent 送达",
-                  "feasible": true,
-                  "rank": 8,
-                  "score": -22.3,
-                  "slackS": 2636.1066837433013,
-                  "eta": [
-                    1563.8933162566987
-                  ],
-                  "isRelay": true,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "北侧接驳点 → 3 号楼，586 米"
-                    },
-                    {
-                      "id": "relay",
-                      "label": "接驳点可达",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 已前置到可用接驳点，可赶到 北侧接驳点"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 20 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 载重 30kg ≥ 22kg"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "内部路线不经过封闭路段"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "09:10 前送达，余量 43.9 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "绕开封闭大门",
-                    "接驳点接力"
-                  ],
-                  "dispatchReason": "大门或主干道被淹：改用围栏临时接驳点，由内部 Agent 接力送达，外部安排不中断",
-                  "roadIds": [
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s4212",
-                    "road-s42m",
-                    "road-s42m"
+                    "road-s42z",
+                    "road-s42j",
+                    "road-s42l"
                   ]
                 }
               ],
@@ -964,114 +404,78 @@
           "finalClock": 2400,
           "closures": [
             {
-              "roadId": "road-s42j",
-              "roadName": "北门 主动脉",
-              "at": 274,
-              "depthM": 0.302,
+              "roadId": "road-s42y",
+              "roadName": "横向通道 1-28",
+              "at": 183,
+              "depthM": 0.306,
               "thresholdM": 0.3
             }
           ],
           "metrics": {
             "taskTotal": 6,
-            "delivered": 5,
-            "onTime": 5,
+            "delivered": 6,
+            "onTime": 6,
             "late": 0,
-            "unfinished": 1,
-            "reroutes": 2,
-            "affectedTasks": 2,
+            "unfinished": 0,
+            "reroutes": 1,
+            "affectedTasks": 1,
             "tasksWithoutFeasible": 0,
-            "deliveryCount": 5,
-            "deliveryMeanS": 1916,
-            "deliveryMedianS": 1975,
-            "deliveryAfterDispatchMeanS": 1861
+            "deliveryCount": 6,
+            "deliveryMeanS": 1806.7,
+            "deliveryMedianS": 1827.5,
+            "deliveryAfterDispatchMeanS": 1775.8
           },
           "tasks": [
             {
-              "taskId": "task-bld-s424",
+              "taskId": "task-bld-s423",
               "code": "T01",
-              "targetName": "3 号楼",
+              "targetName": "2 号楼",
               "deadlineLabel": "09:10 前",
               "slaAt": 4200,
-              "delivered": false,
-              "deliveredAt": null,
-              "onTime": null,
-              "planId": "cand:task-bld-s424:reroute:gate-s42e@v2",
-              "planOrigin": "reconfirmed",
-              "planVersion": 2,
-              "agentName": "外部志愿者 乙组",
-              "confirmedAt": 275,
-              "deliverySecondsEndToEnd": null,
-              "deliverySecondsAfterDispatch": null,
-              "blockedRoadId": null,
-              "roadsUsed": [
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s4212",
-                "road-s42m",
-                "road-s42m"
-              ],
-              "crossedClosedRoads": [],
-              "finalPhase": "delivering",
-              "unfinishedReason": "in_transit"
-            },
-            {
-              "taskId": "task-bld-s426",
-              "code": "T02",
-              "targetName": "5 号楼",
-              "deadlineLabel": "10:15 前",
-              "slaAt": 8100,
               "delivered": true,
-              "deliveredAt": 2200,
+              "deliveredAt": 2060,
               "onTime": true,
-              "planId": "cand:task-bld-s426:reroute:gate-s42e@v2",
+              "planId": "cand:task-bld-s423:reroute:gate-s42e@v2",
               "planOrigin": "reconfirmed",
               "planVersion": 2,
               "agentName": "外部志愿者 甲组",
-              "confirmedAt": 275,
-              "deliverySecondsEndToEnd": 2200,
-              "deliverySecondsAfterDispatch": 1925,
+              "confirmedAt": 185,
+              "deliverySecondsEndToEnd": 2060,
+              "deliverySecondsAfterDispatch": 1875,
               "blockedRoadId": null,
               "roadsUsed": [
                 "road-s42i",
                 "road-s42i",
                 "road-s42i",
+                "road-s42z",
+                "road-s42j",
+                "road-s42l"
+              ],
+              "crossedClosedRoads": [],
+              "finalPhase": "delivered",
+              "unfinishedReason": null
+            },
+            {
+              "taskId": "task-bld-s425",
+              "code": "T02",
+              "targetName": "4 号楼",
+              "deadlineLabel": "10:15 前",
+              "slaAt": 8100,
+              "delivered": true,
+              "deliveredAt": 1665,
+              "onTime": true,
+              "planId": "plan:baseline:task-bld-s425",
+              "planOrigin": "baseline",
+              "planVersion": 1,
+              "agentName": "外部志愿者 甲组",
+              "confirmedAt": 0,
+              "deliverySecondsEndToEnd": 1665,
+              "deliverySecondsAfterDispatch": 1665,
+              "blockedRoadId": null,
+              "roadsUsed": [
                 "road-s42i",
                 "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s4212",
-                "road-s42o"
+                "road-s42n"
               ],
               "crossedClosedRoads": [],
               "finalPhase": "delivered",
@@ -1084,15 +488,15 @@
               "deadlineLabel": "09:10 前",
               "slaAt": 4200,
               "delivered": true,
-              "deliveredAt": 1975,
+              "deliveredAt": 1825,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s427",
               "planOrigin": "baseline",
               "planVersion": 1,
-              "agentName": "外部志愿者 甲组",
+              "agentName": "外部志愿者 乙组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1975,
-              "deliverySecondsAfterDispatch": 1975,
+              "deliverySecondsEndToEnd": 1825,
+              "deliverySecondsAfterDispatch": 1825,
               "blockedRoadId": null,
               "roadsUsed": [
                 "road-s42i",
@@ -1105,18 +509,7 @@
                 "road-s42i",
                 "road-s42i",
                 "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
+                "road-s42p",
                 "road-s42p"
               ],
               "crossedClosedRoads": [],
@@ -1130,30 +523,17 @@
               "deadlineLabel": "10:15 前",
               "slaAt": 8100,
               "delivered": true,
-              "deliveredAt": 1765,
+              "deliveredAt": 1620,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s42a",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 甲组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1765,
-              "deliverySecondsAfterDispatch": 1765,
+              "deliverySecondsEndToEnd": 1620,
+              "deliverySecondsAfterDispatch": 1620,
               "blockedRoadId": null,
               "roadsUsed": [
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
                 "road-s42i",
                 "road-s42i",
                 "road-s42s"
@@ -1169,38 +549,17 @@
               "deadlineLabel": "09:10 前",
               "slaAt": 4200,
               "delivered": true,
-              "deliveredAt": 1995,
+              "deliveredAt": 1830,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s42c",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 乙组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1995,
-              "deliverySecondsAfterDispatch": 1995,
+              "deliverySecondsEndToEnd": 1830,
+              "deliverySecondsAfterDispatch": 1830,
               "blockedRoadId": null,
               "roadsUsed": [
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
-                "road-s42i",
                 "road-s42u"
               ],
               "crossedClosedRoads": [],
@@ -1214,18 +573,28 @@
               "deadlineLabel": "10:15 前",
               "slaAt": 8100,
               "delivered": true,
-              "deliveredAt": 1645,
+              "deliveredAt": 1840,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s42d",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 甲组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1645,
-              "deliverySecondsAfterDispatch": 1645,
+              "deliverySecondsEndToEnd": 1840,
+              "deliverySecondsAfterDispatch": 1840,
               "blockedRoadId": null,
               "roadsUsed": [
                 "road-s42i",
+                "road-s42i",
+                "road-s42i",
+                "road-s42i",
+                "road-s42i",
+                "road-s42i",
+                "road-s42i",
+                "road-s42i",
+                "road-s42i",
+                "road-s42i",
+                "road-s42v",
                 "road-s42v"
               ],
               "crossedClosedRoads": [],
@@ -1235,23 +604,23 @@
           ],
           "chain": [
             {
-              "planSetId": "ps:road-s42j#274",
-              "at": 275,
-              "eventId": "road-s42j@274",
-              "stateSnapshot": "t=275s | 封路 北门 主动脉 水深 0.302m/0.3m | 受影响 2 项 | 在途派单：外部志愿者 乙组→TT01(blocked)，外部志愿者 甲组→TT02(blocked)，外部志愿者 甲组→TT03(external_enroute)，外部志愿者 甲组→TT04(external_enroute)，外部志愿者 乙组→TT05(external_enroute)，外部志愿者 甲组→TT06(external_enroute)",
+              "planSetId": "ps:road-s42y#183",
+              "at": 185,
+              "eventId": "road-s42y@183",
+              "stateSnapshot": "t=185s | 封路 横向通道 1-28 水深 0.306m/0.3m | 受影响 1 项 | 在途派单：外部志愿者 甲组→TT01(blocked)，外部志愿者 甲组→TT02(external_enroute)，外部志愿者 乙组→TT03(external_enroute)，外部志愿者 甲组→TT04(external_enroute)，外部志愿者 乙组→TT05(external_enroute)，外部志愿者 甲组→TT06(external_enroute)",
               "rankingMode": "rules",
               "candidates": [
                 {
-                  "id": "cand:task-bld-s426:reroute:gate-s42e",
-                  "taskId": "task-bld-s426",
+                  "id": "cand:task-bld-s423:reroute:gate-s42e",
+                  "taskId": "task-bld-s423",
                   "kind": "intra_reroute",
                   "title": "同组改道：外部 Agent 走未封闭大门与路段",
                   "feasible": true,
                   "rank": 1,
-                  "score": 92.8,
-                  "slackS": 5889.288097103367,
+                  "score": 17.9,
+                  "slackS": 2146.5827719345607,
                   "eta": [
-                    2210.7119028966326
+                    2053.4172280654393
                   ],
                   "isRelay": false,
                   "checks": [
@@ -1259,19 +628,19 @@
                       "id": "reach",
                       "label": "目标可达（内部路网）",
                       "ok": true,
-                      "detail": "经内部路网 1653 米可达 5 号楼"
+                      "detail": "经内部路网 1596 米可达 2 号楼"
                     },
                     {
                       "id": "stock",
                       "label": "物资库存",
                       "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 6 / 需 2"
+                      "detail": "康宁大药房（演练） 演练库存 20 / 需 4"
                     },
                     {
                       "id": "capacity",
                       "label": "运力",
                       "ok": true,
-                      "detail": "外部志愿者 甲组 载重 45kg ≥ 22kg"
+                      "detail": "外部志愿者 甲组 载重 45kg ≥ 38kg"
                     },
                     {
                       "id": "gate",
@@ -1283,13 +652,13 @@
                       "id": "route",
                       "label": "避让封闭路段",
                       "ok": true,
-                      "detail": "新路线不经过封闭路段 road-s42j"
+                      "detail": "新路线不经过封闭路段 road-s42y"
                     },
                     {
                       "id": "sla",
                       "label": "时限",
                       "ok": true,
-                      "detail": "10:15 前送达，余量 98.2 分钟"
+                      "detail": "09:10 前送达，余量 35.8 分钟"
                     }
                   ],
                   "reason": [
@@ -1301,38 +670,22 @@
                     "road-s42i",
                     "road-s42i",
                     "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s4212",
-                    "road-s42o"
+                    "road-s42z",
+                    "road-s42j",
+                    "road-s42l"
                   ]
                 },
                 {
-                  "id": "cand:task-bld-s426:ext:agt-ext-2",
-                  "taskId": "task-bld-s426",
+                  "id": "cand:task-bld-s423:ext:agt-ext-2",
+                  "taskId": "task-bld-s423",
                   "kind": "ext_reroute",
                   "title": "换组：另一名外部 Agent 从药店接手",
                   "feasible": true,
                   "rank": 2,
-                  "score": 67,
-                  "slackS": 6098.561912326551,
+                  "score": -7.9,
+                  "slackS": 2353.356631164336,
                   "eta": [
-                    2001.4380876734492
+                    1846.6433688356642
                   ],
                   "isRelay": false,
                   "checks": [
@@ -1340,7 +693,7 @@
                       "id": "reach",
                       "label": "目标可达（内部路网）",
                       "ok": true,
-                      "detail": "经内部路网 1448 米"
+                      "detail": "经内部路网 1391 米"
                     },
                     {
                       "id": "capacity",
@@ -1352,325 +705,13 @@
                       "id": "stock",
                       "label": "物资库存",
                       "ok": true,
-                      "detail": "济仁药店（演练） 演练库存 8"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "10:15 前送达，余量 101.6 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "换组重新取货"
-                  ],
-                  "dispatchReason": "原 Agent 受阻：换另一名外部 Agent 从演练库存充足的药店重新取货",
-                  "roadIds": [
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s4212",
-                    "road-s42o"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s426:relay:stg-s42g",
-                  "taskId": "task-bld-s426",
-                  "kind": "staging_relay",
-                  "title": "接力：外部送到临时接驳点，内部 Agent 送达",
-                  "feasible": true,
-                  "rank": 3,
-                  "score": 61.1,
-                  "slackS": 6806.757103098337,
-                  "eta": [
-                    1293.242896901663
-                  ],
-                  "isRelay": true,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "中央接驳点 → 5 号楼，511 米"
-                    },
-                    {
-                      "id": "relay",
-                      "label": "接驳点可达",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 从驻守的接驳点可赶到 中央接驳点"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 6 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 载重 30kg ≥ 22kg"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "内部路线不经过封闭路段"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "10:15 前送达，余量 113.4 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "绕开封闭大门",
-                    "接驳点接力"
-                  ],
-                  "dispatchReason": "大门或主干道被淹：改用围栏临时接驳点，由内部 Agent 接力送达，外部安排不中断",
-                  "roadIds": [
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s4212",
-                    "road-s42o"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s426:relay:stg-s42h",
-                  "taskId": "task-bld-s426",
-                  "kind": "staging_relay",
-                  "title": "接力：外部送到临时接驳点，内部 Agent 送达",
-                  "feasible": true,
-                  "rank": 4,
-                  "score": 60.3,
-                  "slackS": 6763.067304147706,
-                  "eta": [
-                    1336.9326958522945
-                  ],
-                  "isRelay": true,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "北侧接驳点 → 5 号楼，580 米"
-                    },
-                    {
-                      "id": "relay",
-                      "label": "接驳点可达",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 已前置到可用接驳点，可赶到 北侧接驳点"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 6 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 载重 30kg ≥ 22kg"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "内部路线不经过封闭路段"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "10:15 前送达，余量 112.7 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "绕开封闭大门",
-                    "接驳点接力"
-                  ],
-                  "dispatchReason": "大门或主干道被淹：改用围栏临时接驳点，由内部 Agent 接力送达，外部安排不中断",
-                  "roadIds": [
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s4212",
-                    "road-s42o"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s424:reroute:gate-s42e",
-                  "taskId": "task-bld-s424",
-                  "kind": "intra_reroute",
-                  "title": "同组改道：外部 Agent 走未封闭大门与路段",
-                  "feasible": true,
-                  "rank": 5,
-                  "score": 10.3,
-                  "slackS": 1763.6149662102166,
-                  "eta": [
-                    2436.3850337897834
-                  ],
-                  "isRelay": false,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "经内部路网 1659 米可达 3 号楼"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 20 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "外部志愿者 乙组 载重 45kg ≥ 22kg"
-                    },
-                    {
-                      "id": "gate",
-                      "label": "出入口可用",
-                      "ok": true,
-                      "detail": "经 西门 进入"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "新路线不经过封闭路段 road-s42j"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "09:10 前送达，余量 29.4 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "外部段改道",
-                    "内部路网避让封闭路段"
-                  ],
-                  "dispatchReason": "外部 Agent 尚未进入封闭区域：改走未封闭的大门与内部路段即可继续执行",
-                  "roadIds": [
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s4212",
-                    "road-s42m",
-                    "road-s42m"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s424:ext:agt-ext-1",
-                  "taskId": "task-bld-s424",
-                  "kind": "ext_reroute",
-                  "title": "换组：另一名外部 Agent 从药店接手",
-                  "feasible": true,
-                  "rank": 6,
-                  "score": -18.2,
-                  "slackS": 1838.1127856363137,
-                  "eta": [
-                    2361.8872143636863
-                  ],
-                  "isRelay": false,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "经内部路网 1454 米"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "外部志愿者 甲组 载重 45kg"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
                       "detail": "济仁药店（演练） 演练库存 25"
                     },
                     {
                       "id": "sla",
                       "label": "时限",
                       "ok": true,
-                      "detail": "09:10 前送达，余量 30.6 分钟"
+                      "detail": "09:10 前送达，余量 39.2 分钟"
                     }
                   ],
                   "reason": [
@@ -1681,207 +722,26 @@
                     "road-s42i",
                     "road-s42i",
                     "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s4212",
-                    "road-s42m",
-                    "road-s42m"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s424:relay:stg-s42g",
-                  "taskId": "task-bld-s424",
-                  "kind": "staging_relay",
-                  "title": "接力：外部送到临时接驳点，内部 Agent 送达",
-                  "feasible": true,
-                  "rank": 7,
-                  "score": -21.4,
-                  "slackS": 2681.391056809526,
-                  "eta": [
-                    1518.608943190474
-                  ],
-                  "isRelay": true,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "中央接驳点 → 3 号楼，518 米"
-                    },
-                    {
-                      "id": "relay",
-                      "label": "接驳点可达",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 从驻守的接驳点可赶到 中央接驳点"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 20 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 载重 30kg ≥ 22kg"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "内部路线不经过封闭路段"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "09:10 前送达，余量 44.7 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "绕开封闭大门",
-                    "接驳点接力"
-                  ],
-                  "dispatchReason": "大门或主干道被淹：改用围栏临时接驳点，由内部 Agent 接力送达，外部安排不中断",
-                  "roadIds": [
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s4212",
-                    "road-s42m",
-                    "road-s42m"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s424:relay:stg-s42h",
-                  "taskId": "task-bld-s424",
-                  "kind": "staging_relay",
-                  "title": "接力：外部送到临时接驳点，内部 Agent 送达",
-                  "feasible": true,
-                  "rank": 8,
-                  "score": -22.3,
-                  "slackS": 2636.1066837433013,
-                  "eta": [
-                    1563.8933162566987
-                  ],
-                  "isRelay": true,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "北侧接驳点 → 3 号楼，586 米"
-                    },
-                    {
-                      "id": "relay",
-                      "label": "接驳点可达",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 已前置到可用接驳点，可赶到 北侧接驳点"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 20 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 载重 30kg ≥ 22kg"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "内部路线不经过封闭路段"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "09:10 前送达，余量 43.9 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "绕开封闭大门",
-                    "接驳点接力"
-                  ],
-                  "dispatchReason": "大门或主干道被淹：改用围栏临时接驳点，由内部 Agent 接力送达，外部安排不中断",
-                  "roadIds": [
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s42i",
-                    "road-s4212",
-                    "road-s42m",
-                    "road-s42m"
+                    "road-s42z",
+                    "road-s42j",
+                    "road-s42l"
                   ]
                 }
               ],
               "confirmed": {
-                "candidateId": "cand:task-bld-s424:reroute:gate-s42e",
-                "taskId": "task-bld-s424",
+                "candidateId": "cand:task-bld-s423:reroute:gate-s42e",
+                "taskId": "task-bld-s423",
                 "title": "同组改道：外部 Agent 走未封闭大门与路段",
-                "score": 10.3,
-                "rank": 5,
-                "at": 275
+                "score": 17.9,
+                "rank": 1,
+                "at": 185
               },
               "outcome": [
                 {
                   "code": "T01",
-                  "delivered": false,
-                  "deliveredAt": null,
-                  "onTime": null,
+                  "delivered": true,
+                  "deliveredAt": 2060,
+                  "onTime": true,
                   "planOrigin": "reconfirmed",
                   "planVersion": 2
                 }
@@ -1896,13 +756,13 @@
       "delta": {
         "onTime": 1,
         "unfinished": -1,
-        "reroutes": 2,
-        "deliveryMeanS": 68.2
+        "reroutes": 1,
+        "deliveryMeanS": 46
       },
       "assertions": {
         "sameDisaster": {
           "ok": true,
-          "detail": "北门 主动脉@325s/0.30m"
+          "detail": "横向通道 1-28@178s/0.31m"
         },
         "staticNoReroute": {
           "ok": true,
@@ -1926,26 +786,26 @@
           "finalClock": 2400,
           "closures": [
             {
-              "roadId": "road-s7j",
-              "roadName": "北门 主动脉",
-              "at": 325,
-              "depthM": 0.301,
+              "roadId": "road-s7y",
+              "roadName": "横向通道 1-28",
+              "at": 178,
+              "depthM": 0.306,
               "thresholdM": 0.3
             }
           ],
           "metrics": {
             "taskTotal": 6,
-            "delivered": 4,
-            "onTime": 4,
+            "delivered": 5,
+            "onTime": 5,
             "late": 0,
-            "unfinished": 2,
+            "unfinished": 1,
             "reroutes": 0,
-            "affectedTasks": 2,
+            "affectedTasks": 1,
             "tasksWithoutFeasible": 0,
-            "deliveryCount": 4,
-            "deliveryMeanS": 1878.8,
-            "deliveryMedianS": 1895,
-            "deliveryAfterDispatchMeanS": 1878.8
+            "deliveryCount": 5,
+            "deliveryMeanS": 1754,
+            "deliveryMedianS": 1785,
+            "deliveryAfterDispatchMeanS": 1754
           },
           "tasks": [
             {
@@ -1960,84 +820,41 @@
               "planId": "plan:baseline:task-bld-s73",
               "planOrigin": "baseline",
               "planVersion": 1,
-              "agentName": "外部志愿者 乙组",
+              "agentName": "外部志愿者 甲组",
               "confirmedAt": 0,
               "deliverySecondsEndToEnd": null,
               "deliverySecondsAfterDispatch": null,
-              "blockedRoadId": "road-s7j",
+              "blockedRoadId": "road-s7y",
               "roadsUsed": [
                 "road-s7i",
                 "road-s7i",
                 "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7y",
                 "road-s7y",
                 "road-s7j",
-                "road-s7l",
                 "road-s7l"
               ],
               "crossedClosedRoads": [
-                "road-s7j"
+                "road-s7y"
               ],
               "finalPhase": "blocked",
               "unfinishedReason": "blocked"
             },
             {
-              "taskId": "task-bld-s75",
+              "taskId": "task-bld-s74",
               "code": "T02",
-              "targetName": "4 号楼",
+              "targetName": "3 号楼",
               "deadlineLabel": "10:15 前",
               "slaAt": 8100,
-              "delivered": false,
-              "deliveredAt": null,
-              "onTime": null,
-              "planId": "plan:baseline:task-bld-s75",
-              "planOrigin": "baseline",
-              "planVersion": 1,
-              "agentName": "外部志愿者 甲组",
-              "confirmedAt": 0,
-              "deliverySecondsEndToEnd": null,
-              "deliverySecondsAfterDispatch": null,
-              "blockedRoadId": "road-s7j",
-              "roadsUsed": [
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7y",
-                "road-s7y",
-                "road-s7j",
-                "road-s7n",
-                "road-s7n"
-              ],
-              "crossedClosedRoads": [
-                "road-s7j"
-              ],
-              "finalPhase": "blocked",
-              "unfinishedReason": "blocked"
-            },
-            {
-              "taskId": "task-bld-s77",
-              "code": "T03",
-              "targetName": "6 号楼",
-              "deadlineLabel": "09:10 前",
-              "slaAt": 4200,
               "delivered": true,
-              "deliveredAt": 1955,
+              "deliveredAt": 1825,
               "onTime": true,
-              "planId": "plan:baseline:task-bld-s77",
+              "planId": "plan:baseline:task-bld-s74",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 甲组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1955,
-              "deliverySecondsAfterDispatch": 1955,
+              "deliverySecondsEndToEnd": 1825,
+              "deliverySecondsAfterDispatch": 1825,
               "blockedRoadId": null,
               "roadsUsed": [
                 "road-s7i",
@@ -2048,6 +865,32 @@
                 "road-s7i",
                 "road-s7i",
                 "road-s7i",
+                "road-s712",
+                "road-s7j",
+                "road-s7m"
+              ],
+              "crossedClosedRoads": [],
+              "finalPhase": "delivered",
+              "unfinishedReason": null
+            },
+            {
+              "taskId": "task-bld-s76",
+              "code": "T03",
+              "targetName": "5 号楼",
+              "deadlineLabel": "09:10 前",
+              "slaAt": 4200,
+              "delivered": true,
+              "deliveredAt": 1785,
+              "onTime": true,
+              "planId": "plan:baseline:task-bld-s76",
+              "planOrigin": "baseline",
+              "planVersion": 1,
+              "agentName": "外部志愿者 乙组",
+              "confirmedAt": 0,
+              "deliverySecondsEndToEnd": 1785,
+              "deliverySecondsAfterDispatch": 1785,
+              "blockedRoadId": null,
+              "roadsUsed": [
                 "road-s7i",
                 "road-s7i",
                 "road-s7i",
@@ -2055,15 +898,7 @@
                 "road-s7i",
                 "road-s7i",
                 "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7p"
+                "road-s7o"
               ],
               "crossedClosedRoads": [],
               "finalPhase": "delivered",
@@ -2076,30 +911,17 @@
               "deadlineLabel": "10:15 前",
               "slaAt": 8100,
               "delivered": true,
-              "deliveredAt": 1770,
+              "deliveredAt": 1625,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s7a",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 甲组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1770,
-              "deliverySecondsAfterDispatch": 1770,
+              "deliverySecondsEndToEnd": 1625,
+              "deliverySecondsAfterDispatch": 1625,
               "blockedRoadId": null,
               "roadsUsed": [
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
                 "road-s7i",
                 "road-s7i",
                 "road-s7s"
@@ -2115,29 +937,17 @@
               "deadlineLabel": "09:10 前",
               "slaAt": 4200,
               "delivered": true,
-              "deliveredAt": 1955,
+              "deliveredAt": 1860,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s7b",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 乙组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1955,
-              "deliverySecondsAfterDispatch": 1955,
+              "deliverySecondsEndToEnd": 1860,
+              "deliverySecondsAfterDispatch": 1860,
               "blockedRoadId": null,
               "roadsUsed": [
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
                 "road-s7i",
                 "road-s7i",
                 "road-s7i",
@@ -2157,38 +967,17 @@
               "deadlineLabel": "10:15 前",
               "slaAt": 8100,
               "delivered": true,
-              "deliveredAt": 1835,
+              "deliveredAt": 1675,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s7c",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 甲组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1835,
-              "deliverySecondsAfterDispatch": 1835,
+              "deliverySecondsEndToEnd": 1675,
+              "deliverySecondsAfterDispatch": 1675,
               "blockedRoadId": null,
               "roadsUsed": [
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
                 "road-s7u"
               ],
               "crossedClosedRoads": [],
@@ -2198,23 +987,23 @@
           ],
           "chain": [
             {
-              "planSetId": "ps:road-s7j#325",
-              "at": 325,
-              "eventId": "road-s7j@325",
-              "stateSnapshot": "t=325s | 封路 北门 主动脉 水深 0.301m/0.3m | 受影响 2 项 | 在途派单：外部志愿者 乙组→TT01(blocked)，外部志愿者 甲组→TT02(blocked)，外部志愿者 甲组→TT03(external_enroute)，外部志愿者 甲组→TT04(external_enroute)，外部志愿者 乙组→TT05(external_enroute)，外部志愿者 甲组→TT06(external_enroute)",
+              "planSetId": "ps:road-s7y#178",
+              "at": 180,
+              "eventId": "road-s7y@178",
+              "stateSnapshot": "t=180s | 封路 横向通道 1-28 水深 0.306m/0.3m | 受影响 1 项 | 在途派单：外部志愿者 甲组→TT01(blocked)，外部志愿者 甲组→TT02(external_enroute)，外部志愿者 乙组→TT03(external_enroute)，外部志愿者 甲组→TT04(external_enroute)，外部志愿者 乙组→TT05(external_enroute)，外部志愿者 甲组→TT06(external_enroute)",
               "rankingMode": "rules",
               "candidates": [
                 {
-                  "id": "cand:task-bld-s75:reroute:gate-s7e",
-                  "taskId": "task-bld-s75",
+                  "id": "cand:task-bld-s73:reroute:gate-s7e",
+                  "taskId": "task-bld-s73",
                   "kind": "intra_reroute",
                   "title": "同组改道：外部 Agent 走未封闭大门与路段",
                   "feasible": true,
                   "rank": 1,
-                  "score": 92.5,
-                  "slackS": 5874.333649004933,
+                  "score": 18.6,
+                  "slackS": 2179.9401530864193,
                   "eta": [
-                    2225.666350995067
+                    2020.0598469135807
                   ],
                   "isRelay": false,
                   "checks": [
@@ -2222,19 +1011,19 @@
                       "id": "reach",
                       "label": "目标可达（内部路网）",
                       "ok": true,
-                      "detail": "经内部路网 1648 米可达 4 号楼"
+                      "detail": "经内部路网 1596 米可达 2 号楼"
                     },
                     {
                       "id": "stock",
                       "label": "物资库存",
                       "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 19 / 需 2"
+                      "detail": "康宁大药房（演练） 演练库存 10 / 需 4"
                     },
                     {
                       "id": "capacity",
                       "label": "运力",
                       "ok": true,
-                      "detail": "外部志愿者 甲组 载重 45kg ≥ 22kg"
+                      "detail": "外部志愿者 甲组 载重 45kg ≥ 38kg"
                     },
                     {
                       "id": "gate",
@@ -2246,13 +1035,13 @@
                       "id": "route",
                       "label": "避让封闭路段",
                       "ok": true,
-                      "detail": "新路线不经过封闭路段 road-s7j"
+                      "detail": "新路线不经过封闭路段 road-s7y"
                     },
                     {
                       "id": "sla",
                       "label": "时限",
                       "ok": true,
-                      "detail": "10:15 前送达，余量 97.9 分钟"
+                      "detail": "09:10 前送达，余量 36.3 分钟"
                     }
                   ],
                   "reason": [
@@ -2264,39 +1053,22 @@
                     "road-s7i",
                     "road-s7i",
                     "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s712",
-                    "road-s7n",
-                    "road-s7n"
+                    "road-s7z",
+                    "road-s7j",
+                    "road-s7l"
                   ]
                 },
                 {
-                  "id": "cand:task-bld-s75:ext:agt-ext-2",
-                  "taskId": "task-bld-s75",
+                  "id": "cand:task-bld-s73:ext:agt-ext-2",
+                  "taskId": "task-bld-s73",
                   "kind": "ext_reroute",
                   "title": "换组：另一名外部 Agent 从药店接手",
                   "feasible": true,
                   "rank": 2,
-                  "score": 66.1,
-                  "slackS": 6054.145877694245,
+                  "score": -7.8,
+                  "slackS": 2359.6093527050334,
                   "eta": [
-                    2045.8541223057541
+                    1840.3906472949668
                   ],
                   "isRelay": false,
                   "checks": [
@@ -2304,7 +1076,7 @@
                       "id": "reach",
                       "label": "目标可达（内部路网）",
                       "ok": true,
-                      "detail": "经内部路网 1443 米"
+                      "detail": "经内部路网 1391 米"
                     },
                     {
                       "id": "capacity",
@@ -2316,328 +1088,13 @@
                       "id": "stock",
                       "label": "物资库存",
                       "ok": true,
-                      "detail": "济仁药店（演练） 演练库存 11"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "10:15 前送达，余量 100.9 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "换组重新取货"
-                  ],
-                  "dispatchReason": "原 Agent 受阻：换另一名外部 Agent 从演练库存充足的药店重新取货",
-                  "roadIds": [
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s712",
-                    "road-s7n",
-                    "road-s7n"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s75:relay:stg-s7g",
-                  "taskId": "task-bld-s75",
-                  "kind": "staging_relay",
-                  "title": "接力：外部送到临时接驳点，内部 Agent 送达",
-                  "feasible": true,
-                  "rank": 3,
-                  "score": 60.8,
-                  "slackS": 6791.802654999903,
-                  "eta": [
-                    1308.1973450000974
-                  ],
-                  "isRelay": true,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "中央接驳点 → 4 号楼，507 米"
-                    },
-                    {
-                      "id": "relay",
-                      "label": "接驳点可达",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 从驻守的接驳点可赶到 中央接驳点"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 19 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 载重 30kg ≥ 22kg"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "内部路线不经过封闭路段"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "10:15 前送达，余量 113.2 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "绕开封闭大门",
-                    "接驳点接力"
-                  ],
-                  "dispatchReason": "大门或主干道被淹：改用围栏临时接驳点，由内部 Agent 接力送达，外部安排不中断",
-                  "roadIds": [
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s712",
-                    "road-s7n",
-                    "road-s7n"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s75:relay:stg-s7h",
-                  "taskId": "task-bld-s75",
-                  "kind": "staging_relay",
-                  "title": "接力：外部送到临时接驳点，内部 Agent 送达",
-                  "feasible": true,
-                  "rank": 4,
-                  "score": 60,
-                  "slackS": 6748.112856049271,
-                  "eta": [
-                    1351.887143950729
-                  ],
-                  "isRelay": true,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "北侧接驳点 → 4 号楼，576 米"
-                    },
-                    {
-                      "id": "relay",
-                      "label": "接驳点可达",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 已前置到可用接驳点，可赶到 北侧接驳点"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 19 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 载重 30kg ≥ 22kg"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "内部路线不经过封闭路段"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "10:15 前送达，余量 112.5 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "绕开封闭大门",
-                    "接驳点接力"
-                  ],
-                  "dispatchReason": "大门或主干道被淹：改用围栏临时接驳点，由内部 Agent 接力送达，外部安排不中断",
-                  "roadIds": [
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s712",
-                    "road-s7n",
-                    "road-s7n"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s73:reroute:gate-s7e",
-                  "taskId": "task-bld-s73",
-                  "kind": "intra_reroute",
-                  "title": "同组改道：外部 Agent 走未封闭大门与路段",
-                  "feasible": true,
-                  "rank": 5,
-                  "score": 8.7,
-                  "slackS": 1684.790377855289,
-                  "eta": [
-                    2515.209622144711
-                  ],
-                  "isRelay": false,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "经内部路网 1702 米可达 2 号楼"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 10 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "外部志愿者 乙组 载重 45kg ≥ 22kg"
-                    },
-                    {
-                      "id": "gate",
-                      "label": "出入口可用",
-                      "ok": true,
-                      "detail": "经 西门 进入"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "新路线不经过封闭路段 road-s7j"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "09:10 前送达，余量 28.1 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "外部段改道",
-                    "内部路网避让封闭路段"
-                  ],
-                  "dispatchReason": "外部 Agent 尚未进入封闭区域：改走未封闭的大门与内部路段即可继续执行",
-                  "roadIds": [
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s712",
-                    "road-s7l",
-                    "road-s7l"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s73:ext:agt-ext-1",
-                  "taskId": "task-bld-s73",
-                  "kind": "ext_reroute",
-                  "title": "换组：另一名外部 Agent 从药店接手",
-                  "feasible": true,
-                  "rank": 6,
-                  "score": -19.7,
-                  "slackS": 1766.2577081756162,
-                  "eta": [
-                    2433.7422918243838
-                  ],
-                  "isRelay": false,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "经内部路网 1498 米"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "外部志愿者 甲组 载重 45kg"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
                       "detail": "济仁药店（演练） 演练库存 14"
                     },
                     {
                       "id": "sla",
                       "label": "时限",
                       "ok": true,
-                      "detail": "09:10 前送达，余量 29.4 分钟"
+                      "detail": "09:10 前送达，余量 39.3 分钟"
                     }
                   ],
                   "reason": [
@@ -2648,189 +1105,8 @@
                     "road-s7i",
                     "road-s7i",
                     "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s712",
-                    "road-s7l",
-                    "road-s7l"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s73:relay:stg-s7g",
-                  "taskId": "task-bld-s73",
-                  "kind": "staging_relay",
-                  "title": "接力：外部送到临时接驳点，内部 Agent 送达",
-                  "feasible": true,
-                  "rank": 7,
-                  "score": -22.9,
-                  "slackS": 2602.566468454598,
-                  "eta": [
-                    1597.4335315454016
-                  ],
-                  "isRelay": true,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "中央接驳点 → 2 号楼，561 米"
-                    },
-                    {
-                      "id": "relay",
-                      "label": "接驳点可达",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 从驻守的接驳点可赶到 中央接驳点"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 10 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 载重 30kg ≥ 22kg"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "内部路线不经过封闭路段"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "09:10 前送达，余量 43.4 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "绕开封闭大门",
-                    "接驳点接力"
-                  ],
-                  "dispatchReason": "大门或主干道被淹：改用围栏临时接驳点，由内部 Agent 接力送达，外部安排不中断",
-                  "roadIds": [
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s712",
-                    "road-s7l",
-                    "road-s7l"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s73:relay:stg-s7h",
-                  "taskId": "task-bld-s73",
-                  "kind": "staging_relay",
-                  "title": "接力：外部送到临时接驳点，内部 Agent 送达",
-                  "feasible": true,
-                  "rank": 8,
-                  "score": -23.9,
-                  "slackS": 2557.282095388374,
-                  "eta": [
-                    1642.7179046116262
-                  ],
-                  "isRelay": true,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "北侧接驳点 → 2 号楼，630 米"
-                    },
-                    {
-                      "id": "relay",
-                      "label": "接驳点可达",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 已前置到可用接驳点，可赶到 北侧接驳点"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 10 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 载重 30kg ≥ 22kg"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "内部路线不经过封闭路段"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "09:10 前送达，余量 42.6 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "绕开封闭大门",
-                    "接驳点接力"
-                  ],
-                  "dispatchReason": "大门或主干道被淹：改用围栏临时接驳点，由内部 Agent 接力送达，外部安排不中断",
-                  "roadIds": [
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s712",
-                    "road-s7l",
+                    "road-s7z",
+                    "road-s7j",
                     "road-s7l"
                   ]
                 }
@@ -2847,26 +1123,26 @@
           "finalClock": 2400,
           "closures": [
             {
-              "roadId": "road-s7j",
-              "roadName": "北门 主动脉",
-              "at": 325,
-              "depthM": 0.301,
+              "roadId": "road-s7y",
+              "roadName": "横向通道 1-28",
+              "at": 178,
+              "depthM": 0.306,
               "thresholdM": 0.3
             }
           ],
           "metrics": {
             "taskTotal": 6,
-            "delivered": 5,
-            "onTime": 5,
+            "delivered": 6,
+            "onTime": 6,
             "late": 0,
-            "unfinished": 1,
-            "reroutes": 2,
-            "affectedTasks": 2,
+            "unfinished": 0,
+            "reroutes": 1,
+            "affectedTasks": 1,
             "tasksWithoutFeasible": 0,
-            "deliveryCount": 5,
-            "deliveryMeanS": 1947,
-            "deliveryMedianS": 1955,
-            "deliveryAfterDispatchMeanS": 1882
+            "deliveryCount": 6,
+            "deliveryMeanS": 1800,
+            "deliveryMedianS": 1805,
+            "deliveryAfterDispatchMeanS": 1770
           },
           "tasks": [
             {
@@ -2875,108 +1151,45 @@
               "targetName": "2 号楼",
               "deadlineLabel": "09:10 前",
               "slaAt": 4200,
-              "delivered": false,
-              "deliveredAt": null,
-              "onTime": null,
+              "delivered": true,
+              "deliveredAt": 2030,
+              "onTime": true,
               "planId": "cand:task-bld-s73:reroute:gate-s7e@v2",
               "planOrigin": "reconfirmed",
               "planVersion": 2,
-              "agentName": "外部志愿者 乙组",
-              "confirmedAt": 325,
-              "deliverySecondsEndToEnd": null,
-              "deliverySecondsAfterDispatch": null,
-              "blockedRoadId": null,
-              "roadsUsed": [
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s712",
-                "road-s7l",
-                "road-s7l"
-              ],
-              "crossedClosedRoads": [],
-              "finalPhase": "delivering",
-              "unfinishedReason": "in_transit"
-            },
-            {
-              "taskId": "task-bld-s75",
-              "code": "T02",
-              "targetName": "4 号楼",
-              "deadlineLabel": "10:15 前",
-              "slaAt": 8100,
-              "delivered": true,
-              "deliveredAt": 2220,
-              "onTime": true,
-              "planId": "cand:task-bld-s75:reroute:gate-s7e@v2",
-              "planOrigin": "reconfirmed",
-              "planVersion": 2,
               "agentName": "外部志愿者 甲组",
-              "confirmedAt": 325,
-              "deliverySecondsEndToEnd": 2220,
-              "deliverySecondsAfterDispatch": 1895,
+              "confirmedAt": 180,
+              "deliverySecondsEndToEnd": 2030,
+              "deliverySecondsAfterDispatch": 1850,
               "blockedRoadId": null,
               "roadsUsed": [
                 "road-s7i",
                 "road-s7i",
                 "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s712",
-                "road-s7n",
-                "road-s7n"
+                "road-s7z",
+                "road-s7j",
+                "road-s7l"
               ],
               "crossedClosedRoads": [],
               "finalPhase": "delivered",
               "unfinishedReason": null
             },
             {
-              "taskId": "task-bld-s77",
-              "code": "T03",
-              "targetName": "6 号楼",
-              "deadlineLabel": "09:10 前",
-              "slaAt": 4200,
+              "taskId": "task-bld-s74",
+              "code": "T02",
+              "targetName": "3 号楼",
+              "deadlineLabel": "10:15 前",
+              "slaAt": 8100,
               "delivered": true,
-              "deliveredAt": 1955,
+              "deliveredAt": 1825,
               "onTime": true,
-              "planId": "plan:baseline:task-bld-s77",
+              "planId": "plan:baseline:task-bld-s74",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 甲组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1955,
-              "deliverySecondsAfterDispatch": 1955,
+              "deliverySecondsEndToEnd": 1825,
+              "deliverySecondsAfterDispatch": 1825,
               "blockedRoadId": null,
               "roadsUsed": [
                 "road-s7i",
@@ -2987,6 +1200,32 @@
                 "road-s7i",
                 "road-s7i",
                 "road-s7i",
+                "road-s712",
+                "road-s7j",
+                "road-s7m"
+              ],
+              "crossedClosedRoads": [],
+              "finalPhase": "delivered",
+              "unfinishedReason": null
+            },
+            {
+              "taskId": "task-bld-s76",
+              "code": "T03",
+              "targetName": "5 号楼",
+              "deadlineLabel": "09:10 前",
+              "slaAt": 4200,
+              "delivered": true,
+              "deliveredAt": 1785,
+              "onTime": true,
+              "planId": "plan:baseline:task-bld-s76",
+              "planOrigin": "baseline",
+              "planVersion": 1,
+              "agentName": "外部志愿者 乙组",
+              "confirmedAt": 0,
+              "deliverySecondsEndToEnd": 1785,
+              "deliverySecondsAfterDispatch": 1785,
+              "blockedRoadId": null,
+              "roadsUsed": [
                 "road-s7i",
                 "road-s7i",
                 "road-s7i",
@@ -2994,15 +1233,7 @@
                 "road-s7i",
                 "road-s7i",
                 "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7p"
+                "road-s7o"
               ],
               "crossedClosedRoads": [],
               "finalPhase": "delivered",
@@ -3015,30 +1246,17 @@
               "deadlineLabel": "10:15 前",
               "slaAt": 8100,
               "delivered": true,
-              "deliveredAt": 1770,
+              "deliveredAt": 1625,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s7a",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 甲组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1770,
-              "deliverySecondsAfterDispatch": 1770,
+              "deliverySecondsEndToEnd": 1625,
+              "deliverySecondsAfterDispatch": 1625,
               "blockedRoadId": null,
               "roadsUsed": [
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
                 "road-s7i",
                 "road-s7i",
                 "road-s7s"
@@ -3054,29 +1272,17 @@
               "deadlineLabel": "09:10 前",
               "slaAt": 4200,
               "delivered": true,
-              "deliveredAt": 1955,
+              "deliveredAt": 1860,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s7b",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 乙组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1955,
-              "deliverySecondsAfterDispatch": 1955,
+              "deliverySecondsEndToEnd": 1860,
+              "deliverySecondsAfterDispatch": 1860,
               "blockedRoadId": null,
               "roadsUsed": [
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
                 "road-s7i",
                 "road-s7i",
                 "road-s7i",
@@ -3096,38 +1302,17 @@
               "deadlineLabel": "10:15 前",
               "slaAt": 8100,
               "delivered": true,
-              "deliveredAt": 1835,
+              "deliveredAt": 1675,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s7c",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 甲组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1835,
-              "deliverySecondsAfterDispatch": 1835,
+              "deliverySecondsEndToEnd": 1675,
+              "deliverySecondsAfterDispatch": 1675,
               "blockedRoadId": null,
               "roadsUsed": [
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
-                "road-s7i",
                 "road-s7u"
               ],
               "crossedClosedRoads": [],
@@ -3137,23 +1322,23 @@
           ],
           "chain": [
             {
-              "planSetId": "ps:road-s7j#325",
-              "at": 325,
-              "eventId": "road-s7j@325",
-              "stateSnapshot": "t=325s | 封路 北门 主动脉 水深 0.301m/0.3m | 受影响 2 项 | 在途派单：外部志愿者 乙组→TT01(blocked)，外部志愿者 甲组→TT02(blocked)，外部志愿者 甲组→TT03(external_enroute)，外部志愿者 甲组→TT04(external_enroute)，外部志愿者 乙组→TT05(external_enroute)，外部志愿者 甲组→TT06(external_enroute)",
+              "planSetId": "ps:road-s7y#178",
+              "at": 180,
+              "eventId": "road-s7y@178",
+              "stateSnapshot": "t=180s | 封路 横向通道 1-28 水深 0.306m/0.3m | 受影响 1 项 | 在途派单：外部志愿者 甲组→TT01(blocked)，外部志愿者 甲组→TT02(external_enroute)，外部志愿者 乙组→TT03(external_enroute)，外部志愿者 甲组→TT04(external_enroute)，外部志愿者 乙组→TT05(external_enroute)，外部志愿者 甲组→TT06(external_enroute)",
               "rankingMode": "rules",
               "candidates": [
                 {
-                  "id": "cand:task-bld-s75:reroute:gate-s7e",
-                  "taskId": "task-bld-s75",
+                  "id": "cand:task-bld-s73:reroute:gate-s7e",
+                  "taskId": "task-bld-s73",
                   "kind": "intra_reroute",
                   "title": "同组改道：外部 Agent 走未封闭大门与路段",
                   "feasible": true,
                   "rank": 1,
-                  "score": 92.5,
-                  "slackS": 5874.333649004933,
+                  "score": 18.6,
+                  "slackS": 2179.9401530864193,
                   "eta": [
-                    2225.666350995067
+                    2020.0598469135807
                   ],
                   "isRelay": false,
                   "checks": [
@@ -3161,19 +1346,19 @@
                       "id": "reach",
                       "label": "目标可达（内部路网）",
                       "ok": true,
-                      "detail": "经内部路网 1648 米可达 4 号楼"
+                      "detail": "经内部路网 1596 米可达 2 号楼"
                     },
                     {
                       "id": "stock",
                       "label": "物资库存",
                       "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 19 / 需 2"
+                      "detail": "康宁大药房（演练） 演练库存 10 / 需 4"
                     },
                     {
                       "id": "capacity",
                       "label": "运力",
                       "ok": true,
-                      "detail": "外部志愿者 甲组 载重 45kg ≥ 22kg"
+                      "detail": "外部志愿者 甲组 载重 45kg ≥ 38kg"
                     },
                     {
                       "id": "gate",
@@ -3185,13 +1370,13 @@
                       "id": "route",
                       "label": "避让封闭路段",
                       "ok": true,
-                      "detail": "新路线不经过封闭路段 road-s7j"
+                      "detail": "新路线不经过封闭路段 road-s7y"
                     },
                     {
                       "id": "sla",
                       "label": "时限",
                       "ok": true,
-                      "detail": "10:15 前送达，余量 97.9 分钟"
+                      "detail": "09:10 前送达，余量 36.3 分钟"
                     }
                   ],
                   "reason": [
@@ -3203,39 +1388,22 @@
                     "road-s7i",
                     "road-s7i",
                     "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s712",
-                    "road-s7n",
-                    "road-s7n"
+                    "road-s7z",
+                    "road-s7j",
+                    "road-s7l"
                   ]
                 },
                 {
-                  "id": "cand:task-bld-s75:ext:agt-ext-2",
-                  "taskId": "task-bld-s75",
+                  "id": "cand:task-bld-s73:ext:agt-ext-2",
+                  "taskId": "task-bld-s73",
                   "kind": "ext_reroute",
                   "title": "换组：另一名外部 Agent 从药店接手",
                   "feasible": true,
                   "rank": 2,
-                  "score": 66.1,
-                  "slackS": 6054.145877694245,
+                  "score": -7.8,
+                  "slackS": 2359.6093527050334,
                   "eta": [
-                    2045.8541223057541
+                    1840.3906472949668
                   ],
                   "isRelay": false,
                   "checks": [
@@ -3243,7 +1411,7 @@
                       "id": "reach",
                       "label": "目标可达（内部路网）",
                       "ok": true,
-                      "detail": "经内部路网 1443 米"
+                      "detail": "经内部路网 1391 米"
                     },
                     {
                       "id": "capacity",
@@ -3255,328 +1423,13 @@
                       "id": "stock",
                       "label": "物资库存",
                       "ok": true,
-                      "detail": "济仁药店（演练） 演练库存 11"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "10:15 前送达，余量 100.9 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "换组重新取货"
-                  ],
-                  "dispatchReason": "原 Agent 受阻：换另一名外部 Agent 从演练库存充足的药店重新取货",
-                  "roadIds": [
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s712",
-                    "road-s7n",
-                    "road-s7n"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s75:relay:stg-s7g",
-                  "taskId": "task-bld-s75",
-                  "kind": "staging_relay",
-                  "title": "接力：外部送到临时接驳点，内部 Agent 送达",
-                  "feasible": true,
-                  "rank": 3,
-                  "score": 60.8,
-                  "slackS": 6791.802654999903,
-                  "eta": [
-                    1308.1973450000974
-                  ],
-                  "isRelay": true,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "中央接驳点 → 4 号楼，507 米"
-                    },
-                    {
-                      "id": "relay",
-                      "label": "接驳点可达",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 从驻守的接驳点可赶到 中央接驳点"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 19 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 载重 30kg ≥ 22kg"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "内部路线不经过封闭路段"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "10:15 前送达，余量 113.2 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "绕开封闭大门",
-                    "接驳点接力"
-                  ],
-                  "dispatchReason": "大门或主干道被淹：改用围栏临时接驳点，由内部 Agent 接力送达，外部安排不中断",
-                  "roadIds": [
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s712",
-                    "road-s7n",
-                    "road-s7n"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s75:relay:stg-s7h",
-                  "taskId": "task-bld-s75",
-                  "kind": "staging_relay",
-                  "title": "接力：外部送到临时接驳点，内部 Agent 送达",
-                  "feasible": true,
-                  "rank": 4,
-                  "score": 60,
-                  "slackS": 6748.112856049271,
-                  "eta": [
-                    1351.887143950729
-                  ],
-                  "isRelay": true,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "北侧接驳点 → 4 号楼，576 米"
-                    },
-                    {
-                      "id": "relay",
-                      "label": "接驳点可达",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 已前置到可用接驳点，可赶到 北侧接驳点"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 19 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 载重 30kg ≥ 22kg"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "内部路线不经过封闭路段"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "10:15 前送达，余量 112.5 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "绕开封闭大门",
-                    "接驳点接力"
-                  ],
-                  "dispatchReason": "大门或主干道被淹：改用围栏临时接驳点，由内部 Agent 接力送达，外部安排不中断",
-                  "roadIds": [
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s712",
-                    "road-s7n",
-                    "road-s7n"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s73:reroute:gate-s7e",
-                  "taskId": "task-bld-s73",
-                  "kind": "intra_reroute",
-                  "title": "同组改道：外部 Agent 走未封闭大门与路段",
-                  "feasible": true,
-                  "rank": 5,
-                  "score": 8.7,
-                  "slackS": 1684.790377855289,
-                  "eta": [
-                    2515.209622144711
-                  ],
-                  "isRelay": false,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "经内部路网 1702 米可达 2 号楼"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 10 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "外部志愿者 乙组 载重 45kg ≥ 22kg"
-                    },
-                    {
-                      "id": "gate",
-                      "label": "出入口可用",
-                      "ok": true,
-                      "detail": "经 西门 进入"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "新路线不经过封闭路段 road-s7j"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "09:10 前送达，余量 28.1 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "外部段改道",
-                    "内部路网避让封闭路段"
-                  ],
-                  "dispatchReason": "外部 Agent 尚未进入封闭区域：改走未封闭的大门与内部路段即可继续执行",
-                  "roadIds": [
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s712",
-                    "road-s7l",
-                    "road-s7l"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s73:ext:agt-ext-1",
-                  "taskId": "task-bld-s73",
-                  "kind": "ext_reroute",
-                  "title": "换组：另一名外部 Agent 从药店接手",
-                  "feasible": true,
-                  "rank": 6,
-                  "score": -19.7,
-                  "slackS": 1766.2577081756162,
-                  "eta": [
-                    2433.7422918243838
-                  ],
-                  "isRelay": false,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "经内部路网 1498 米"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "外部志愿者 甲组 载重 45kg"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
                       "detail": "济仁药店（演练） 演练库存 14"
                     },
                     {
                       "id": "sla",
                       "label": "时限",
                       "ok": true,
-                      "detail": "09:10 前送达，余量 29.4 分钟"
+                      "detail": "09:10 前送达，余量 39.3 分钟"
                     }
                   ],
                   "reason": [
@@ -3587,189 +1440,8 @@
                     "road-s7i",
                     "road-s7i",
                     "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s712",
-                    "road-s7l",
-                    "road-s7l"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s73:relay:stg-s7g",
-                  "taskId": "task-bld-s73",
-                  "kind": "staging_relay",
-                  "title": "接力：外部送到临时接驳点，内部 Agent 送达",
-                  "feasible": true,
-                  "rank": 7,
-                  "score": -22.9,
-                  "slackS": 2602.566468454598,
-                  "eta": [
-                    1597.4335315454016
-                  ],
-                  "isRelay": true,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "中央接驳点 → 2 号楼，561 米"
-                    },
-                    {
-                      "id": "relay",
-                      "label": "接驳点可达",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 从驻守的接驳点可赶到 中央接驳点"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 10 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 载重 30kg ≥ 22kg"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "内部路线不经过封闭路段"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "09:10 前送达，余量 43.4 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "绕开封闭大门",
-                    "接驳点接力"
-                  ],
-                  "dispatchReason": "大门或主干道被淹：改用围栏临时接驳点，由内部 Agent 接力送达，外部安排不中断",
-                  "roadIds": [
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s712",
-                    "road-s7l",
-                    "road-s7l"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s73:relay:stg-s7h",
-                  "taskId": "task-bld-s73",
-                  "kind": "staging_relay",
-                  "title": "接力：外部送到临时接驳点，内部 Agent 送达",
-                  "feasible": true,
-                  "rank": 8,
-                  "score": -23.9,
-                  "slackS": 2557.282095388374,
-                  "eta": [
-                    1642.7179046116262
-                  ],
-                  "isRelay": true,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "北侧接驳点 → 2 号楼，630 米"
-                    },
-                    {
-                      "id": "relay",
-                      "label": "接驳点可达",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 已前置到可用接驳点，可赶到 北侧接驳点"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 10 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 载重 30kg ≥ 22kg"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "内部路线不经过封闭路段"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "09:10 前送达，余量 42.6 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "绕开封闭大门",
-                    "接驳点接力"
-                  ],
-                  "dispatchReason": "大门或主干道被淹：改用围栏临时接驳点，由内部 Agent 接力送达，外部安排不中断",
-                  "roadIds": [
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s7i",
-                    "road-s712",
-                    "road-s7l",
+                    "road-s7z",
+                    "road-s7j",
                     "road-s7l"
                   ]
                 }
@@ -3778,16 +1450,16 @@
                 "candidateId": "cand:task-bld-s73:reroute:gate-s7e",
                 "taskId": "task-bld-s73",
                 "title": "同组改道：外部 Agent 走未封闭大门与路段",
-                "score": 8.7,
-                "rank": 5,
-                "at": 325
+                "score": 18.6,
+                "rank": 1,
+                "at": 180
               },
               "outcome": [
                 {
                   "code": "T01",
-                  "delivered": false,
-                  "deliveredAt": null,
-                  "onTime": null,
+                  "delivered": true,
+                  "deliveredAt": 2030,
+                  "onTime": true,
                   "planOrigin": "reconfirmed",
                   "planVersion": 2
                 }
@@ -3800,15 +1472,15 @@
     {
       "seed": 99,
       "delta": {
-        "onTime": 0,
-        "unfinished": 0,
+        "onTime": 1,
+        "unfinished": -1,
         "reroutes": 1,
-        "deliveryMeanS": 0
+        "deliveryMeanS": 34.3
       },
       "assertions": {
         "sameDisaster": {
           "ok": true,
-          "detail": "北门 主动脉@273s/0.30m"
+          "detail": "横向通道 1-28@222s/0.31m"
         },
         "staticNoReroute": {
           "ok": true,
@@ -3823,7 +1495,7 @@
           "detail": "静态 一致，规则 一致（同种子各跑两遍）"
         }
       },
-      "note": "该种子改派 1 次：静态基线里有 1 个任务受阻停等，改派后这 1 个任务已进入配送但在演练时长内仍未送达，因此两组的按时完成与未完成数相同（不是改派无效，而是时长截断）",
+      "note": null,
       "runs": {
         "static": {
           "strategy": "static",
@@ -3832,10 +1504,10 @@
           "finalClock": 2400,
           "closures": [
             {
-              "roadId": "road-s99j",
-              "roadName": "北门 主动脉",
-              "at": 273,
-              "depthM": 0.304,
+              "roadId": "road-s99y",
+              "roadName": "横向通道 1-28",
+              "at": 222,
+              "depthM": 0.308,
               "thresholdM": 0.3
             }
           ],
@@ -3849,43 +1521,38 @@
             "affectedTasks": 1,
             "tasksWithoutFeasible": 0,
             "deliveryCount": 5,
-            "deliveryMeanS": 1818,
-            "deliveryMedianS": 1860,
-            "deliveryAfterDispatchMeanS": 1818
+            "deliveryMeanS": 1859,
+            "deliveryMedianS": 1915,
+            "deliveryAfterDispatchMeanS": 1859
           },
           "tasks": [
             {
-              "taskId": "task-bld-s996",
+              "taskId": "task-bld-s993",
               "code": "T01",
-              "targetName": "5 号楼",
+              "targetName": "2 号楼",
               "deadlineLabel": "09:10 前",
               "slaAt": 4200,
               "delivered": false,
               "deliveredAt": null,
               "onTime": null,
-              "planId": "plan:baseline:task-bld-s996",
+              "planId": "plan:baseline:task-bld-s993",
               "planOrigin": "baseline",
               "planVersion": 1,
-              "agentName": "外部志愿者 乙组",
+              "agentName": "外部志愿者 甲组",
               "confirmedAt": 0,
               "deliverySecondsEndToEnd": null,
               "deliverySecondsAfterDispatch": null,
-              "blockedRoadId": "road-s99j",
+              "blockedRoadId": "road-s99y",
               "roadsUsed": [
                 "road-s99i",
                 "road-s99i",
                 "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99y",
                 "road-s99y",
                 "road-s99j",
-                "road-s99o"
+                "road-s99l"
               ],
               "crossedClosedRoads": [
-                "road-s99j"
+                "road-s99y"
               ],
               "finalPhase": "blocked",
               "unfinishedReason": "blocked"
@@ -3897,15 +1564,15 @@
               "deadlineLabel": "10:15 前",
               "slaAt": 8100,
               "delivered": true,
-              "deliveredAt": 1860,
+              "deliveredAt": 1710,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s997",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 甲组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1860,
-              "deliverySecondsAfterDispatch": 1860,
+              "deliverySecondsEndToEnd": 1710,
+              "deliverySecondsAfterDispatch": 1710,
               "blockedRoadId": null,
               "roadsUsed": [
                 "road-s99i",
@@ -3918,18 +1585,7 @@
                 "road-s99i",
                 "road-s99i",
                 "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
+                "road-s99p",
                 "road-s99p"
               ],
               "crossedClosedRoads": [],
@@ -3943,15 +1599,15 @@
               "deadlineLabel": "09:10 前",
               "slaAt": 4200,
               "delivered": true,
-              "deliveredAt": 1875,
+              "deliveredAt": 1920,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s998",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 乙组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1875,
-              "deliverySecondsAfterDispatch": 1875,
+              "deliverySecondsEndToEnd": 1920,
+              "deliverySecondsAfterDispatch": 1920,
               "blockedRoadId": null,
               "roadsUsed": [
                 "road-s99i",
@@ -3963,6 +1619,8 @@
                 "road-s99i",
                 "road-s99i",
                 "road-s99i",
+                "road-s99i",
+                "road-s99q",
                 "road-s99q"
               ],
               "crossedClosedRoads": [],
@@ -3976,15 +1634,15 @@
               "deadlineLabel": "10:15 前",
               "slaAt": 8100,
               "delivered": true,
-              "deliveredAt": 1730,
+              "deliveredAt": 1940,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s999",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 甲组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1730,
-              "deliverySecondsAfterDispatch": 1730,
+              "deliverySecondsEndToEnd": 1940,
+              "deliverySecondsAfterDispatch": 1940,
               "blockedRoadId": null,
               "roadsUsed": [
                 "road-s99i",
@@ -3995,10 +1653,9 @@
                 "road-s99i",
                 "road-s99i",
                 "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
+                "road-s9912",
+                "road-s99j",
+                "road-s99r",
                 "road-s99r"
               ],
               "crossedClosedRoads": [],
@@ -4012,29 +1669,17 @@
               "deadlineLabel": "09:10 前",
               "slaAt": 4200,
               "delivered": true,
-              "deliveredAt": 2010,
+              "deliveredAt": 1915,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s99b",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 乙组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 2010,
-              "deliverySecondsAfterDispatch": 2010,
+              "deliverySecondsEndToEnd": 1915,
+              "deliverySecondsAfterDispatch": 1915,
               "blockedRoadId": null,
               "roadsUsed": [
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
                 "road-s99i",
                 "road-s99i",
                 "road-s99i",
@@ -4054,18 +1699,28 @@
               "deadlineLabel": "10:15 前",
               "slaAt": 8100,
               "delivered": true,
-              "deliveredAt": 1615,
+              "deliveredAt": 1810,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s99d",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 甲组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1615,
-              "deliverySecondsAfterDispatch": 1615,
+              "deliverySecondsEndToEnd": 1810,
+              "deliverySecondsAfterDispatch": 1810,
               "blockedRoadId": null,
               "roadsUsed": [
                 "road-s99i",
+                "road-s99i",
+                "road-s99i",
+                "road-s99i",
+                "road-s99i",
+                "road-s99i",
+                "road-s99i",
+                "road-s99i",
+                "road-s99i",
+                "road-s99i",
+                "road-s99v",
                 "road-s99v"
               ],
               "crossedClosedRoads": [],
@@ -4075,23 +1730,23 @@
           ],
           "chain": [
             {
-              "planSetId": "ps:road-s99j#273",
-              "at": 275,
-              "eventId": "road-s99j@273",
-              "stateSnapshot": "t=275s | 封路 北门 主动脉 水深 0.304m/0.3m | 受影响 1 项 | 在途派单：外部志愿者 乙组→TT01(blocked)，外部志愿者 甲组→TT02(external_enroute)，外部志愿者 乙组→TT03(external_enroute)，外部志愿者 甲组→TT04(external_enroute)，外部志愿者 乙组→TT05(external_enroute)，外部志愿者 甲组→TT06(external_enroute)",
+              "planSetId": "ps:road-s99y#222",
+              "at": 225,
+              "eventId": "road-s99y@222",
+              "stateSnapshot": "t=225s | 封路 横向通道 1-28 水深 0.308m/0.3m | 受影响 1 项 | 在途派单：外部志愿者 甲组→TT01(blocked)，外部志愿者 甲组→TT02(external_enroute)，外部志愿者 乙组→TT03(external_enroute)，外部志愿者 甲组→TT04(external_enroute)，外部志愿者 乙组→TT05(external_enroute)，外部志愿者 甲组→TT06(external_enroute)",
               "rankingMode": "rules",
               "candidates": [
                 {
-                  "id": "cand:task-bld-s996:reroute:gate-s99e",
-                  "taskId": "task-bld-s996",
+                  "id": "cand:task-bld-s993:reroute:gate-s99e",
+                  "taskId": "task-bld-s993",
                   "kind": "intra_reroute",
                   "title": "同组改道：外部 Agent 走未封闭大门与路段",
                   "feasible": true,
                   "rank": 1,
-                  "score": 9.3,
-                  "slackS": 1713.8692786073966,
+                  "score": 17.9,
+                  "slackS": 2144.6649447072477,
                   "eta": [
-                    2486.1307213926034
+                    2055.3350552927523
                   ],
                   "isRelay": false,
                   "checks": [
@@ -4099,19 +1754,19 @@
                       "id": "reach",
                       "label": "目标可达（内部路网）",
                       "ok": true,
-                      "detail": "经内部路网 1653 米可达 5 号楼"
+                      "detail": "经内部路网 1596 米可达 2 号楼"
                     },
                     {
                       "id": "stock",
                       "label": "物资库存",
                       "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 22 / 需 2"
+                      "detail": "康宁大药房（演练） 演练库存 22 / 需 4"
                     },
                     {
                       "id": "capacity",
                       "label": "运力",
                       "ok": true,
-                      "detail": "外部志愿者 乙组 载重 45kg ≥ 22kg"
+                      "detail": "外部志愿者 甲组 载重 45kg ≥ 38kg"
                     },
                     {
                       "id": "gate",
@@ -4123,13 +1778,13 @@
                       "id": "route",
                       "label": "避让封闭路段",
                       "ok": true,
-                      "detail": "新路线不经过封闭路段 road-s99j"
+                      "detail": "新路线不经过封闭路段 road-s99y"
                     },
                     {
                       "id": "sla",
                       "label": "时限",
                       "ok": true,
-                      "detail": "09:10 前送达，余量 28.6 分钟"
+                      "detail": "09:10 前送达，余量 35.7 分钟"
                     }
                   ],
                   "reason": [
@@ -4141,38 +1796,22 @@
                     "road-s99i",
                     "road-s99i",
                     "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s9912",
-                    "road-s99o"
+                    "road-s99z",
+                    "road-s99j",
+                    "road-s99l"
                   ]
                 },
                 {
-                  "id": "cand:task-bld-s996:ext:agt-ext-1",
-                  "taskId": "task-bld-s996",
+                  "id": "cand:task-bld-s993:ext:agt-ext-2",
+                  "taskId": "task-bld-s993",
                   "kind": "ext_reroute",
                   "title": "换组：另一名外部 Agent 从药店接手",
                   "feasible": true,
                   "rank": 2,
-                  "score": -17.5,
-                  "slackS": 1875.7607587791153,
+                  "score": -9.5,
+                  "slackS": 2273.5638989285726,
                   "eta": [
-                    2324.2392412208847
+                    1926.4361010714276
                   ],
                   "isRelay": false,
                   "checks": [
@@ -4180,13 +1819,13 @@
                       "id": "reach",
                       "label": "目标可达（内部路网）",
                       "ok": true,
-                      "detail": "经内部路网 1448 米"
+                      "detail": "经内部路网 1392 米"
                     },
                     {
                       "id": "capacity",
                       "label": "运力",
                       "ok": true,
-                      "detail": "外部志愿者 甲组 载重 45kg"
+                      "detail": "外部志愿者 乙组 载重 45kg"
                     },
                     {
                       "id": "stock",
@@ -4198,7 +1837,7 @@
                       "id": "sla",
                       "label": "时限",
                       "ok": true,
-                      "detail": "09:10 前送达，余量 31.3 分钟"
+                      "detail": "09:10 前送达，余量 37.9 分钟"
                     }
                   ],
                   "reason": [
@@ -4209,187 +1848,9 @@
                     "road-s99i",
                     "road-s99i",
                     "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s9912",
-                    "road-s99o"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s996:relay:stg-s99g",
-                  "taskId": "task-bld-s996",
-                  "kind": "staging_relay",
-                  "title": "接力：外部送到临时接驳点，内部 Agent 送达",
-                  "feasible": true,
-                  "rank": 3,
-                  "score": -22.4,
-                  "slackS": 2631.645369206706,
-                  "eta": [
-                    1568.354630793294
-                  ],
-                  "isRelay": true,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "中央接驳点 → 5 号楼，512 米"
-                    },
-                    {
-                      "id": "relay",
-                      "label": "接驳点可达",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 从驻守的接驳点可赶到 中央接驳点"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 22 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 载重 30kg ≥ 22kg"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "内部路线不经过封闭路段"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "09:10 前送达，余量 43.9 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "绕开封闭大门",
-                    "接驳点接力"
-                  ],
-                  "dispatchReason": "大门或主干道被淹：改用围栏临时接驳点，由内部 Agent 接力送达，外部安排不中断",
-                  "roadIds": [
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s9912",
-                    "road-s99o"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s996:relay:stg-s99h",
-                  "taskId": "task-bld-s996",
-                  "kind": "staging_relay",
-                  "title": "接力：外部送到临时接驳点，内部 Agent 送达",
-                  "feasible": true,
-                  "rank": 4,
-                  "score": -23.3,
-                  "slackS": 2586.3609961404813,
-                  "eta": [
-                    1613.6390038595187
-                  ],
-                  "isRelay": true,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "北侧接驳点 → 5 号楼，580 米"
-                    },
-                    {
-                      "id": "relay",
-                      "label": "接驳点可达",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 已前置到可用接驳点，可赶到 北侧接驳点"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 22 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 载重 30kg ≥ 22kg"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "内部路线不经过封闭路段"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "09:10 前送达，余量 43.1 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "绕开封闭大门",
-                    "接驳点接力"
-                  ],
-                  "dispatchReason": "大门或主干道被淹：改用围栏临时接驳点，由内部 Agent 接力送达，外部安排不中断",
-                  "roadIds": [
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s9912",
-                    "road-s99o"
+                    "road-s99z",
+                    "road-s99j",
+                    "road-s99l"
                   ]
                 }
               ],
@@ -4405,72 +1866,56 @@
           "finalClock": 2400,
           "closures": [
             {
-              "roadId": "road-s99j",
-              "roadName": "北门 主动脉",
-              "at": 273,
-              "depthM": 0.304,
+              "roadId": "road-s99y",
+              "roadName": "横向通道 1-28",
+              "at": 222,
+              "depthM": 0.308,
               "thresholdM": 0.3
             }
           ],
           "metrics": {
             "taskTotal": 6,
-            "delivered": 5,
-            "onTime": 5,
+            "delivered": 6,
+            "onTime": 6,
             "late": 0,
-            "unfinished": 1,
+            "unfinished": 0,
             "reroutes": 1,
             "affectedTasks": 1,
             "tasksWithoutFeasible": 0,
-            "deliveryCount": 5,
-            "deliveryMeanS": 1818,
-            "deliveryMedianS": 1860,
-            "deliveryAfterDispatchMeanS": 1818
+            "deliveryCount": 6,
+            "deliveryMeanS": 1893.3,
+            "deliveryMedianS": 1917.5,
+            "deliveryAfterDispatchMeanS": 1855.8
           },
           "tasks": [
             {
-              "taskId": "task-bld-s996",
+              "taskId": "task-bld-s993",
               "code": "T01",
-              "targetName": "5 号楼",
+              "targetName": "2 号楼",
               "deadlineLabel": "09:10 前",
               "slaAt": 4200,
-              "delivered": false,
-              "deliveredAt": null,
-              "onTime": null,
-              "planId": "cand:task-bld-s996:reroute:gate-s99e@v2",
+              "delivered": true,
+              "deliveredAt": 2065,
+              "onTime": true,
+              "planId": "cand:task-bld-s993:reroute:gate-s99e@v2",
               "planOrigin": "reconfirmed",
               "planVersion": 2,
-              "agentName": "外部志愿者 乙组",
-              "confirmedAt": 275,
-              "deliverySecondsEndToEnd": null,
-              "deliverySecondsAfterDispatch": null,
+              "agentName": "外部志愿者 甲组",
+              "confirmedAt": 225,
+              "deliverySecondsEndToEnd": 2065,
+              "deliverySecondsAfterDispatch": 1840,
               "blockedRoadId": null,
               "roadsUsed": [
                 "road-s99i",
                 "road-s99i",
                 "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s9912",
-                "road-s99o"
+                "road-s99z",
+                "road-s99j",
+                "road-s99l"
               ],
               "crossedClosedRoads": [],
-              "finalPhase": "delivering",
-              "unfinishedReason": "in_transit"
+              "finalPhase": "delivered",
+              "unfinishedReason": null
             },
             {
               "taskId": "task-bld-s997",
@@ -4479,15 +1924,15 @@
               "deadlineLabel": "10:15 前",
               "slaAt": 8100,
               "delivered": true,
-              "deliveredAt": 1860,
+              "deliveredAt": 1710,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s997",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 甲组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1860,
-              "deliverySecondsAfterDispatch": 1860,
+              "deliverySecondsEndToEnd": 1710,
+              "deliverySecondsAfterDispatch": 1710,
               "blockedRoadId": null,
               "roadsUsed": [
                 "road-s99i",
@@ -4500,18 +1945,7 @@
                 "road-s99i",
                 "road-s99i",
                 "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
+                "road-s99p",
                 "road-s99p"
               ],
               "crossedClosedRoads": [],
@@ -4525,15 +1959,15 @@
               "deadlineLabel": "09:10 前",
               "slaAt": 4200,
               "delivered": true,
-              "deliveredAt": 1875,
+              "deliveredAt": 1920,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s998",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 乙组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1875,
-              "deliverySecondsAfterDispatch": 1875,
+              "deliverySecondsEndToEnd": 1920,
+              "deliverySecondsAfterDispatch": 1920,
               "blockedRoadId": null,
               "roadsUsed": [
                 "road-s99i",
@@ -4545,6 +1979,8 @@
                 "road-s99i",
                 "road-s99i",
                 "road-s99i",
+                "road-s99i",
+                "road-s99q",
                 "road-s99q"
               ],
               "crossedClosedRoads": [],
@@ -4558,15 +1994,15 @@
               "deadlineLabel": "10:15 前",
               "slaAt": 8100,
               "delivered": true,
-              "deliveredAt": 1730,
+              "deliveredAt": 1940,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s999",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 甲组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1730,
-              "deliverySecondsAfterDispatch": 1730,
+              "deliverySecondsEndToEnd": 1940,
+              "deliverySecondsAfterDispatch": 1940,
               "blockedRoadId": null,
               "roadsUsed": [
                 "road-s99i",
@@ -4577,10 +2013,9 @@
                 "road-s99i",
                 "road-s99i",
                 "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
+                "road-s9912",
+                "road-s99j",
+                "road-s99r",
                 "road-s99r"
               ],
               "crossedClosedRoads": [],
@@ -4594,29 +2029,17 @@
               "deadlineLabel": "09:10 前",
               "slaAt": 4200,
               "delivered": true,
-              "deliveredAt": 2010,
+              "deliveredAt": 1915,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s99b",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 乙组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 2010,
-              "deliverySecondsAfterDispatch": 2010,
+              "deliverySecondsEndToEnd": 1915,
+              "deliverySecondsAfterDispatch": 1915,
               "blockedRoadId": null,
               "roadsUsed": [
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
-                "road-s99i",
                 "road-s99i",
                 "road-s99i",
                 "road-s99i",
@@ -4636,18 +2059,28 @@
               "deadlineLabel": "10:15 前",
               "slaAt": 8100,
               "delivered": true,
-              "deliveredAt": 1615,
+              "deliveredAt": 1810,
               "onTime": true,
               "planId": "plan:baseline:task-bld-s99d",
               "planOrigin": "baseline",
               "planVersion": 1,
               "agentName": "外部志愿者 甲组",
               "confirmedAt": 0,
-              "deliverySecondsEndToEnd": 1615,
-              "deliverySecondsAfterDispatch": 1615,
+              "deliverySecondsEndToEnd": 1810,
+              "deliverySecondsAfterDispatch": 1810,
               "blockedRoadId": null,
               "roadsUsed": [
                 "road-s99i",
+                "road-s99i",
+                "road-s99i",
+                "road-s99i",
+                "road-s99i",
+                "road-s99i",
+                "road-s99i",
+                "road-s99i",
+                "road-s99i",
+                "road-s99i",
+                "road-s99v",
                 "road-s99v"
               ],
               "crossedClosedRoads": [],
@@ -4657,23 +2090,23 @@
           ],
           "chain": [
             {
-              "planSetId": "ps:road-s99j#273",
-              "at": 275,
-              "eventId": "road-s99j@273",
-              "stateSnapshot": "t=275s | 封路 北门 主动脉 水深 0.304m/0.3m | 受影响 1 项 | 在途派单：外部志愿者 乙组→TT01(blocked)，外部志愿者 甲组→TT02(external_enroute)，外部志愿者 乙组→TT03(external_enroute)，外部志愿者 甲组→TT04(external_enroute)，外部志愿者 乙组→TT05(external_enroute)，外部志愿者 甲组→TT06(external_enroute)",
+              "planSetId": "ps:road-s99y#222",
+              "at": 225,
+              "eventId": "road-s99y@222",
+              "stateSnapshot": "t=225s | 封路 横向通道 1-28 水深 0.308m/0.3m | 受影响 1 项 | 在途派单：外部志愿者 甲组→TT01(blocked)，外部志愿者 甲组→TT02(external_enroute)，外部志愿者 乙组→TT03(external_enroute)，外部志愿者 甲组→TT04(external_enroute)，外部志愿者 乙组→TT05(external_enroute)，外部志愿者 甲组→TT06(external_enroute)",
               "rankingMode": "rules",
               "candidates": [
                 {
-                  "id": "cand:task-bld-s996:reroute:gate-s99e",
-                  "taskId": "task-bld-s996",
+                  "id": "cand:task-bld-s993:reroute:gate-s99e",
+                  "taskId": "task-bld-s993",
                   "kind": "intra_reroute",
                   "title": "同组改道：外部 Agent 走未封闭大门与路段",
                   "feasible": true,
                   "rank": 1,
-                  "score": 9.3,
-                  "slackS": 1713.8692786073966,
+                  "score": 17.9,
+                  "slackS": 2144.6649447072477,
                   "eta": [
-                    2486.1307213926034
+                    2055.3350552927523
                   ],
                   "isRelay": false,
                   "checks": [
@@ -4681,19 +2114,19 @@
                       "id": "reach",
                       "label": "目标可达（内部路网）",
                       "ok": true,
-                      "detail": "经内部路网 1653 米可达 5 号楼"
+                      "detail": "经内部路网 1596 米可达 2 号楼"
                     },
                     {
                       "id": "stock",
                       "label": "物资库存",
                       "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 22 / 需 2"
+                      "detail": "康宁大药房（演练） 演练库存 22 / 需 4"
                     },
                     {
                       "id": "capacity",
                       "label": "运力",
                       "ok": true,
-                      "detail": "外部志愿者 乙组 载重 45kg ≥ 22kg"
+                      "detail": "外部志愿者 甲组 载重 45kg ≥ 38kg"
                     },
                     {
                       "id": "gate",
@@ -4705,13 +2138,13 @@
                       "id": "route",
                       "label": "避让封闭路段",
                       "ok": true,
-                      "detail": "新路线不经过封闭路段 road-s99j"
+                      "detail": "新路线不经过封闭路段 road-s99y"
                     },
                     {
                       "id": "sla",
                       "label": "时限",
                       "ok": true,
-                      "detail": "09:10 前送达，余量 28.6 分钟"
+                      "detail": "09:10 前送达，余量 35.7 分钟"
                     }
                   ],
                   "reason": [
@@ -4723,38 +2156,22 @@
                     "road-s99i",
                     "road-s99i",
                     "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s9912",
-                    "road-s99o"
+                    "road-s99z",
+                    "road-s99j",
+                    "road-s99l"
                   ]
                 },
                 {
-                  "id": "cand:task-bld-s996:ext:agt-ext-1",
-                  "taskId": "task-bld-s996",
+                  "id": "cand:task-bld-s993:ext:agt-ext-2",
+                  "taskId": "task-bld-s993",
                   "kind": "ext_reroute",
                   "title": "换组：另一名外部 Agent 从药店接手",
                   "feasible": true,
                   "rank": 2,
-                  "score": -17.5,
-                  "slackS": 1875.7607587791153,
+                  "score": -9.5,
+                  "slackS": 2273.5638989285726,
                   "eta": [
-                    2324.2392412208847
+                    1926.4361010714276
                   ],
                   "isRelay": false,
                   "checks": [
@@ -4762,13 +2179,13 @@
                       "id": "reach",
                       "label": "目标可达（内部路网）",
                       "ok": true,
-                      "detail": "经内部路网 1448 米"
+                      "detail": "经内部路网 1392 米"
                     },
                     {
                       "id": "capacity",
                       "label": "运力",
                       "ok": true,
-                      "detail": "外部志愿者 甲组 载重 45kg"
+                      "detail": "外部志愿者 乙组 载重 45kg"
                     },
                     {
                       "id": "stock",
@@ -4780,7 +2197,7 @@
                       "id": "sla",
                       "label": "时限",
                       "ok": true,
-                      "detail": "09:10 前送达，余量 31.3 分钟"
+                      "detail": "09:10 前送达，余量 37.9 分钟"
                     }
                   ],
                   "reason": [
@@ -4791,204 +2208,26 @@
                     "road-s99i",
                     "road-s99i",
                     "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s9912",
-                    "road-s99o"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s996:relay:stg-s99g",
-                  "taskId": "task-bld-s996",
-                  "kind": "staging_relay",
-                  "title": "接力：外部送到临时接驳点，内部 Agent 送达",
-                  "feasible": true,
-                  "rank": 3,
-                  "score": -22.4,
-                  "slackS": 2631.645369206706,
-                  "eta": [
-                    1568.354630793294
-                  ],
-                  "isRelay": true,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "中央接驳点 → 5 号楼，512 米"
-                    },
-                    {
-                      "id": "relay",
-                      "label": "接驳点可达",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 从驻守的接驳点可赶到 中央接驳点"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 22 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 载重 30kg ≥ 22kg"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "内部路线不经过封闭路段"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "09:10 前送达，余量 43.9 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "绕开封闭大门",
-                    "接驳点接力"
-                  ],
-                  "dispatchReason": "大门或主干道被淹：改用围栏临时接驳点，由内部 Agent 接力送达，外部安排不中断",
-                  "roadIds": [
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s9912",
-                    "road-s99o"
-                  ]
-                },
-                {
-                  "id": "cand:task-bld-s996:relay:stg-s99h",
-                  "taskId": "task-bld-s996",
-                  "kind": "staging_relay",
-                  "title": "接力：外部送到临时接驳点，内部 Agent 送达",
-                  "feasible": true,
-                  "rank": 4,
-                  "score": -23.3,
-                  "slackS": 2586.3609961404813,
-                  "eta": [
-                    1613.6390038595187
-                  ],
-                  "isRelay": true,
-                  "checks": [
-                    {
-                      "id": "reach",
-                      "label": "目标可达（内部路网）",
-                      "ok": true,
-                      "detail": "北侧接驳点 → 5 号楼，580 米"
-                    },
-                    {
-                      "id": "relay",
-                      "label": "接驳点可达",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 已前置到可用接驳点，可赶到 北侧接驳点"
-                    },
-                    {
-                      "id": "stock",
-                      "label": "物资库存",
-                      "ok": true,
-                      "detail": "康宁大药房（演练） 演练库存 22 / 需 2"
-                    },
-                    {
-                      "id": "capacity",
-                      "label": "运力",
-                      "ok": true,
-                      "detail": "内部志愿者 丙组 载重 30kg ≥ 22kg"
-                    },
-                    {
-                      "id": "route",
-                      "label": "避让封闭路段",
-                      "ok": true,
-                      "detail": "内部路线不经过封闭路段"
-                    },
-                    {
-                      "id": "sla",
-                      "label": "时限",
-                      "ok": true,
-                      "detail": "09:10 前送达，余量 43.1 分钟"
-                    }
-                  ],
-                  "reason": [
-                    "绕开封闭大门",
-                    "接驳点接力"
-                  ],
-                  "dispatchReason": "大门或主干道被淹：改用围栏临时接驳点，由内部 Agent 接力送达，外部安排不中断",
-                  "roadIds": [
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s99i",
-                    "road-s9912",
-                    "road-s99o"
+                    "road-s99z",
+                    "road-s99j",
+                    "road-s99l"
                   ]
                 }
               ],
               "confirmed": {
-                "candidateId": "cand:task-bld-s996:reroute:gate-s99e",
-                "taskId": "task-bld-s996",
+                "candidateId": "cand:task-bld-s993:reroute:gate-s99e",
+                "taskId": "task-bld-s993",
                 "title": "同组改道：外部 Agent 走未封闭大门与路段",
-                "score": 9.3,
+                "score": 17.9,
                 "rank": 1,
-                "at": 275
+                "at": 225
               },
               "outcome": [
                 {
                   "code": "T01",
-                  "delivered": false,
-                  "deliveredAt": null,
-                  "onTime": null,
+                  "delivered": true,
+                  "deliveredAt": 2065,
+                  "onTime": true,
                   "planOrigin": "reconfirmed",
                   "planVersion": 2
                 }

@@ -80,9 +80,9 @@
 
 ## 五之三、本轮新增验收（一键演练 / 复盘 / 对照 / AI 题库）
 
-- [x] **三场一键演练**：指挥台右侧「一键演练」可载入 `flood-detour` / `fire-alt-door` / `quake-relay`（固定种子 42、时长 2400s），进入指挥台后可继续推进、看到「下一步」与「关注点」；载入用独立社区副本（`buildPresetCommunity()`），预置模式期间不覆盖用户保存的社区模型。边界照实记录：返回编辑台后继续编辑并保存，会把当前（预置）社区写回 `localStorage`。场景定义见 `src/domain/sim/presets.ts`。
+- [x] **三场一键演练**：指挥台右侧「一键演练」可载入 `flood-detour` / `fire-alt-door` / `quake-relay`（固定种子 42、时长 2400s）。预置使用独立社区副本，返回编辑台恢复自有社区。只有确认「复制为我的社区」才替换已保存的模型。场景定义见 `src/domain/sim/presets.ts`。
 - [x] **复盘时间线只读**：`src/domain/sim/replay.ts` 的 `buildReplay()` 只从当场记录（`impacts` / `planSets` / `record.results` / `events`）推导条目，不另存、不修改演练状态；点条目只改界面选中态并定位地图对象，不推进时钟、不改派。选中改派候选集时，被替换的旧方案以 `baseline` 线型（标签「原路线」）画出，新方案为 `approved` 实线。
-- [x] **内涝对照面板只读且保留持平种子**：`src/ui/ComparePanel.tsx` 只读 `src/data/compare-sample.json`（由 `npm run compare -- --seeds=42,7,99 --out=src/data/compare-sample.json` 生成），展示 `experiment` / `metricDefinitions` / `pairs`，**界面不重算任何统计**；种子 99 的持平结论原样保留，未为做出正向差异而改规则或换种子。
+- [x] **内涝对照面板只读**：`src/ui/ComparePanel.tsx` 展示 `npm run compare -- --seeds=42,7,99 --out=src/data/compare-sample.json` 生成的数据。修正路段判定后，三个种子的规则组均较静态组多完成一项任务。
 - [x] **AI 题库 10 题含无解与过期题 + 负向对照**：`npm run ai:bank` 产出 `artifacts/ai-bank.json` 与 `docs/ai-acceptance-bank.md`，共 10 题（内涝 2、火灾 3、地震 3 + 特殊题 2），含无可行方案题 `fire-no-alt-compare`、过期候选题 `fire-expired-compare`，并对带过期候选的题目跑 `mock:expired` 负向对照；任一题校验失败时脚本非 0 退出。
 - [~] **真实 AI 模型**：题库与面板的 AI 内容仍由规则模式 / `AI_MOCK=1` 模拟响应生成，产物里的 `mode` 写明这一点。拿到凭据后按 README「接入真实服务」单独验证，并重跑 `npm run ai:bank`。
 

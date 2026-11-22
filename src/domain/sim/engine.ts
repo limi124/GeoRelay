@@ -3,7 +3,8 @@ import type { CommunityModel } from '../community/model.ts'
 import type { ExternalLegProvider } from '../routing/external.ts'
 import { CommunityRouter } from '../routing/internal.ts'
 import { coordNodeId } from '../routing/build.ts'
-import { fromLocal, localFrameFromFence } from '../community/frame.ts'
+import { localFrameFromFence } from '../community/frame.ts'
+import { externalTravelSeconds, PICKUP_WAIT_S, HANDOVER_WAIT_S } from './deliveryTiming.ts'
 import { haversine, toLocal } from '../geo/wgs84.ts'
 import { distToPolygonBoundary, pointInPolygon } from '../geo/geometry.ts'
 import { pointAtFraction, pathLengthM } from '../geo/path.ts'
@@ -347,29 +348,6 @@ export function planRoads(engine: Engine, plan: Plan): string[] {
   return plan.legs.internal?.roadIds ?? []
 }
 
-export function roadsAlongPath(router: CommunityRouter, path: LngLat[]): string[] {
-  const out = new Set<string>()
-  for (const e of router.verts.edges) {
-    const pa = fromLocal(router.verts.frame, e.a)
-    const pb = fromLocal(router.verts.frame, e.b)
-    if (pathCovers(path, [pa, pb])) out.add(e.roadId)
-  }
-  return [...out]
-}
-
-function pathCovers(path: LngLat[], seg: LngLat[]): boolean {
-  const a = seg[0]
-  const b = seg[seg.length - 1]
-  for (let i = 0; i < path.length - 1; i++) {
-    if ((near(path[i], a) && near(path[i + 1], b)) || (near(path[i], b) && near(path[i + 1], a))) return true
-  }
-  return false
-}
-
-function near(a: LngLat, b: LngLat): boolean {
-  return Math.abs(a[0] - b[0]) < 5e-7 && Math.abs(a[1] - b[1]) < 5e-7
-}
-
 function restingPoint(engine: Engine, plan: Plan): LngLat {
   const agent = engine.state.agents.find((a) => a.id === plan.carryAgentId)
   const gateId = plan.legs.external?.atGate
@@ -492,7 +470,7 @@ function stepAgents(engine: Engine, dt: number): void {
           plan.progress = 0
           break
         }
-        plan.progress = Math.min(1, plan.progress + dt / Math.max(1, ext.durationS * 0.92))
+        plan.progress = Math.min(1, plan.progress + dt / externalTravelSeconds(ext.durationS))
         if (plan.progress >= 1) {
           plan.pickupAt = s.clock.t
           plan.phase = 'pickup_wait'
@@ -506,7 +484,7 @@ function stepAgents(engine: Engine, dt: number): void {
         break
       }
       case 'pickup_wait': {
-        plan.progress = Math.min(1, plan.progress + dt / 10)
+        plan.progress = Math.min(1, plan.progress + dt / PICKUP_WAIT_S)
         if (plan.progress >= 1) {
           plan.phase = 'handover_wait'
           plan.progress = 0
@@ -517,7 +495,7 @@ function stepAgents(engine: Engine, dt: number): void {
         break
       }
       case 'handover_wait': {
-        plan.progress = Math.min(1, plan.progress + dt / 12)
+        plan.progress = Math.min(1, plan.progress + dt / HANDOVER_WAIT_S)
         if (plan.progress >= 1) {
           plan.relayAt = s.clock.t
           if (!plan.legs.internal) {
@@ -548,20 +526,6 @@ function stepAgents(engine: Engine, dt: number): void {
           break
         }
         plan.progress = Math.min(1, plan.progress + dt / Math.max(1, int.durationS))
-        const hit = blockedAlong(engine, plan)
-        if (hit) {
-          plan.phase = 'blocked'
-          plan.blockedRoadId = hit
-          plan.interruptedAt = s.clock.t
-          const carrier = s.agents.find((a) => a.id === plan.carryAgentId) ?? agent
-          carrier.restingAt = pointAtFraction(int.path, plan.progress)
-          pushEvent(engine, 'agent_blocked', `${carrier.name} 行至 ${roadName(engine, hit)} 前发现路段被淹，原地等待`, { message: '受阻' }, {
-            roadIds: [hit],
-            taskIds: [task.id],
-            agentIds: [carrier.id],
-          })
-          break
-        }
         if (plan.progress >= 1) finishPlan(engine, plan, task, agent)
         break
       }
@@ -569,23 +533,6 @@ function stepAgents(engine: Engine, dt: number): void {
         break
     }
   }
-}
-
-function blockedAlong(engine: Engine, plan: Plan): string | null {
-  const int = plan.legs.internal
-  if (!int) return null
-  const walked = int.distanceM * plan.progress
-  let acc = 0
-  for (let i = 1; i < int.path.length; i++) {
-    const len = haversine(int.path[i - 1], int.path[i])
-    if (acc + len >= walked) {
-      const roads = roadsAlongPath(engine.view.router, [int.path[i - 1], int.path[i]])
-      const closing = roads.find((r) => Boolean(engine.state.closures[r]))
-      if (closing) return closing
-    }
-    acc += len
-  }
-  return null
 }
 
 function finishPlan(engine: Engine, plan: Plan, task: Task, agent: Agent): void {

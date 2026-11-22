@@ -1,0 +1,319 @@
+{
+  "assets": [
+    {
+      "assetId": "B01",
+      "taxonomy": "RC_8",
+      "dmg": [
+        {
+          "state": "no_damage",
+          "prob": 0.1655262
+        },
+        {
+          "state": "slight",
+          "prob": 0.1440622
+        },
+        {
+          "state": "moderate",
+          "prob": 0.2326982
+        },
+        {
+          "state": "extensive",
+          "prob": 0.2364662
+        },
+        {
+          "state": "complete",
+          "prob": 0.2212473
+        }
+      ]
+    },
+    {
+      "assetId": "B02",
+      "taxonomy": "RC_8",
+      "dmg": [
+        {
+          "state": "no_damage",
+          "prob": 0.1722996
+        },
+        {
+          "state": "slight",
+          "prob": 0.1541248
+        },
+        {
+          "state": "moderate",
+          "prob": 0.251544
+        },
+        {
+          "state": "extensive",
+          "prob": 0.2373856
+        },
+        {
+          "state": "complete",
+          "prob": 0.1846459
+        }
+      ]
+    },
+    {
+      "assetId": "B03",
+      "taxonomy": "RC_8",
+      "dmg": [
+        {
+          "state": "no_damage",
+          "prob": 0.1775371
+        },
+        {
+          "state": "slight",
+          "prob": 0.154349
+        },
+        {
+          "state": "moderate",
+          "prob": 0.243771
+        },
+        {
+          "state": "extensive",
+          "prob": 0.2307204
+        },
+        {
+          "state": "complete",
+          "prob": 0.1936224
+        }
+      ]
+    },
+    {
+      "assetId": "B04",
+      "taxonomy": "RC_8",
+      "dmg": [
+        {
+          "state": "no_damage",
+          "prob": 0.1902349
+        },
+        {
+          "state": "slight",
+          "prob": 0.1690026
+        },
+        {
+          "state": "moderate",
+          "prob": 0.2626765
+        },
+        {
+          "state": "extensive",
+          "prob": 0.2133405
+        },
+        {
+          "state": "complete",
+          "prob": 0.1647456
+        }
+      ]
+    },
+    {
+      "assetId": "B05",
+      "taxonomy": "RC_8",
+      "dmg": [
+        {
+          "state": "no_damage",
+          "prob": 0.1728812
+        },
+        {
+          "state": "slight",
+          "prob": 0.1599164
+        },
+        {
+          "state": "moderate",
+          "prob": 0.2687897
+        },
+        {
+          "state": "extensive",
+          "prob": 0.2469978
+        },
+        {
+          "state": "complete",
+          "prob": 0.1514148
+        }
+      ]
+    },
+    {
+      "assetId": "B06",
+      "taxonomy": "RC_8",
+      "dmg": [
+        {
+          "state": "no_damage",
+          "prob": 0.2108548
+        },
+        {
+          "state": "slight",
+          "prob": 0.1822194
+        },
+        {
+          "state": "moderate",
+          "prob": 0.2762058
+        },
+        {
+          "state": "extensive",
+          "prob": 0.2208012
+        },
+        {
+          "state": "complete",
+          "prob": 0.1099188
+        }
+      ]
+    },
+    {
+      "assetId": "B07",
+      "taxonomy": "RC_8",
+      "dmg": [
+        {
+          "state": "no_damage",
+          "prob": 0.1885741
+        },
+        {
+          "state": "slight",
+          "prob": 0.1654794
+        },
+        {
+          "state": "moderate",
+          "prob": 0.2652429
+        },
+        {
+          "state": "extensive",
+          "prob": 0.2417413
+        },
+        {
+          "state": "complete",
+          "prob": 0.1389623
+        }
+      ]
+    },
+    {
+      "assetId": "B08",
+      "taxonomy": "RC_8",
+      "dmg": [
+        {
+          "state": "no_damage",
+          "prob": 0.1990453
+        },
+        {
+          "state": "slight",
+          "prob": 0.174417
+        },
+        {
+          "state": "moderate",
+          "prob": 0.2735881
+        },
+        {
+          "state": "extensive",
+          "prob": 0.2314435
+        },
+        {
+          "state": "complete",
+          "prob": 0.1215061
+        }
+      ]
+    },
+    {
+      "assetId": "B09",
+      "taxonomy": "RC_8",
+      "dmg": [
+        {
+          "state": "no_damage",
+          "prob": 0.2256927
+        },
+        {
+          "state": "slight",
+          "prob": 0.1859719
+        },
+        {
+          "state": "moderate",
+          "prob": 0.2697177
+        },
+        {
+          "state": "extensive",
+          "prob": 0.2120923
+        },
+        {
+          "state": "complete",
+          "prob": 0.1065253
+        }
+      ]
+    },
+    {
+      "assetId": "B10",
+      "taxonomy": "URM_5",
+      "dmg": [
+        {
+          "state": "no_damage",
+          "prob": 0.09371185
+        },
+        {
+          "state": "slight",
+          "prob": 0.08509718
+        },
+        {
+          "state": "moderate",
+          "prob": 0.1519351
+        },
+        {
+          "state": "extensive",
+          "prob": 0.2198216
+        },
+        {
+          "state": "complete",
+          "prob": 0.4494343
+        }
+      ]
+    },
+    {
+      "assetId": "B11",
+      "taxonomy": "URM_5",
+      "dmg": [
+        {
+          "state": "no_damage",
+          "prob": 0.07443935
+        },
+        {
+          "state": "slight",
+          "prob": 0.06785426
+        },
+        {
+          "state": "moderate",
+          "prob": 0.1227604
+        },
+        {
+          "state": "extensive",
+          "prob": 0.1879754
+        },
+        {
+          "state": "complete",
+          "prob": 0.5469706
+        }
+      ]
+    },
+    {
+      "assetId": "B12",
+      "taxonomy": "URM_5",
+      "dmg": [
+        {
+          "state": "no_damage",
+          "prob": 0.07810265
+        },
+        {
+          "state": "slight",
+          "prob": 0.07232364
+        },
+        {
+          "state": "moderate",
+          "prob": 0.1334981
+        },
+        {
+          "state": "extensive",
+          "prob": 0.2101131
+        },
+        {
+          "state": "complete",
+          "prob": 0.5059625
+        }
+      ]
+    }
+  ],
+  "units": "probability",
+  "source": "oq export damages-rlzs (csv)",
+  "sourceFile": "artifacts/model-runs/oq-quake-damage-20261118/output/avg_damages-rlz-000_5.csv"
+}

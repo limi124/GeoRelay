@@ -160,7 +160,7 @@ export function planEarthquake(model: CommunityModel, config: DrillConfig, opts:
       id: 'earthquake',
       title: '地震演练（多点路段中断 + 原接驳点不可用）',
       summary:
-        '社区中心发生 5.8 级地震：楼栋按震中距与楼层出现不同受损等级，多处路段按固定延迟断裂，原接驳点失去交接条件。规划器应改用仍可用的接驳点或围栏临时接驳点完成接力。',
+        '社区中心发生 5.8 级地震：楼栋按震中距与楼层出现不同受损等级，多处路段按固定延迟断裂，原接驳点失去交接条件。请检查其他已标记接驳点能否完成接力。',
       fixedInputs: [
         `震级：${magnitude}，震中：社区中心`,
         `断路点：${opts.rupturedRoadIds.length} 处（固定种子挑选）`,

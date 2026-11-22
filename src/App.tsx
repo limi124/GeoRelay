@@ -2201,7 +2201,14 @@ export default function App(): React.ReactElement {
                   },
                   askAi: () => { if (planSet) void askAi(planSet) },
                   reset: () => { resetEngine(engine); setTick((v) => v + 1); setSelectedPlanSetId(null); setSelectedCandidateId(null) },
-                  backToEdit: () => setMode('edit'),
+                  backToEdit: () => {
+                    if (presetMode) {
+                      returnToMyCommunity()
+                    } else {
+                      setMode('edit')
+                      setDrawer(null)
+                    }
+                  },
                   selectRoad: (id) => setSelectedRoadId(id),
                   setInventory: (next: InventoryPoint[]) => { setInventory(next); engine.state.inventory = Object.fromEntries(next.map((p) => [p.id, p])); setTick((v) => v + 1) },
                   exportRecord: () => {

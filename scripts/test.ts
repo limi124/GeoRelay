@@ -240,6 +240,20 @@ await test('无关任务保持原安排', () => {
   assert.equal(engine.state.assignments[unaffected.id], unaffectedPlanBefore, `无关任务 ${unaffected.code} 的派单不应改变`)
 })
 
+await test('内涝 seed 42：T01 确认后经过交接并在 ETA 附近送达', async () => {
+  const task = engine.state.tasks.find((t) => t.code === 'T01')!
+  const plan = engine.state.plans[engine.state.assignments[task.id]]
+  assert.equal(plan.origin, 'reconfirmed')
+  const phases = new Set([plan.phase])
+  while (engine.state.clock.t < 2400 && plan.phase !== 'delivered' && plan.phase !== 'blocked') {
+    await advance(engine, 5)
+    phases.add(plan.phase)
+  }
+  assert.ok(phases.has('pickup_wait') && phases.has('handover_wait') && phases.has('delivering'))
+  assert.equal(plan.phase, 'delivered')
+  assert.ok(Math.abs(plan.deliveredAt! - plan.eta[0]) <= 20)
+})
+
 console.log('\n可复现与重置')
 
 function fingerprint(e: ReturnType<typeof makeEngine>): string {
@@ -284,10 +298,12 @@ await test('演示路网通过完备性检查（大门连通、入口接入）',
   assert.equal(v.ok, true, v.errors.join('；'))
 })
 
-await test('临时接驳点可用（围栏临时门）', () => {
+await test('已标记的接驳点可达，未接入路网的 edgegate 不进入接力候选', () => {
   const blocked = blockedSets(router, [], 0.3)
   const relays = relayOptionsFor(router, blocked)
-  assert.ok(relays.length > 0, '应至少有接驳点或围栏临时门')
+  assert.ok(router.edgeGatePositions().length > 0, '样例应包含围栏临时门')
+  assert.ok(relays.length > 0, '应至少有一个已标记的接驳点')
+  assert.ok(relays.every((relay) => !relay.key.startsWith('edgegate:')))
   const task = {
     id: 't',
     code: 'T99',

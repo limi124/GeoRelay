@@ -16,6 +16,7 @@ import type {
 } from '../sim/types.ts'
 import type { ExternalLegProvider } from '../routing/external.ts'
 import { CommunityRouter, type InternalRoute, type RouteOptions } from '../routing/internal.ts'
+import { externalTravelSeconds, PICKUP_WAIT_S, HANDOVER_WAIT_S } from './deliveryTiming.ts'
 import { externalLegOk } from '../routing/external.ts'
 import { fromLocal } from '../community/frame.ts'
 import { haversine } from '../geo/wgs84.ts'
@@ -287,9 +288,9 @@ function newPlanShell(task: Task, agent: Agent, pharmacyId: string | null, exter
 }
 
 function etaOf(external: ExternalLeg | null, internal: InternalLeg | null, now: SimTime): SimTime[] {
-  const e = external?.durationS ?? 0
-  const i = internal?.durationS ?? 0
-  return [now + Math.max(e, internal ? e : 0) + i]
+  const e = external ? externalTravelSeconds(external.durationS) + PICKUP_WAIT_S : 0
+  const i = internal ? Math.max(1, internal.durationS) : 0
+  return [now + e + HANDOVER_WAIT_S + i]
 }
 
 export async function buildCandidates(opts: BuildOptions): Promise<BuildResult> {
@@ -336,7 +337,7 @@ export async function buildCandidates(opts: BuildOptions): Promise<BuildResult> 
     const unableGate = !activeGate
     if (unableGate) {
       reasons.push(
-        `社区大门（${model.net.gates.map((g) => g.name).join('、') || '未标记'}）当前不可用：门口道路被淹，外部 Agent 无法进入社区，需改从围栏临时接驳点接力`,
+        `社区大门（${model.net.gates.map((g) => g.name).join('、') || '未标记'}）当前不可用：请检查路网中已标记的接驳点是否可用于接力`,
       )
     }
     if (!pharmacies.length) reasons.push('没有可用药店：外部物资点均被标记为不可用')
@@ -405,7 +406,7 @@ export async function buildCandidates(opts: BuildOptions): Promise<BuildResult> 
       if (!feasible) reasons.push(...checks.filter((c) => !c.ok).map((c) => `${c.label}：${c.detail}`))
     }
 
-    // ---- 候选 B：围栏临时接驳点接力（外部送接驳点，内部 Agent 送达） ----
+    // ---- 候选 B：已标记接驳点接力（外部送接驳点，内部 Agent 送达） ----
     for (const r of reachable) {
       const relay = r.relay
       const intAgent = intAgents.find((a) => a.capacityKg >= task.weightKg)
@@ -473,7 +474,7 @@ export async function buildCandidates(opts: BuildOptions): Promise<BuildResult> 
         mkCheck('capacity', '运力', intAgent.capacityKg >= task.weightKg, `${intAgent.name} 载重 ${intAgent.capacityKg}kg ≥ ${task.weightKg}kg`),
         mkCheck('route', '避让封闭路段', Boolean(internal), internal ? '内部路线不经过封闭路段' : '无法绕开封闭路段'),
       ]
-      const eta = now + (external?.durationS ?? 0) + (internal?.durationS ?? 0) + (internal ? 90 : 0)
+      const [eta] = etaOf(external, internal, now)
       const slack = task.slaAt - eta
       checks.push(mkCheck('sla', '时限', slack >= 0, `${task.deadlineLabel}送达，余量 ${(slack / 60).toFixed(1)} 分钟`))
       const feasible = Boolean(internal) && canReachRelay && Boolean(stockPharmacy) && checks.every((c) => c.ok)
@@ -483,7 +484,7 @@ export async function buildCandidates(opts: BuildOptions): Promise<BuildResult> 
         id: `cand:${task.id}:relay:${relay.key}`,
         eventId: eventKey,
         kind: 'staging_relay',
-        title: relayDoor === alternateEntranceId(task) ? '接力 + 换入口：经临时接驳点并改走备用入口' : '接力：外部送到临时接驳点，内部 Agent 送达',
+        title: relayDoor === alternateEntranceId(task) ? '接力 + 换入口：经接驳点并改走备用入口' : '接力：外部送到接驳点，内部 Agent 送达',
         summary: `${carrier.name} 送到 ${relay.label}，${intAgent.name} 接力沿内部路网送达 ${task.targetName}`,
         affects: [task.id],
         legs: shell.legs,
@@ -497,7 +498,7 @@ export async function buildCandidates(opts: BuildOptions): Promise<BuildResult> 
         feasible,
         score: 0,
         reason: feasible ? ['绕开封闭大门', '接驳点接力'] : checks.filter((c) => !c.ok).map((c) => `${c.label}：${c.detail}`),
-        dispatchReason: '大门或主干道被淹：改用围栏临时接驳点，由内部 Agent 接力送达，外部安排不中断',
+        dispatchReason: `改用已标记的「${relay.label}」交接，由内部 Agent 接力送达`,
         rank: 0,
         agentId: intAgent.id,
         isRelay: true,
