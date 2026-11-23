@@ -27,6 +27,7 @@ import type { MapAdapter, BuildingSpec, MarkerSpec, PolygonSpec, PlanLineStyle }
 import { createFallbackAdapter } from './map/fallback.ts'
 import { createAmapAdapter } from './map/amap.ts'
 import { EditorSidebar } from './ui/EditorSidebar.tsx'
+import { getCommunityReadiness } from './ui/communityReadiness.ts'
 import { FenceToolbar } from './ui/FenceToolbar.tsx'
 import { ConsoleSidebar } from './ui/ConsoleSidebar.tsx'
 import { ViewPanel } from './ui/ViewPanel.tsx'
@@ -75,7 +76,9 @@ import { PreventionPanel } from './ui/PreventionPanel.tsx'
 import { assessPrevention } from './domain/community/prevention.ts'
 import { EvacuationPanel } from './ui/EvacuationPanel.tsx'
 import { analyzeResilience } from './domain/community/analysis.ts'
-import { buildingUrgency, pickCandidate, type CommunityArrival, type SandboxLayer } from './sandbox/scene.ts'
+import { buildingUrgency, deriveSceneBuildings, pickCandidate, URGENCY_GRADIENT, type CommunityArrival, type SandboxLayer } from './sandbox/scene.ts'
+import { MapObjects } from './ui/MapObjects.tsx'
+import { MAP_COLORS } from './map/palette.ts'
 import { estimatedResidents, rescueQueue } from './domain/sim/evacuation.ts'
 
 const STORAGE_KEY = 'georelay.community.v2'
@@ -155,6 +158,11 @@ export default function App(): React.ReactElement {
   const [selectedBuildingId, setSelectedBuildingId] = useState<string | null>(null)
   const [selectedRoadId, setSelectedRoadId] = useState<string | null>(null)
   const [notice, setNotice] = useState<Notice | null>(null)
+  useEffect(() => {
+    if (notice?.kind !== 'ok' || notice.action) return
+    const timer = window.setTimeout(() => setNotice(null), 4000)
+    return () => window.clearTimeout(timer)
+  }, [notice])
   const [basemapVisible, setBasemapVisible] = useState(true)
   const [busy, setBusy] = useState(false)
   const [tick, setTick] = useState(0)
@@ -182,6 +190,18 @@ export default function App(): React.ReactElement {
   const fenceValidation = useMemo(() => validateFence(fenceMode === 'off' ? model.fence.polygon : draft), [fenceMode, draft, model.fence.polygon])
   const fenceDirty = fenceMode === 'draw' || (fenceMode === 'edit' && JSON.stringify(draft) !== JSON.stringify(model.fence.polygon))
   const netValidation = useMemo(() => validateNetwork(model), [model])
+  const readiness = getCommunityReadiness({ fenceDirty, roadDraftCount: roadDraft.length, fenceVertexCount: model.fence.polygon.length, buildingCount: model.buildings.length, netValidation })
+
+  const planSet = useMemo(() => {
+    if (!engine) return null
+    const sets = Object.values(engine.state.planSets).filter((set) => !selectedTaskId || set.candidates.some((candidate) => candidate.taskId === selectedTaskId))
+    const selected = sets.find((set) => set.id === selectedPlanSetId)
+    return selected ?? sets.at(-1) ?? null
+  }, [engine, selectedPlanSetId, selectedTaskId, tick])
+  const hudTask = engine && selectedTaskId ? engine.state.tasks.find((t) => t.id === selectedTaskId) ?? null : null
+  const hudPlan = engine && selectedTaskId ? engine.state.plans[engine.state.assignments[selectedTaskId] ?? ''] ?? null : null
+  const taskPlanSet = planSet && hudTask ? { ...planSet, candidates: planSet.candidates.filter((candidate) => candidate.taskId === hudTask.id) } : planSet
+  const hudCandidate = pickCandidate(taskPlanSet, selectedCandidateId)
 
   // ---------------- 持久化 ----------------
   useEffect(() => {
@@ -305,7 +325,7 @@ export default function App(): React.ReactElement {
           setNotice(null)
         }
       },
-      onBuildingClick: (id) => setSelectedBuildingId(id),
+      onBuildingClick: (id) => mode === 'console' ? setRiskFocus(id) : setSelectedBuildingId(id),
       onRoadClick: (id) => {
         setSelectedRoadId(id)
         if (mode === 'console') setView((v) => v)
@@ -323,7 +343,7 @@ export default function App(): React.ReactElement {
     if (mode !== 'edit' || (fenceMode === 'off' && netMode === 'idle')) return
     const onKey = (e: KeyboardEvent): void => {
       const t = e.target as HTMLElement | null
-      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return
+      if (t && (t.closest('input, textarea, select, button, a, summary') || t.isContentEditable)) return
       if (netMode !== 'idle') {
         if (e.key === 'Escape') {
           e.preventDefault()
@@ -442,7 +462,7 @@ export default function App(): React.ReactElement {
     if (!adapter || !mapReady) return
     const polygons: PolygonSpec[] = []
     if (model.fence.polygon.length >= 3) {
-      polygons.push({ id: 'fence', path: model.fence.polygon, fill: '#C3F477', stroke: '#C3F477', opacity: 0.10, strokeWidth: 2.5, dashed: false, lineHeight: 26 })
+      polygons.push({ id: 'fence', path: model.fence.polygon, fill: '#54856B', stroke: '#54856B', opacity: 0.10, strokeWidth: 2.5, dashed: false, lineHeight: 26 })
     }
     adapter.setPolygons(polygons)
   }, [mapReady, model.fence.polygon])
@@ -587,10 +607,8 @@ export default function App(): React.ReactElement {
       if (plan.legs.external && view !== 'internal') routes.push({ id: `${plan.id}-ext`, path: plan.legs.external.path, style, label: taskId === selectedTaskId ? `${task?.code ?? ''} 外部路线` : undefined })
     }
     // 选中改派时补画“原路线”：被替换掉的旧方案用 baseline 线型，与新方案（approved）成对出现
-    if (selectedPlanSetId) {
-      const targetTaskIds = new Set(
-        Object.values(eng.state.planSets[selectedPlanSetId]?.candidates ?? []).map((c) => c.taskId),
-      )
+    if (taskPlanSet) {
+      const targetTaskIds = new Set(taskPlanSet.candidates.map((c) => c.taskId))
       for (const plan of Object.values(eng.state.plans)) {
         if (!plan.supersededBy || !targetTaskIds.has(plan.taskId)) continue
         const task = eng.state.tasks.find((x) => x.id === plan.taskId)
@@ -598,13 +616,10 @@ export default function App(): React.ReactElement {
         if (plan.legs.external && view !== 'internal') routes.push({ id: `old-${plan.id}-ext`, path: plan.legs.external.path, style: 'baseline', label: `${task?.code ?? ''} 原路线` })
       }
     }
-    const planSet = selectedPlanSetId ? eng.state.planSets[selectedPlanSetId] : null
-    if (planSet) {
-      for (const c of planSet.candidates) {
-        if (c.id !== selectedCandidateId || planSet.confirmedCandidateId) continue
-        if (c.internal?.path.length) routes.push({ id: `${c.id}-int`, path: c.internal.path, style: 'pending', label: `${c.feasible ? '候选' : '不可行'}` })
-        if (c.external?.path.length && view !== 'internal') routes.push({ id: `${c.id}-ext`, path: c.external.path, style: c.feasible ? 'pending' : 'rejected' })
-      }
+    if (taskPlanSet && hudCandidate && !taskPlanSet.confirmedCandidateId) {
+      const c = hudCandidate
+      if (c.internal?.path.length) routes.push({ id: `${c.id}-int`, path: c.internal.path, style: c.feasible ? 'pending' : 'rejected', label: c.feasible ? '候选' : '不可行' })
+      if (c.external?.path.length && view !== 'internal') routes.push({ id: `${c.id}-ext`, path: c.external.path, style: c.feasible ? 'pending' : 'rejected' })
     }
     for (const responder of eng.state.responders) {
       if (responder.status !== 'arrived' || view === 'external') routes.push({ id: `response-${responder.id}`, path: responder.path, style: 'response', label: '消防出警模拟路线' })
@@ -626,7 +641,7 @@ export default function App(): React.ReactElement {
       depthM: f.depthM,
     }))
     adapter.setFlood(flood)
-  }, [mapReady, tick, mode, view, selectedPlanSetId, selectedCandidateId, selectedTaskId, engine])
+  }, [mapReady, tick, mode, view, taskPlanSet, hudCandidate, selectedTaskId, engine])
 
   // ---------------- 编辑动作 ----------------
   /** 屏幕上是否足够接近起点（≤14px）：用于“点回起点闭合”的吸附判定 */
@@ -822,7 +837,7 @@ export default function App(): React.ReactElement {
       return touch({ ...next, fence })
     })
     setFenceMode('edit')
-    setNotice({ kind: 'ok', text: `围栏已确认：面积 ${Math.round(v.areaM2)} m²（顶点 ${path.length} 个），可拖动顶点微调` })
+    setNotice({ kind: 'ok', text: '围栏已保存' })
     const adapter = mapRef.current
     if (adapter) adapter.fitBounds(path, 80)
   }
@@ -868,7 +883,7 @@ export default function App(): React.ReactElement {
     setFenceMode('off')
     const adapter = mapRef.current
     if (adapter) adapter.fitBounds(concave, 80)
-    setNotice({ kind: 'ok', text: '已载入演示社区（凹形围栏 + 12 栋楼 + 示例路网）' })
+    setNotice({ kind: 'ok', text: '演示社区已载入' })
   }
 
   async function searchPlace(query: string): Promise<void> {
@@ -922,20 +937,8 @@ export default function App(): React.ReactElement {
   }
 
   async function confirmCommunity(kind: DisasterKind = disasterKind): Promise<void> {
-    if (fenceDirty || roadDraft.length) {
-      setNotice({ kind: 'warn', text: '请先完成或取消当前围栏/路段草稿，再进入指挥台' })
-      return
-    }
-    if (model.fence.polygon.length < 3) {
-      setNotice({ kind: 'error', text: '还没有确认的围栏：请先绘制并确认电子围栏' })
-      return
-    }
-    if (!model.buildings.length) {
-      setNotice({ kind: 'error', text: '还没有楼栋：请先批量生成楼栋' })
-      return
-    }
-    if (!netValidation.ok) {
-      setNotice({ kind: 'error', text: `路网还不能确认：${netValidation.errors.join('；')}` })
+    if (!readiness.ready) {
+      setNotice(readiness.notice)
       return
     }
     // 从指挥台返回建模后改了社区（楼栋/路网/围栏版本变了）再确认：上一场演练的记录与时钟不能复用，
@@ -993,7 +996,7 @@ export default function App(): React.ReactElement {
         const pts = [...model.fence.polygon, ...inv.map((p) => p.lngLat)]
         adapter.fitBounds(pts, 60)
       }
-      setNotice({ kind: 'ok', text: `已进入指挥台：社区「${model.name}」版本已锁定（${model.buildings.length} 栋楼，${model.net.roads.length} 条路段）` })
+      setNotice(null)
     } finally {
       setBusy(false)
     }
@@ -1319,12 +1322,7 @@ export default function App(): React.ReactElement {
     setSelectedPlanSetId(newest.id)
   }
 
-  const planSet = useMemo(() => {
-    if (!engine) return null
-    const sets = Object.values(engine.state.planSets).filter((set) => !selectedTaskId || set.candidates.some((candidate) => candidate.taskId === selectedTaskId))
-    const selected = sets.find((set) => set.id === selectedPlanSetId)
-    return selected ?? sets.at(-1) ?? null
-  }, [engine, selectedPlanSetId, selectedTaskId, tick])
+
 
   // 调试钩子：仅用于浏览器验收脚本读取演练状态（不参与业务逻辑）
   if (import.meta.env.DEV && typeof window !== 'undefined') {
@@ -1346,6 +1344,21 @@ export default function App(): React.ReactElement {
   const [sandboxLayer, setSandboxLayer] = useState<SandboxLayer>('overview')
   useEffect(() => { setSandboxLayer('overview') }, [engine?.state.id])
   const [drawer, setDrawer] = useState<'judgement' | 'evacuation' | null>(null)
+  const drawerRef = useRef<HTMLDialogElement>(null)
+  const [analysisOpen, setAnalysisOpen] = useState(false)
+  const [mobileWorkspace, setMobileWorkspace] = useState<'map' | 'tasks' | 'analysis'>('map')
+  useEffect(() => {
+    if (!drawer || mode !== 'console') return
+    const dialog = drawerRef.current
+    const trigger = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    dialog?.showModal()
+    return () => {
+      dialog?.close()
+      const target = trigger?.isConnected && trigger.checkVisibility({ checkVisibilityCSS: true })
+        ? trigger : document.querySelector<HTMLElement>('[data-testid="open-candidates"]')
+      target?.focus({ preventScroll: true })
+    }
+  }, [drawer, mode])
   const [riskFocus, setRiskFocus] = useState<string | null>(null)
   /** 从 A 切入 C 的一次性转场（镜头先聚焦围栏再进沙盘） */
   const [entering, setEntering] = useState(false)
@@ -1387,6 +1400,7 @@ export default function App(): React.ReactElement {
     blockedStagingIds: Object.keys(engine.state.blockedStaging),
   }) : null, [engine, closureSignature])
   const urgency = useMemo(() => engine && mode === 'console' ? buildingUrgency(engine, liveResilience, riskFocus) : [], [engine, mode, liveResilience, riskFocus, tick])
+  const mapBuildings = useMemo(() => engine && mode === 'console' ? deriveSceneBuildings(engine, urgency) : [], [engine, mode, urgency])
   const disasterPlan = engine?.disaster.plan
   const prevention = useMemo(() => mode === 'console' && preventionOpen && engine && disasterPlan
     ? assessPrevention(engine.view.model, disasterPlan.events)
@@ -1405,7 +1419,7 @@ export default function App(): React.ReactElement {
       hazards.push({
         kind: 'urgency', id: item.id, center: building.center, color: item.color,
         path: building.footprint.map((point) => fromLocal(engine.view.router.verts.frame, point)),
-        label: sandboxLayer === 'overview' ? item.zone?.label ?? `${item.name} · ${item.score} 分` : sandboxLayer === 'evacuation' ? `${item.name} · 楼内 ${item.inside} 人` : sandboxLayer === 'supply' ? engine.state.tasks.filter((task) => task.targetBuildingId === item.id).map((task) => {
+        label: riskFocus !== item.id ? item.name : sandboxLayer === 'overview' ? item.zone?.label ?? `${item.name} · ${item.score} 分` : sandboxLayer === 'evacuation' ? `${item.name} · 楼内 ${item.inside} 人` : sandboxLayer === 'supply' ? engine.state.tasks.filter((task) => task.targetBuildingId === item.id).map((task) => {
           const phase = engine.state.plans[engine.state.assignments[task.id]]?.phase
           return `${task.code} ${phase === 'delivered' ? '已送达' : phase === 'blocked' ? '受阻' : phase ? '调度中' : '待派单'}`
         }).join(' · ') : '',
@@ -1469,6 +1483,7 @@ export default function App(): React.ReactElement {
 
   function viewResponder(follow = false): void {
     if (!responder) return
+    showMapWorkspace()
     setConsoleView('external')
     setView('external')
     setFollowingResponder(follow)
@@ -1477,6 +1492,7 @@ export default function App(): React.ReactElement {
   }
 
   function toggleExternalView(): void {
+    showMapWorkspace()
     if (consoleView === 'external') {
       showCommunityMap(communityViewRef.current)
       return
@@ -1529,10 +1545,7 @@ export default function App(): React.ReactElement {
     }
   }, [mode, engine, tick, followingResponder, consoleView])
 
-  const hudTask = engine && selectedTaskId ? engine.state.tasks.find((t) => t.id === selectedTaskId) ?? null : null
-  const hudPlan = engine && selectedTaskId ? engine.state.plans[engine.state.assignments[selectedTaskId] ?? ''] ?? null : null
-  const taskPlanSet = planSet && hudTask ? { ...planSet, candidates: planSet.candidates.filter((candidate) => candidate.taskId === hudTask.id) } : planSet
-  const hudCandidate = pickCandidate(taskPlanSet, planSet?.confirmedCandidateId ?? selectedCandidateId)
+
   // 受阻原因：优先用本次演练最新的「不可通行/不可用」事件（路段断裂、接驳点失效等），
   // 不再依赖候选预案是否已经生成 —— 外部 Agent 还在路上时指挥员也要能看到风险。
   const hudImpactList = engine ? Object.values(engine.state.impacts) : []
@@ -1569,7 +1582,7 @@ export default function App(): React.ReactElement {
   const totalResidents = engine?.view.model.buildings.reduce((total, b) => total + estimatedResidents(b.floors, engine.view.model.unitsPerFloor), 0) ?? 0
   const evacuatedResidents = engine?.state.evacuation.reduce((total, group) => total + (group.status === 'arrived' ? group.residents : 0), 0) ?? 0
   const confirmNote = planSet?.confirmedCandidateId
-    ? '该候选已确认，等待 Agent 执行'
+    ? planSet.confirmedCandidateId === hudCandidate?.id ? '该候选已确认，等待 Agent 执行' : '本轮已确认其他方案'
     : canConfirm
       ? `预计 ${formatSimTime(hudCandidate!.latestEta, engine!.state.config.startLabel)} 送达`
       : '当前没有可确认的候选方案'
@@ -1578,13 +1591,48 @@ export default function App(): React.ReactElement {
     view,
     selectedTaskId,
     selectedRoadId,
-    selectedPlanSetId: planSet?.id ?? null,
-    selectedCandidateId,
+    selectedCandidateId: hudCandidate?.id ?? null,
     aiText,
     aiMode,
     lbsMode,
-    notice,
     busy,
+  }
+
+  const returnToEditor = (): void => {
+    if (presetMode) {
+      returnToMyCommunity()
+      return
+    }
+    setMode('edit')
+    setDrawer(null)
+    setNotice(null)
+    if (model.fence.polygon.length) requestAnimationFrame(() => mapRef.current?.fitBounds(model.fence.polygon, 48))
+  }
+
+  function confirmViewedCandidate(): void {
+    if (!engine || !planSet || !hudCandidate || !canConfirm) return
+    const result = confirmCandidate(engine, planSet.id, hudCandidate.id, '指挥员')
+    setNotice({ kind: result.ok ? 'ok' : 'error', text: result.message })
+    setTick((value) => value + 1)
+    if (result.ok) {
+      setSelectedPlanSetId(planSet.id)
+      setSelectedCandidateId(hudCandidate.id)
+      setDrawer(null)
+    }
+  }
+
+  function focusMapBuilding(id: string | null): void {
+    setRiskFocus(id)
+    const building = engine?.view.model.buildings.find((item) => item.id === id)
+    if (building && consoleView !== 'sandbox') mapRef.current?.flyTo(building.center, 18)
+  }
+
+  function showMapWorkspace(): void {
+    setMobileWorkspace('map')
+    requestAnimationFrame(() => {
+      const tab = document.querySelector<HTMLButtonElement>('[data-testid="mobile-workspace-map"]')
+      if (tab?.checkVisibility({ checkVisibilityCSS: true })) tab.focus({ preventScroll: true })
+    })
   }
 
   const showSandbox = mode === 'console' && consoleView === 'sandbox'
@@ -1593,39 +1641,27 @@ export default function App(): React.ReactElement {
     { kind: 'fire', label: '火灾' },
     { kind: 'earthquake', label: '地震' },
   ]
-  const disasterTitle = engine
-    ? engine.state.disaster === 'flood'
-      ? '内涝演练'
-      : engine.state.disaster === 'fire'
-        ? '火灾演练'
-        : '地震演练'
-    : '演练'
-  const mapSourceLabel = mapKind === 'amap' ? '高德 3D 白模' : '示例地图（非真实地理数据）'
+  const mapSourceLabel = mapKind === 'amap' ? '高德地图' : '示例地图（非真实地理数据）'
 
   return (
     <div className={`app-shell mode-${mode}`}>
+      <a className="skip-link" href="#workspace">跳到工作区</a>
       <header className="topbar">
         <div className="topbar-brand">
           <img src={brandIcon} alt="" width={26} height={26} />
           <strong>GeoRelay</strong>
           <span className="topbar-sep" aria-hidden />
-          <span className="topbar-scene">{mode === 'edit' ? '社区建模' : disasterTitle}</span>
-          {mode === 'edit' ? (
-            <span className={`badge ${mapKind === 'amap' ? 'muted' : 'warn'}`} data-testid="map-source-badge">{mapSourceLabel}</span>
-          ) : (
-            <span className="badge muted">{presetMode ? '预置演练（独立副本）' : '演练演示'}</span>
-          )}
+          <span className="topbar-scene">{mode === 'edit' ? '社区建模' : '指挥台'}</span>
         </div>
 
         <div className="topbar-center">
           {mode === 'console' && engine ? (
-            <div className="seg" role="tablist" aria-label="灾种">
+            <div className="seg" role="group" aria-label="灾种">
               {disasterOptions.map((d) => (
                 <button
                   key={d.kind}
                   className={`seg-btn ${engine.state.disaster === d.kind ? 'is-active' : ''}`}
-                  role="tab"
-                  aria-selected={engine.state.disaster === d.kind}
+                  aria-pressed={engine.state.disaster === d.kind}
                   onClick={() => void switchDisaster(d.kind)}
                   disabled={busy}
                   data-testid={`disaster-${d.kind}`}
@@ -1634,16 +1670,14 @@ export default function App(): React.ReactElement {
                 </button>
               ))}
             </div>
-          ) : (
-            <span className="badge muted">{lbsMode === 'amap' ? '高德周边/路线' : '示例路线'}</span>
-          )}
+          ) : null}
         </div>
 
         <div className="topbar-actions">
           {mode === 'console' ? (
             <>
               <button className="btn ghost sm" onClick={toggleExternalView} data-testid="toggle-external">
-                {consoleView !== 'external' ? '外部支援地图' : communityViewRef.current === 'amap' ? '回到高德白模' : '回到白模沙盘'}
+                {consoleView !== 'external' ? '外部支援' : '返回社区'}
               </button>
               {presetMode ? (
                 <>
@@ -1651,42 +1685,47 @@ export default function App(): React.ReactElement {
                   <button className="btn ghost sm" onClick={adoptPresetCommunity} data-testid="adopt-preset-community">复制为我的社区</button>
                 </>
               ) : (
-                <button className="btn ghost sm" onClick={() => { setMode('edit'); setDrawer(null) }} data-testid="back-to-edit">返回编辑</button>
+                <button className="btn ghost sm" onClick={returnToEditor} data-testid="back-to-edit">返回编辑</button>
               )}
             </>
           ) : null}
-          <button
+          {mode === 'console' ? <button
             className="btn ghost sm"
-            onClick={() => { if (engine) { resetEngine(engine); setTick((v) => v + 1); setNotice({ kind: 'ok', text: '演练已重置到 t=0（种子固定）' }) } }}
+            onClick={() => { if (engine) { resetEngine(engine); setTick((v) => v + 1); setNotice({ kind: 'ok', text: '演练已重置' }) } }}
             disabled={!engine}
-          >
-            重置演练
-          </button>
+          >重置演练</button> : null}
+          <details className="source-details">
+            <summary data-testid="map-source-badge">{mapKind === 'amap' ? '高德地图' : '示例数据'}</summary>
+            <div className="source-popover">
+              <dl>
+                <div><dt>地图</dt><dd>{mapSourceLabel}</dd></div>
+                <div><dt>路线</dt><dd>{lbsMode === 'amap' ? '高德路线' : '示例路线'}</dd></div>
+                <div><dt>研判</dt><dd>{status.ai}</dd></div>
+              </dl>
+              {presetMode ? <p>预置社区副本</p> : null}
+              {mapError ? <p>{mapError}</p> : null}
+            </div>
+          </details>
         </div>
       </header>
 
-      <div className={`workspace ${mode === 'edit' ? 'is-edit' : 'is-console'}`}>
+      <main id="workspace" tabIndex={-1} aria-label={mode === 'edit' ? '社区建模' : '演练指挥台'} className={`workspace ${mode === 'edit' ? 'is-edit' : 'is-console'}`} data-analysis-open={analysisOpen} data-mobile-workspace={mobileWorkspace} data-pending={canConfirm}>
+        {mode === 'console' ? <nav className="mobile-workspaces" aria-label="指挥台工作区">
+          {([['map', '地图'], ['tasks', '任务'], ['analysis', '分析']] as const).map(([id, label]) => <button key={id} type="button" data-testid={`mobile-workspace-${id}`} aria-pressed={mobileWorkspace === id} onClick={() => setMobileWorkspace(id)}>{label}</button>)}
+        </nav> : null}
+        {notice ? <div className={`workspace-feedback ${fenceMode !== 'off' && mode === 'edit' ? 'is-fencing' : ''}`}>
+          <div role={notice.kind === 'error' ? 'alert' : 'status'} className={`notice ${notice.kind === 'ok' ? 'info' : notice.kind}`}>
+            <span>{notice.text}</span>
+            {notice.action ? <button className="btn sm notice-action" onClick={() => { const action = notice.action; setNotice(null); action?.run() }}>{notice.action.label}</button> : null}
+            <button className="btn sm ghost" aria-label="关闭通知" onClick={() => setNotice(null)}>关闭</button>
+          </div>
+        </div> : null}
         <div className={`stage ${showSandbox ? 'is-behind' : ''} ${mode === 'edit' && fenceMode !== 'off' ? 'is-fencing' : ''}`} aria-hidden={showSandbox || undefined}>
           <div className="map-host" ref={mapHostRef} />
           {mode === 'edit' || !showSandbox ? (
             <div className="map-overlay-top">
               <div className="map-notice-stack">
-                {mapError && mode === 'console' ? <div className="notice warn">高德未启用（{mapError}），当前为<b>示例地图</b>：几何关系正确，非真实地理数据。</div> : null}
                 {!mapReady ? <div className="notice info">地图加载中…</div> : null}
-                {consoleView === 'external' && mode === 'console' ? (
-                  <div className="notice info">
-                    <span><b>外部支援地图</b>：白模沙盘只画围栏内社区；候选药店与完整外部路线在这里看。底图来源：{mapSourceLabel}。</span>
-                  </div>
-                ) : null}
-                {notice ? (
-                  <div className={`notice ${notice.kind === 'error' ? 'error' : notice.kind === 'warn' ? 'warn' : 'info'}`}>
-                    <span>{notice.text}</span>
-                    {notice.action ? (
-                      <button className="btn sm notice-action" onClick={() => { const a = notice.action; setNotice(null); a?.run() }}>{notice.action.label}</button>
-                    ) : null}
-                    <button className="btn sm ghost" onClick={() => setNotice(null)}>关闭</button>
-                  </div>
-                ) : null}
               </div>
             </div>
           ) : null}
@@ -1712,23 +1751,16 @@ export default function App(): React.ReactElement {
               }}
             />
           ) : null}
-          {mode === 'console' ? <div className="map-overlay-bottom">
-            <div className="legend">
-              <span className="legend-item"><span className="legend-swatch solid" />已生效路线</span>
-              <span className="legend-item"><span className="legend-swatch dashed" />待确认候选</span>
-              <span className="legend-item"><span className="legend-swatch dotted" />封闭/受阻路段</span>
-              <span className="legend-item"><span className="data-flag">演练数据</span></span>
-            </div>
-          </div> : null}
+          {mode === 'console' && !showSandbox ? <MapObjects buildings={mapBuildings} focusedBuildingId={riskFocus} onFocusBuilding={focusMapBuilding} /> : null}
         </div>
 
         {mode === 'edit' ? (
           <EditorSidebar
+            readiness={readiness}
             model={model}
             fenceMode={fenceMode}
             fenceValidation={fenceValidation}
             fenceDirty={fenceDirty}
-            draft={draft}
             draftCount={draft.length}
             selectedBuilding={selectedBuilding}
             netMode={netMode}
@@ -1739,17 +1771,6 @@ export default function App(): React.ReactElement {
             status={status}
             actions={{
               startFence,
-              undoVertex,
-              finishFence: () => finishFence(),
-              cancelFence,
-              toggleRect: () => {
-                setRectMode((v) => {
-                  const next = !v
-                  setRectAnchor(null)
-                  setNotice({ kind: 'info', text: next ? '矩形围栏：点击两个对角点，自动成围栏' : '已切回逐点绘制' })
-                  return next
-                })
-              },
               clearFence: () => {
                 const previous = model
                 startFence()
@@ -1772,7 +1793,6 @@ export default function App(): React.ReactElement {
                 })
               },
               editFence: () => { cancelPendingVertex(); setNetMode('idle'); setRoadDraft([]); setFenceMode('edit'); setDraft(model.fence.polygon); setNotice({ kind: 'info', text: '拖动顶点调整围栏，完成后点「保存围栏」' }) },
-              saveFence: () => finishFence(),
               generate: (opts: BatchOptions) => {
                 const r = generateBuildings(model, opts)
                 if (!r.ok) {
@@ -1894,11 +1914,12 @@ export default function App(): React.ReactElement {
             model={engine.view.model}
             engine={engine}
             selectedTaskId={selectedTaskId}
-            selectedCandidateId={selectedCandidateId}
+            selectedCandidateId={hudCandidate?.id ?? null}
             planSet={taskPlanSet}
             showHazards
             resilience={liveResilience}
             focusedBuildingId={riskFocus}
+            onFocusBuilding={setRiskFocus}
             selectedImpactId={selectedImpactId ?? blockedSource?.id ?? null}
           />
         ) : null}
@@ -1916,15 +1937,17 @@ export default function App(): React.ReactElement {
               <button key={id} type="button" aria-pressed={sandboxLayer === id} onClick={() => setSandboxLayer(id)}>{label}</button>)}
           </div>
           <div className="console-map-key" aria-label="地图图例">
-            <span title="灾害暴露 45，通达性 30，楼内人数 15，重点住户 10">低 <i className="map-key-urgency" /> 高 · 紧急度 0–100</span>
-            <span><i className="map-key-supply" />物资</span>
-            <span><i className="map-key-evac" />撤离</span>
-            <span><i className="map-key-prevention" />重点预防区</span>
+            {consoleView !== 'external' ? <span title="灾害暴露 45，通达性 30，楼内人数 15，重点住户 10">低 <i className="map-key-urgency" style={{ background: URGENCY_GRADIENT }} /> 高 · 紧急度 0–100</span> : null}
+            <span><i style={{ background: MAP_COLORS.active }} />{consoleView === 'external' ? '生效路线' : '物资'}</span>
+            <span><i className="map-key-pending" style={{ borderColor: MAP_COLORS.pending }} />候选</span>
+            <span><i style={{ background: MAP_COLORS.evacuation }} />撤离</span>
           </div>
         </> : null}
 
         {mode === 'console' && engine ? (
           <SandboxHud
+            analysisOpen={analysisOpen}
+            onToggleAnalysis={() => setAnalysisOpen((open) => !open)}
             clockControls={<>
               <span className="drill-clock" title="全员撤离进度">
                 <span className="clock" data-testid="console-clock">{formatSimTime(engine.state.clock.t, engine.state.config.startLabel)}</span>
@@ -1935,7 +1958,7 @@ export default function App(): React.ReactElement {
                 disabled={drillEnded}
                 onClick={() => { engine.state.clock.running = !engine.state.clock.running; setTick((v) => v + 1) }}
               >
-                {thinking ? (engine.state.clock.running ? '规划中 · 暂停自动恢复' : '规划中 · 时钟已暂停') : drillEnded ? '全员已撤离' : engine.state.clock.running ? '暂停' : '开始演练'}
+                {thinking ? (engine.state.clock.running ? '暂停' : '继续') : drillEnded ? '全员已撤离' : engine.state.clock.running ? '暂停' : '开始演练'}
               </button>
               <button className="btn sm ghost" disabled={drillEnded || thinking} onClick={() => { void advanceDrill(engine, 60).then(followLatestPlanSet) }} data-testid="step-1min">+1 分钟</button>
               <button className="btn sm ghost" disabled={drillEnded || thinking} onClick={() => { void advanceDrill(engine, 300).then(followLatestPlanSet) }} data-testid="step-5min">+5 分钟</button>
@@ -1968,6 +1991,7 @@ export default function App(): React.ReactElement {
             }}
             confirmed={Boolean(planSet?.confirmedCandidateId === hudCandidate?.id && hudCandidate)}
             onPreviewCandidate={() => {
+              showMapWorkspace()
               if (consoleView === 'external') showCommunityMap(communityViewRef.current)
               if (hudCandidate && planSet) {
                 setSelectedPlanSetId(planSet.id)
@@ -1980,6 +2004,7 @@ export default function App(): React.ReactElement {
               return {
                 id: event.id, time: formatSimTime(event.at, engine.state.config.startLabel), message: event.message,
                 onFocus: taskId ? () => {
+                  showMapWorkspace()
                   setSelectedTaskId(taskId)
                   setSelectedCandidateId(null)
                   setSelectedPlanSetId(null)
@@ -1991,6 +2016,7 @@ export default function App(): React.ReactElement {
                 } : event.refs?.buildingId ? () => {
                   const building = engine.view.model.buildings.find((item) => item.id === event.refs?.buildingId)
                   if (!building) return
+                  showMapWorkspace()
                   if (consoleView === 'external') showCommunityMap(communityViewRef.current)
                   setSandboxLayer('evacuation')
                   setRiskFocus(building.id)
@@ -2004,7 +2030,6 @@ export default function App(): React.ReactElement {
             taskWindow={hudTask ? hudTask.deadlineLabel : null}
             targetName={hudTask?.targetName ?? null}
             blocked={hudBlocked}
-            awaitingApproval={canConfirm}
             relay={{ pharmacy: relayPharmacy, via: relayViaName, target: hudTask?.targetName ?? '—' }}
             canConfirm={canConfirm}
             confirmNote={confirmNote}
@@ -2029,6 +2054,7 @@ export default function App(): React.ReactElement {
               setRiskFocus(null)
             }}
             preventionPanel={prevention ? <PreventionPanel report={prevention} onLocate={(event) => {
+              showMapWorkspace()
               const model = engine.view.model
               const buildingId = event.targetId.replace(/^entrance(?:Alt)?:/, '')
               const building = model.buildings.find((item) => item.id === buildingId)
@@ -2047,12 +2073,14 @@ export default function App(): React.ReactElement {
               })
             }} /> : null}
             analysisPanel={liveResilience ? <ResiliencePanel report={liveResilience} analysis={currentRescueAnalysis} focusedId={riskFocus} onFocus={(id) => {
+              showMapWorkspace()
               if (consoleView === 'external') showCommunityMap(communityViewRef.current)
               setRiskFocus((previous) => previous === id ? null : id)
               const building = engine.view.model.buildings.find((item) => item.id === id)
               if (consoleView === 'amap' && building && riskFocus !== id) mapRef.current?.flyTo(building.center, 18)
             }} /> : null}
             onShowClosure={blockedSource ? () => {
+              showMapWorkspace()
               if (consoleView === 'external') showCommunityMap(communityViewRef.current)
               setSandboxLayer('hazards')
               setSelectedImpactId(blockedSource.id)
@@ -2077,25 +2105,21 @@ export default function App(): React.ReactElement {
             totalResidents={totalResidents}
             planning={engine.planning}
             aiPlanning={pendingAi.current === engine.state}
-            onOrderAll={() => { orderEvacuation(engine, engine.view.model.buildings.map((b) => b.id)); if (consoleView === 'external') showCommunityMap(communityViewRef.current); setSandboxLayer('evacuation'); setTick((v) => v + 1) }}
-            onFocusTask={() => { if (hudTask) setSelectedTaskId(hudTask.id); if (planSet) setSelectedPlanSetId(planSet.id) }}
+            onOrderAll={() => { orderEvacuation(engine, engine.view.model.buildings.map((b) => b.id)); if (consoleView === 'external') showCommunityMap(communityViewRef.current); setSandboxLayer('evacuation'); showMapWorkspace(); setTick((v) => v + 1) }}
+            onFocusTask={() => {
+              if (hudTask) { setSelectedTaskId(hudTask.id); focusMapBuilding(hudTask.targetBuildingId) }
+              if (planSet) setSelectedPlanSetId(planSet.id)
+              if (consoleView === 'external') showCommunityMap(communityViewRef.current)
+              setSandboxLayer('supply')
+              showMapWorkspace()
+            }}
             dataPlanSets={Object.keys(engine.state.planSets).length}
             dataImpacts={Object.keys(engine.state.impacts).length}
             dataPlanPhase={hudPlan?.phase ?? 'none'}
             drillEnded={drillEnded}
             evacuationComplete={engine.state.evacuationCompletedAt !== undefined}
-            onOpenJudgement={() => setDrawer('judgement')}
             onOpenCandidates={() => setDrawer('judgement')}
-            onConfirm={() => {
-              if (!engine || !planSet || !hudCandidate) return
-              const r = confirmCandidate(engine, planSet.id, hudCandidate.id, '指挥员')
-              setNotice({ kind: r.ok ? 'ok' : 'error', text: r.message })
-              setTick((v) => v + 1)
-              if (r.ok) {
-                setSelectedPlanSetId(planSet.id)
-                setSelectedCandidateId(hudCandidate.id)
-              }
-            }}
+            onConfirm={confirmViewedCandidate}
           />
         ) : null}
 
@@ -2110,10 +2134,10 @@ export default function App(): React.ReactElement {
           </section>
         ) : null}
         {mode === 'console' && drawer && engine ? (
-          <aside className="console-drawer" data-testid="console-drawer">
+          <dialog ref={drawerRef} className="console-drawer" data-testid="console-drawer" aria-labelledby="drawer-title" onCancel={() => setDrawer(null)}>
             <header className="drawer-head">
-              <span>{drawer === 'evacuation' ? '住户撤离' : '判据 · 候选 · 复盘'}</span>
-              <button className="btn sm ghost" onClick={() => { setDrawer(null); setRiskFocus(null) }} data-testid="close-drawer">关闭</button>
+              <span id="drawer-title">{drawer === 'evacuation' ? '住户撤离' : '候选与判据'}</span>
+              <button className="btn sm ghost" autoFocus onClick={() => setDrawer(null)} data-testid="close-drawer">关闭</button>
             </header>
             <div className="drawer-body">
               {drawer === 'evacuation' ? <EvacuationPanel key={engine.state.id} engine={engine} onOrder={(ids) => {
@@ -2123,7 +2147,6 @@ export default function App(): React.ReactElement {
                 setTick((v) => v + 1)
               }} /> : null}
               {drawer === 'judgement' ? <>
-              {consoleView === 'external' ? <ViewPanel engine={engine} model={model} view={view} selectedTaskId={selectedTaskId} /> : null}
               <ConsoleSidebar
                 engine={engine}
                 disaster={{
@@ -2180,13 +2203,12 @@ export default function App(): React.ReactElement {
                 onJumpToCandidate={(candidateId) => { for (const ps of relevantPlanSets(engine.state)) { const c = ps.candidates.find((x) => x.id === candidateId); if (c) { setSelectedPlanSetId(ps.id); setSelectedCandidateId(c.id); setSelectedTaskId(c.taskId); break } } }}
                 model={model}
                 ui={consoleUi}
-                planSet={planSet}
+                planSet={taskPlanSet}
                 inventory={inventory}
                 actions={{
                   setView,
-                  selectTask: (id) => { setSelectedTaskId(id); setSelectedRoadId(null) },
+                  selectTask: (id) => { setSelectedTaskId(id); setSelectedRoadId(null); setSelectedCandidateId(null); setSelectedPlanSetId(null) },
                   selectCandidate: (id) => setSelectedCandidateId(id),
-                  selectPlanSet: (id) => { setSelectedPlanSetId(id); setSelectedCandidateId(null) },
                   toggleClock: () => { engine.state.clock.running = !engine.state.clock.running; setTick((v) => v + 1) },
                   stepSeconds: (s: number) => { void advanceDrill(engine, s).then(followLatestPlanSet) },
                   regenerate: async () => {
@@ -2194,22 +2216,9 @@ export default function App(): React.ReactElement {
                     setNotice({ kind: r.ok ? 'ok' : 'warn', text: r.message })
                     setTick((v) => v + 1)
                   },
-                  confirm: (planSetId: string, candidateId: string) => {
-                    const r = confirmCandidate(engine, planSetId, candidateId, '指挥员')
-                    setNotice({ kind: r.ok ? 'ok' : 'error', text: r.message })
-                    setTick((v) => v + 1)
-                  },
                   askAi: () => { if (planSet) void askAi(planSet) },
                   reset: () => { resetEngine(engine); setTick((v) => v + 1); setSelectedPlanSetId(null); setSelectedCandidateId(null) },
-                  backToEdit: () => {
-                    if (presetMode) {
-                      returnToMyCommunity()
-                    } else {
-                      setMode('edit')
-                      setDrawer(null)
-                    }
-                  },
-                  selectRoad: (id) => setSelectedRoadId(id),
+                  backToEdit: returnToEditor,
                   setInventory: (next: InventoryPoint[]) => { setInventory(next); engine.state.inventory = Object.fromEntries(next.map((p) => [p.id, p])); setTick((v) => v + 1) },
                   exportRecord: () => {
                     const blob = new Blob([JSON.stringify(engine.state.record, null, 2)], { type: 'application/json' })
@@ -2222,17 +2231,22 @@ export default function App(): React.ReactElement {
                   },
                 }}
               />
+              {consoleView === 'external' ? <details className="drawer-support"><summary>外部支援状态</summary><ViewPanel engine={engine} /></details> : null}
               </> : null}
             </div>
-          </aside>
+            {drawer === 'judgement' && hudCandidate ? <footer className="drawer-confirm" data-candidate-id={hudCandidate.id}>
+              <div><strong>{hudTask?.code} · {hudTask?.targetName}</strong><span>{hudCandidate.title}</span></div>
+              {canConfirm ? <button className="btn primary" data-testid="confirm-viewed-candidate" onClick={confirmViewedCandidate}>确认改派</button> : <span>{planSet?.confirmedCandidateId ? planSet.confirmedCandidateId === hudCandidate.id ? '已确认' : '本轮已确认其他方案' : hudCandidate.feasible ? '暂不可确认' : '未通过校验'}</span>}
+            </footer> : null}
+          </dialog>
         ) : null}
 
         {entering ? (
           <div className="scene-transition" aria-hidden>
-            <div className="scene-transition-inner">锁定社区版本 · 切入白模沙盘</div>
+            <div className="scene-transition-inner">正在打开指挥台…</div>
           </div>
         ) : null}
-      </div>
+      </main>
     </div>
   )
 }

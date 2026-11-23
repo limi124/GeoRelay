@@ -1,4 +1,5 @@
 import type { HazardSpec } from '../domain/disaster/types.ts'
+import { MAP_COLORS } from './palette.ts'
 import type {
   BuildingSpec,
   FenceEditorOptions,
@@ -136,16 +137,16 @@ function loadScript(key: string, version: string): Promise<void> {
 const ROAD_STYLE: Record<RoadLineStyle, { color: string; dashed: boolean; width: number }> = {
   open: { color: '#8FBF4E', dashed: false, width: 5 },
   suggested: { color: '#FFAE84', dashed: true, width: 3 },
-  closed: { color: '#FF6B6B', dashed: true, width: 5 },
+  closed: { color: MAP_COLORS.blocked, dashed: true, width: 5 },
 }
 
 const ROUTE_STYLE: Record<PlanLineStyle, { color: string; dashed: boolean }> = {
-  approved: { color: '#C3F477', dashed: false },
-  pending: { color: '#FFAE84', dashed: true },
-  rejected: { color: '#FF6B6B', dashed: true },
-  baseline: { color: '#B9CBC3', dashed: true },
-  evacuation: { color: '#9362D1', dashed: true },
-  response: { color: '#D65D41', dashed: true },
+  approved: { color: MAP_COLORS.active, dashed: false },
+  pending: { color: MAP_COLORS.pending, dashed: true },
+  rejected: { color: MAP_COLORS.blocked, dashed: true },
+  baseline: { color: MAP_COLORS.original, dashed: true },
+  evacuation: { color: MAP_COLORS.evacuation, dashed: true },
+  response: { color: MAP_COLORS.firefighter, dashed: true },
 }
 
 const RELAY_TEXT: Record<string, string> = {
@@ -564,10 +565,15 @@ export async function createAmapAdapter(container: HTMLDivElement, opts: { cente
       for (const mk of list) {
         const relay = mk.relayState ? `<div class="relay-state ${mk.relayState}">${RELAY_TEXT[mk.relayState] ?? ''}</div>` : ''
         const label = mk.label ? `<div class="marker-label">${escapeHtml(mk.label)}</div>` : ''
+        const color = mk.kind === 'agent-internal' ? MAP_COLORS.internal
+          : mk.kind === 'agent-external' ? MAP_COLORS.external
+            : mk.kind === 'agent-firefighter' ? MAP_COLORS.firefighter
+              : mk.kind === 'evacuation' ? MAP_COLORS.evacuation
+                : mk.kind === 'agent-waiting' ? MAP_COLORS.pending : null
         const marker = new AMap.Marker({
           position: gcj(mk.lngLat),
           draggable: Boolean(mk.draggable),
-          content: `<div class="map-marker ${mk.kind} ${mk.size ?? 'md'}${mk.selected ? ' is-selected' : ''}">${relay}<div class="marker-dot"></div>${label}</div>`,
+          content: `<div class="map-marker ${mk.kind} ${mk.size ?? 'md'}${mk.selected ? ' is-selected' : ''}"${color ? ` style="--rescue-color:${color}"` : ''}>${relay}<div class="marker-dot"${color ? ` style="background-color:${color}"` : ''}></div>${label}</div>`,
           offset: new AMap.Pixel(mk.kind.startsWith('agent-') ? -14 : -11, mk.kind.startsWith('agent-') ? -14 : -11),
           zIndex: mk.kind.startsWith('agent') ? 160 : 150,
         })

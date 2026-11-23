@@ -1,11 +1,13 @@
 import type { CommunityModel } from '../domain/community/model.ts'
 import type { HazardSpec } from '../domain/disaster/types.ts'
 import type { LngLat, Vec2 } from '../domain/geo/types.ts'
+import { pointAtFraction } from '../domain/geo/path.ts'
 import { fromLocal, localFrameFromFence, toLocalIn } from '../domain/community/frame.ts'
 import { agentPosition, floodedAt, type Engine } from '../domain/sim/engine.ts'
 import type { ResilienceReport } from '../domain/community/analysis.ts'
 import { estimatedResidents, evacuationByBuilding } from '../domain/sim/evacuation.ts'
 import type { Agent, Candidate, Plan, PlanSet, Responder } from '../domain/sim/types.ts'
+import { MAP_COLORS } from '../map/palette.ts'
 
 /**
  * 沙盘（C）场景构建：把社区模型 + 演练状态投影成 2.5D 等轴测图形。
@@ -46,7 +48,10 @@ const URGENCY_COLORS = [
   [85, [239, 75, 75]],
 ] as const
 
-function urgencyColor(score: number): string {
+/** Shared with the legend so a score always maps to the same color. */
+export const URGENCY_GRADIENT = `linear-gradient(90deg, ${URGENCY_COLORS.map(([score, rgb]) => `rgb(${rgb.join(',')}) ${score}%`).join(', ')})`
+
+export function urgencyColor(score: number): string {
   const next = URGENCY_COLORS.findIndex(([threshold]) => threshold > score)
   const [end, to] = URGENCY_COLORS[next < 0 ? URGENCY_COLORS.length - 1 : next]
   const [start, from] = URGENCY_COLORS[next > 0 ? next - 1 : URGENCY_COLORS.length - 1]
@@ -79,10 +84,11 @@ export function projectArrival(frame: ReturnType<typeof localFrameFromFence>['fr
 
 export type SceneNode = (
   | { type: 'poly'; points: Pt[]; fill: string; stroke?: string; strokeWidth?: number; opacity?: number }
-  | { type: 'line'; points: Pt[]; stroke: string; width: number; dash?: string; opacity?: number; cap?: 'round' | 'butt'; flow?: boolean }
+  | { type: 'line'; points: Pt[]; stroke: string; width: number; dash?: string; opacity?: number; cap?: 'round' | 'butt'; flow?: boolean; dashOffset?: number; routeState?: 'active' | 'candidate' | 'blocked' | 'delivered' | 'waiting' }
   | { type: 'circle'; at: Pt; r: number; fill: string; stroke?: string; strokeWidth?: number }
-  | { type: 'label'; at: Pt; text: string; tone: SceneTone; anchor?: 'start' | 'middle' | 'end'; hint?: string }
-) & { layer?: 'flood' | 'fire' | 'earthquake' | 'closure' | 'risk' | 'evacuation' | 'occupancy' | 'dispatch' | 'urgency' }
+  | { type: 'actor'; at: Pt; size: number; fill: string; actorId: string; direction?: Pt; motionState: 'moving' | 'paused' | 'blocked' | 'waiting' | 'arrived' }
+  | { type: 'label'; at: Pt; text: string; tone: SceneTone; anchor?: 'start' | 'middle' | 'end'; hint?: string; detailText?: string; priority?: number; detailAtZoom?: number }
+) & { buildingId?: string; layer?: 'flood' | 'fire' | 'earthquake' | 'closure' | 'risk' | 'evacuation' | 'occupancy' | 'dispatch' | 'urgency' }
 
 export function buildingUrgency(engine: Engine, report: ResilienceReport | null, focusedId: string | null) {
   const { model, router } = engine.view
@@ -145,10 +151,61 @@ export interface Placed {
   backdrop?: boolean
 }
 
+export interface SceneBuilding {
+  id: string
+  name: string
+  at: Pt
+  floors: number
+  heightM: number
+  inside: number
+  urgency: number
+  status: string
+  detail: string
+  blocked: boolean
+  damage?: string
+  supply: string
+}
+
+/** Semantic data shared by SVG, AMap and the fallback map. Accept the already
+ * computed urgency rows so the application does not run risk analysis twice. */
+export function deriveSceneBuildings(engine: Engine, urgencyRows: ReturnType<typeof buildingUrgency>, damageById?: Map<string, string>): SceneBuilding[] {
+  const { model } = engine.view
+  const risks = new Map(urgencyRows.map(row => [row.id, row]))
+  const residents = evacuationByBuilding(engine.state.evacuation)
+  const damaged = damageById ?? new Map<string, string>()
+  if (!damageById) for (const hazard of engine.disaster.plan.hazardsAt(engine.state.clock.t)) {
+    if (hazard.kind === 'damage' && hazard.path.length >= 3) for (const building of model.buildings) {
+      if (pointInPolygon(building.center, hazard.path)) damaged.set(building.id, hazard.level)
+    }
+  }
+  return model.buildings.map(building => {
+    const urgency = risks.get(building.id)!
+    const group = residents.get(building.id)
+    const inside = group?.inside ?? estimatedResidents(building.floors, model.unitsPerFloor)
+    const orders = engine.state.tasks.filter(task => task.targetBuildingId === building.id).map(order => {
+      const plan = activePlanOf(engine, order.id)
+      const status = !plan ? '未派单' : plan.phase === 'delivered' ? '已送达' : plan.phase === 'blocked' ? '受阻' : plan.phase === 'delivering' ? '配送中' : plan.phase === 'external_enroute' ? '圈外在途' : '接驳待运'
+      return { order, plan, status }
+    })
+    const blocked = Boolean(group?.waiting) || orders.some(({ plan }) => plan?.phase === 'blocked')
+    const damage = damaged.get(building.id)
+    const riskLabel = urgency.zone?.label.split(' · ').slice(2).filter(label => label !== '已定位').join(' · ')
+    const status = [damage ? `受损：${damage}` : '', group?.waiting ? '待救援' : '', orders.some(({ plan }) => plan?.phase === 'blocked') ? '物资受阻' : '', riskLabel].filter(Boolean).join(' · ')
+    const detail = [
+      `紧急度 ${urgency.score}，灾情 ${urgency.exposure}、通达 ${urgency.access}、楼内 ${urgency.occupancy}、重点住户 ${urgency.vulnerable}`,
+      `楼内 ${inside} 人`, status,
+      ...orders.map(({ order, status }) => `${order.code} ${order.need.item} × ${order.need.qty}：${status}`),
+    ].filter(Boolean).join('；')
+    const heightM = Math.max(3, building.floors * building.floorHeightM)
+    return { id: building.id, name: building.name, at: project(building.local.c, heightM + 4), floors: building.floors, heightM, inside, urgency: urgency.score, status, detail, blocked, damage, supply: orders.map(({ order, status }) => `${order.code} ${status}`).join(' · ') }
+  })
+}
+
 export interface Scene {
   items: Placed[]
   bounds: { minX: number; minY: number; maxX: number; maxY: number }
   buildingCount: number
+  buildings: SceneBuilding[]
   roadCount: number
   damagedBuildingIds: string[]
   /** 沙盘里实际画出的楼栋高度（米），用于核对 A→C 高度一致 */
@@ -156,36 +213,36 @@ export interface Scene {
 }
 
 export const SANDBOX_THEME = {
-  bg: '#191B1F',
-  ground2d: '#191C20',
+  bg: '#F4F3EF',
+  ground2d: '#F4F3EF',
   groundGrid: 'rgba(120,132,142,0.09)',
-  outerBlock: '#1E2226',
+  outerBlock: '#E8E6E0',
   outerBlockEdge: 'rgba(120,132,142,0.11)',
-  fenceWall: 'rgba(159,240,184,0.14)',
-  fenceLine: 'rgba(159,240,184,0.85)',
-  slabTop: '#24272C',
-  slabSide: '#141619',
-  slabEdge: '#3B4046',
-  road: '#6E747A',
-  roadSuggested: '#5A6066',
-  roof: '#EFEFEC',
-  wallLit: '#DADBD5',
-  wallShade: '#BCBEB8',
+  fenceWall: `${MAP_COLORS.fence}24`,
+  fenceLine: MAP_COLORS.fence,
+  slabTop: '#E5E4DD',
+  slabSide: '#CECCC3',
+  slabEdge: '#B8B9AE',
+  road: '#B4B7AD',
+  roadSuggested: '#B5B6AD',
+  roof: '#FDFDF9',
+  wallLit: '#DCDDD3',
+  wallShade: '#C1C5B9',
   buildingStroke: 'rgba(18,20,23,0.55)',
   targetRoof: '#E4F7E8',
   damagedRoof: '#E7B58F',
-  routeActive: '#9FF0B8',
-  routeCandidate: '#FFD18B',
-  routeOriginal: '#8C9199',
-  blocked: '#FF9D5C',
-  agent: '#9FF0B8',
-  agentExternal: '#75BFFF',
-  agentFirefighter: '#FF9478',
-  evacuation: '#D9C1FF',
-  gate: '#F4F8EF',
-  staging: '#9FF0B8',
-  labelText: '#EDEFEA',
-  labelMuted: '#9DA3A8',
+  routeActive: MAP_COLORS.active,
+  routeCandidate: MAP_COLORS.pending,
+  routeOriginal: MAP_COLORS.original,
+  blocked: MAP_COLORS.blocked,
+  agent: MAP_COLORS.internal,
+  agentExternal: MAP_COLORS.external,
+  agentFirefighter: MAP_COLORS.firefighter,
+  evacuation: MAP_COLORS.evacuation,
+  gate: '#555F54',
+  staging: MAP_COLORS.internal,
+  labelText: '#343936',
+  labelMuted: '#71746E',
 }
 
 const depthOf = (v: Vec2): number => v.x + v.y
@@ -445,8 +502,8 @@ export function buildScene(input: SceneInput): Scene {
       const len = Math.hypot(dirX, dirY) || 1
       const ext = 150
       const outer = { x: gp.x + (dirX / len) * ext, y: gp.y + (dirY / len) * ext }
-      push({ type: 'poly', points: ribbon([gp, outer], 9), fill: '#2B3036', opacity: 0.95 }, -1e6, true)
-      push({ type: 'poly', points: ribbon([gp, outer], 5.5), fill: '#3C434B', opacity: 0.9 }, -1e6 + 0.001, true)
+      push({ type: 'poly', points: ribbon([gp, outer], 9), fill: '#D7D9CE', opacity: 0.95 }, -1e6, true)
+      push({ type: 'poly', points: ribbon([gp, outer], 5.5), fill: '#C6CBBF', opacity: 0.9 }, -1e6 + 0.001, true)
     }
 
     // —— 电子围栏：一圈薄荷色矮墙 + 顶边虚线，把三维社区“包起来” ——
@@ -460,13 +517,13 @@ export function buildScene(input: SceneInput): Scene {
           type: 'poly',
           points: [project(a, 0), project(b, 0), project(b, wallH), project(a, wallH)],
           fill: SANDBOX_THEME.fenceWall,
-          stroke: 'rgba(159,240,184,0.35)',
+          stroke: `${MAP_COLORS.fence}59`,
           strokeWidth: 0.8,
         },
         d - 0.01,
       )
       push({ type: 'line', points: [project(a, wallH), project(b, wallH)], stroke: SANDBOX_THEME.fenceLine, width: 2.2, dash: '10 7' }, d + 0.02)
-      push({ type: 'line', points: [project(a, 0), project(b, 0)], stroke: 'rgba(159,240,184,0.5)', width: 1.6 }, d)
+      push({ type: 'line', points: [project(a, 0), project(b, 0)], stroke: `${MAP_COLORS.fence}80`, width: 1.6 }, d)
     }
   }
 
@@ -497,7 +554,7 @@ export function buildScene(input: SceneInput): Scene {
         push({ type: 'label', at: { x: at.x, y: at.y - 6 }, text: '起火点', tone: 'firefighter' }, 1e9 + 2.1)
       }
       if (h.kind === 'rupture' && h.path.length >= 2) {
-        push({ type: 'line', layer: 'earthquake', points: h.path.map((p) => project(toV(p), 3)), stroke: '#FFB3EE', width: 6, dash: '2 6' }, 3e8)
+        push({ type: 'line', layer: 'earthquake', points: h.path.map((p) => project(toV(p), 3)), stroke: '#A15A89', width: 6, dash: '2 6' }, 3e8)
         blockedPoints.push({ at: h.path[0], name: '地震断路' })
       }
     }
@@ -514,8 +571,10 @@ export function buildScene(input: SceneInput): Scene {
 
   const task = selectedTaskId ? engine.state.tasks.find((t) => t.id === selectedTaskId) ?? null : null
 
-  const residentGroups = evacuationByBuilding(engine.state.evacuation)
-  const risks = new Map(buildingUrgency(engine, input.resilience ?? null, input.focusedBuildingId ?? null).map((risk) => [risk.id, risk]))
+  const urgencyRows = buildingUrgency(engine, input.resilience ?? null, input.focusedBuildingId ?? null)
+  const risks = new Map(urgencyRows.map(risk => [risk.id, risk]))
+  const buildings = deriveSceneBuildings(engine, urgencyRows, damaged)
+  const buildingData = new Map(buildings.map(building => [building.id, building]))
   for (const b of model.buildings) {
     const heightM = Math.max(3, b.floors * b.floorHeightM)
     const urgency = risks.get(b.id)!
@@ -526,7 +585,7 @@ export function buildScene(input: SceneInput): Scene {
     const fp = b.footprint as Vec2[]
     const d = polygonDepth(fp)
     const nodes = prism(fp, heightM, roof)
-    for (const node of nodes) push({ ...node, layer: 'urgency' }, 2e5 + d)
+    for (const node of nodes) push({ ...node, layer: 'urgency', buildingId: b.id }, 2e5 + d)
     if (damage) {
       const intensity = damage === '倒塌' ? 4 : damage === '严重' ? 3 : damage === '中等' ? 2 : 1
       const zone = urgency.path.map((point) => project(toV(point), 1))
@@ -537,20 +596,19 @@ export function buildScene(input: SceneInput): Scene {
       const zone = risk.path!.map((point) => project(toV(point), 1))
       push({ type: 'poly', layer: 'risk', points: zone, fill: `${color}${layer === 'overview' || layer === 'hazards' ? '40' : '26'}`, stroke: `${color}BB`, strokeWidth: focused ? 2.8 : 1.4 }, 1.8e5 + d)
     }
-    const group = residentGroups.get(b.id)
-    const inside = group?.inside ?? estimatedResidents(b.floors, model.unitsPerFloor)
-    const at = project(b.local.c, heightM + 4)
-    const waitingInside = inside > 0 && Boolean(group?.waiting)
-    if (layer === 'overview' || layer === 'evacuation' || focused || (layer === 'hazards' && risk)) {
-      const text = layer === 'evacuation' ? `${b.name} · 楼内 ${inside} 人` : risk?.label ?? `${b.name} · ${urgency.score} 分`
-      push({ type: 'label', layer: 'occupancy', at, text, tone: risk || waitingInside ? 'warn' : 'main', hint: `灾情 ${urgency.exposure} · 通达 ${urgency.access} · 楼内 ${urgency.occupancy} · 重点住户 ${urgency.vulnerable} · ${inside} 人${damage ? ` · ${damage}` : ''}` }, 3e9)
-    }
-    if (layer === 'supply') for (const order of engine.state.tasks.filter((item) => item.targetBuildingId === b.id)) {
-      const plan = activePlanOf(engine, order.id)
-      if (!plan) continue
-      const status = plan.phase === 'delivered' ? '已送达' : plan.phase === 'blocked' ? '受阻' : plan.phase === 'delivering' ? '配送中' : plan.phase === 'external_enroute' ? '圈外在途' : '接驳待运'
-      push({ type: 'label', layer: 'dispatch', at, text: `${order.code} · ${status}`, tone: plan.phase === 'blocked' ? 'warn' : 'mint', hint: `${b.name} · ${order.need.item} × ${order.need.qty}` }, 3e9)
-    }
+    const data = buildingData.get(b.id)!
+    const { at, inside, blocked, status, detail } = data
+    const context = layer === 'evacuation' ? `楼内 ${inside} 人${blocked ? ' · 受阻' : ''}`
+      : layer === 'supply' && data.supply ? data.supply
+      : `${urgency.score} 分${status ? ` · ${status}` : ''}`
+    push({
+      type: 'label', layer: 'occupancy', buildingId: b.id, at,
+      text: `${b.name}${blocked ? ' · 受阻' : damage ? ' · 受损' : ''}`,
+      detailText: `${b.name} · ${context}`,
+      detailAtZoom: focused || blocked ? 0 : layer === 'overview' ? 2 : 1.35,
+      priority: focused ? 100 : blocked ? 90 : damage ? 85 : task?.targetBuildingId === b.id ? 65 : risk ? 55 : 20,
+      tone: blocked || damage || risk ? 'warn' : 'main', hint: detail,
+    }, 3e9)
   }
 
   // 路网：未确认路段用虚线，已确认用带宽度路带
@@ -568,8 +626,8 @@ export function buildScene(input: SceneInput): Scene {
       const path = pts.map((p) => project(p, 2.8))
       const ev = Object.values(engine.state.impacts).find((e) => e.targetId === road.id && e.traffic === 'blocked')
       const depth = ev?.metrics?.depthM ?? engine.state.depths[road.id]
-      push({ type: 'line', layer: 'closure', points: path, stroke: '#532823', width: 9, cap: 'round' }, 4e8)
-      push({ type: 'line', layer: 'closure', points: path, stroke: '#FF916B', width: 5, dash: '7 4', cap: 'round' }, 4e8 + 1)
+      push({ type: 'line', layer: 'closure', points: path, stroke: `${MAP_COLORS.blocked}40`, width: 9, cap: 'round' }, 4e8)
+      push({ type: 'line', layer: 'closure', points: path, stroke: MAP_COLORS.blocked, width: 5, dash: '7 4', cap: 'round' }, 4e8 + 1)
       const mid = path[Math.floor((path.length - 1) / 2)]
       const next = path[Math.floor((path.length - 1) / 2) + 1]
       if (layer === 'hazards' && (selectedScenarioRoad || ev?.id === input.selectedImpactId || Object.keys(engine.state.closures)[0] === road.id)) {
@@ -579,28 +637,41 @@ export function buildScene(input: SceneInput): Scene {
     }
   }
 
-  // 路线：基线（灰虚线）→ 候选（薄荷绿虚线）→ 生效（薄荷绿实线）
+  // 路线颜色与图例共享；线型继续区分基线、候选和生效状态。
   const fencePoly = model.fence.polygon.map(toV)
-  const line = (points: LngLat[], style: 'original' | 'candidate' | 'active' | 'secondary' | 'delivered', depth: number): void => {
+  // Directional marks share the simulation clock: pausing or waiting for a planner
+  // freezes them with the real positions, without a second animation timeline.
+  const flowOffset = -(engine.state.clock.t * 2 % 20)
+  const line = (points: LngLat[], style: 'original' | 'candidate' | 'active' | 'secondary' | 'delivered', depth: number, moving = false): void => {
     if (points.length < 2) return
     // 只画围栏内的部分：外部药店到大门的那一段留给「外部支援地图」和底部接力条
     const clipped = clipToFence(fencePoly, points.map(toV))
     if (clipped.length < 2) return
     const pts = clipped.map((p) => project(p, style === 'active' ? 2.6 : style === 'candidate' ? 2.2 : 1.8))
-    if (style === 'original') push({ type: 'line', layer: 'dispatch', points: pts, stroke: '#FFAC91', width: 2.4, dash: '7 6', cap: 'round' }, depth)
-    if (style === 'candidate') push({ type: 'line', layer: 'dispatch', points: pts, stroke: SANDBOX_THEME.routeCandidate, width: 3.5, dash: '9 6', cap: 'round' }, depth)
-    if (style === 'secondary') push({ type: 'line', layer: 'dispatch', points: pts, stroke: '#76D1DB', width: 2.6, opacity: 0.78, cap: 'round' }, depth)
-    if (style === 'delivered') push({ type: 'line', layer: 'dispatch', points: pts, stroke: '#76D1DB', width: 2.2, opacity: layer === 'supply' ? 0.68 : 0.36, cap: 'round' }, depth)
+    if (style === 'original') push({ type: 'line', layer: 'dispatch', routeState: 'blocked', points: pts, stroke: SANDBOX_THEME.routeOriginal, width: 2.4, dash: '7 6', cap: 'round' }, depth)
+    if (style === 'candidate') push({ type: 'line', layer: 'dispatch', routeState: 'candidate', points: pts, stroke: SANDBOX_THEME.routeCandidate, width: 3.5, dash: '9 6', cap: 'round' }, depth)
+    if (style === 'secondary') push({ type: 'line', layer: 'dispatch', routeState: moving ? 'active' : 'waiting', points: pts, stroke: SANDBOX_THEME.routeActive, width: moving ? 3.4 : 2.6, opacity: 0.78, cap: 'round' }, depth)
+    if (style === 'delivered') push({ type: 'line', layer: 'dispatch', routeState: 'delivered', points: pts, stroke: SANDBOX_THEME.routeActive, width: 2.2, opacity: layer === 'supply' ? 0.68 : 0.36, cap: 'round' }, depth)
     if (style === 'active') {
-      push({ type: 'line', layer: 'dispatch', points: pts, stroke: '#76D1DB', width: 4, cap: 'round' }, depth)
-      push({ type: 'line', layer: 'dispatch', points: pts, stroke: '#dffcff', width: 2, dash: '1 15', cap: 'round', flow: engine.state.clock.running }, depth + 0.1)
+      push({ type: 'line', layer: 'dispatch', routeState: moving ? 'active' : 'waiting', points: pts, stroke: SANDBOX_THEME.routeActive, width: 4.5, cap: 'round' }, depth)
     }
+    if (moving && (style === 'active' || style === 'secondary')) push({ type: 'line', layer: 'dispatch', routeState: 'active', points: pts, stroke: '#F2FCF8', width: style === 'active' ? 2.4 : 1.8, dash: '6 14', dashOffset: flowOffset, cap: 'round', flow: true }, depth + 0.1)
+  }
+
+  const isMoving = (plan: Plan): boolean => plan.phase === 'delivering' || plan.phase === 'external_enroute'
+  const planRoute = (plan: Plan, selected: boolean, depth: number): void => {
+    const style = plan.phase === 'blocked' ? 'original' : plan.phase === 'delivered' ? 'delivered' : selected ? 'active' : 'secondary'
+    const internal = plan.legs.internal?.path
+    // Keep the committed destination leg visible while an external carrier is
+    // still approaching; only the leg they are traversing gets moving marks.
+    line(internal ?? plan.legs.external?.path ?? [], style, depth, plan.phase === 'delivering' || (plan.phase === 'external_enroute' && !internal))
+    if (internal && plan.phase === 'external_enroute') line(plan.legs.external?.path ?? [], style, depth + 0.2, true)
   }
 
   for (const other of engine.state.tasks) {
     if (other.id === selectedTaskId) continue
     const plan = activePlanOf(engine, other.id)
-    if (plan) line(plan.legs.internal?.path ?? plan.legs.external?.path ?? [], plan.phase === 'blocked' ? 'original' : plan.phase === 'delivered' ? 'delivered' : 'secondary', 2e8 - 1)
+    if (plan) planRoute(plan, false, 2e8 - 1)
   }
   if (task) {
     const cand = pickCandidate(planSet, selectedCandidateId)
@@ -608,7 +679,7 @@ export function buildScene(input: SceneInput): Scene {
     const base = baselineOf(engine, task.id)
     if (active?.phase === 'blocked') line(base?.legs.internal?.path ?? active.legs.internal?.path ?? active.legs.external?.path ?? [], 'original', 2e8)
     if (cand?.taskId === task.id && !planSet?.confirmedCandidateId) line(cand.internal?.path ?? [], 'candidate', 2e8 + 1)
-    if (active?.phase !== 'blocked') line(active?.legs.internal?.path ?? active?.legs.external?.path ?? [], active?.phase === 'delivered' ? 'delivered' : 'active', 2e8 + 2)
+    if (active && active.phase !== 'blocked') planRoute(active, true, 2e8 + 2)
   }
 
   // 关键节点与标签：只标大门、接驳点、目标楼栋
@@ -648,15 +719,22 @@ export function buildScene(input: SceneInput): Scene {
       exits.set(name, { p, count: total + group.residents })
       continue
     }
-    const color = group.status === 'blocked' ? '#FFAC79' : SANDBOX_THEME.evacuation
+    const color = group.status === 'blocked' ? SANDBOX_THEME.blocked : SANDBOX_THEME.evacuation
+    const destination = group.vertices[1] ? engine.view.router.verts.byId.get(group.vertices[1])?.pos : null
+    const toward = destination ? fromLocal(engine.view.router.verts.frame, destination) : group.assembly
+    const next = toward ? project(toV(toward), 6) : null
+    const direction = next ? { x: next.x - p.x, y: next.y - p.y } : undefined
     if (group.status === 'moving') {
       const remaining = group.vertices.slice(1).map((id) => engine.view.router.verts.byId.get(id)!.pos)
         .map((pos) => project(toV(fromLocal(engine.view.router.verts.frame, pos)), 4))
       const gate = remaining.at(-1) ?? p
-      if (remaining.length) push({ type: 'line', layer: 'evacuation', points: [p, ...remaining], stroke: color, width: 3, dash: '5 3' }, 5e8)
+      if (remaining.length) {
+        push({ type: 'line', layer: 'evacuation', routeState: 'active', points: [p, ...remaining], stroke: color, width: 3.8, cap: 'round' }, 5e8)
+        push({ type: 'line', layer: 'evacuation', routeState: 'active', points: [p, ...remaining], stroke: '#FAF7FF', width: 1.8, dash: '6 14', dashOffset: flowOffset, cap: 'round', flow: true }, 5e8 + 0.1)
+      }
       if (group.assembly) push({ type: 'line', layer: 'evacuation', points: [gate, project(toV(group.assembly), 4)], stroke: color, width: 2, dash: '1 5', cap: 'round' }, 5e8)
     }
-    push({ type: 'circle', layer: 'evacuation', at: p, r: 7.5, fill: color, stroke: '#231D35', strokeWidth: 2 }, 2e9)
+    push({ type: 'actor', layer: 'evacuation', at: p, size: 6, fill: color, actorId: `evac-${group.id}`, direction, motionState: group.status === 'moving' ? engine.state.clock.running ? 'moving' : 'paused' : group.status === 'blocked' ? 'blocked' : 'waiting' }, 2e9)
     const b = model.buildings.find((b) => b.id === group.buildingId)
     if (group.status !== 'moving' || layer === 'evacuation') {
       const status = group.status === 'rescuing' ? '转运' : group.status === 'blocked' ? '待援' : ''
@@ -664,7 +742,7 @@ export function buildScene(input: SceneInput): Scene {
     }
   }
   for (const [id, { p, count }] of queues) {
-    push({ type: 'circle', layer: 'evacuation', at: p, r: 10, fill: '#FFAC79', stroke: '#231D35', strokeWidth: 2 }, 2e9)
+    push({ type: 'circle', layer: 'evacuation', at: p, r: 10, fill: MAP_COLORS.pending, stroke: '#231D35', strokeWidth: 2 }, 2e9)
     if (layer === 'evacuation') push({ type: 'label', layer: 'evacuation', at: { x: p.x + 6, y: p.y - 9 }, text: `${gateNames.get(id) ?? '出口'} · 排队 ${count} 人`, tone: 'warn', anchor: 'start' }, 3e9 + 1)
   }
   for (const [name, { p, count }] of exits) {
@@ -693,13 +771,13 @@ export function buildScene(input: SceneInput): Scene {
 
   // 人员只读当前派单，角色取实际人员而非路线内/外段；同一人只保留一个当前位置。
   type Person = Pick<Agent | Responder, 'id' | 'name' | 'role'>
-  const people = new Map<string, { person: Person; at: LngLat; status: string; selected: boolean; priority: number }>()
-  const placePerson = (person: Person | undefined, at: LngLat | undefined | null, status: string, selected = false, priority = 0): void => {
+  const people = new Map<string, { person: Person; at: LngLat; status: string; selected: boolean; priority: number; plan?: Plan }>()
+  const placePerson = (person: Person | undefined, at: LngLat | undefined | null, status: string, selected = false, priority = 0, plan?: Plan): void => {
     if (!person || !at) return
     const previous = people.get(person.id)
     // 执行/受阻优先于已完成/待命；同阶段优先展示选中任务，避免旧任务把人员拉回终点。
     if (previous && (previous.priority > priority || (previous.priority === priority && (previous.selected || !selected)))) return
-    people.set(person.id, { person, at, status, selected, priority })
+    people.set(person.id, { person, at, status, selected, priority, plan })
   }
   const idlePosition = (agent: Agent): LngLat | null => {
     const staging = model.net.staging.find((s) => `staging:${s.id}` === agent.stagingNodeKey || s.id === agent.stagingNodeKey)
@@ -721,7 +799,7 @@ export function buildScene(input: SceneInput): Scene {
     if (carrying) {
       const pos = agentPosition(engine, plan)
       const status = plan.phase === 'blocked' ? '受阻待改派' : plan.phase === 'delivered' ? '已送达' : '配送中'
-      placePerson(pos.leg === 'external' ? assigned : carrier, pos.lngLat, `${status}${destination}`, selected, plan.phase === 'delivered' ? 1 : 4)
+      placePerson(pos.leg === 'external' ? assigned : carrier, pos.lngLat, `${status}${destination}`, selected, plan.phase === 'delivered' ? 1 : 4, plan)
     } else if (handover) {
       // 交接进度不是行走进度：双方仍在内部路径起点，不沿路径提前移动。
       placePerson(carrier, start ?? (carrier ? idlePosition(carrier) : null), '等待交接', selected, 3)
@@ -733,7 +811,7 @@ export function buildScene(input: SceneInput): Scene {
           ? agentPosition(engine, plan).lngLat
           : assigned ? idlePosition(assigned) : null
       const status = plan.phase === 'pickup_wait' ? '取货中' : plan.phase === 'external_arrived' ? '已到入口' : plan.phase === 'external_enroute' ? '前往取货' : '待命'
-      placePerson(assigned, at, status, selected, plan.phase === 'planned' ? 0 : 4)
+      placePerson(assigned, at, status, selected, plan.phase === 'planned' ? 0 : 4, plan)
     }
 
     if (relay && !carrying && !handover) {
@@ -750,18 +828,26 @@ export function buildScene(input: SceneInput): Scene {
     placePerson(responder, responder.position, `已到场 · ${responder.targetName}`, false, 4)
   }
 
-  for (const { person, at, status, selected, priority } of people.values()) {
+  for (const { person, at, status, selected, priority, plan } of people.values()) {
     const local = toV(at)
     // 在真实位置判定是否属于社区（含 3 m 边界容差），绝不把界外人员投到社区入口。
     if (person.role !== 'firefighter' && !pointInLocalPolygon(fencePoly, local) && distanceToFence(fencePoly, local) > 3) continue
     const p = project(local, 1.6)
     const tone: SceneTone = person.role === 'external' ? 'external' : person.role === 'firefighter' ? 'firefighter' : 'mint'
-    const color = person.role === 'external' ? SANDBOX_THEME.agentExternal : person.role === 'firefighter' ? SANDBOX_THEME.agentFirefighter : SANDBOX_THEME.agent
-    // 同位置用同心标记保留每个人的角色色，不用偏移坐标制造虚假位置。
-    const colocated = [...people.values()].filter((other) => other.at[0] === at[0] && other.at[1] === at[1])
-    const ring = Math.min(7, (colocated.length - colocated.findIndex((other) => other.person.id === person.id) - 1) * 3)
-    push({ type: 'circle', layer: 'dispatch', at: p, r: (selected ? 16 : 13) + ring, fill: `${color}36`, stroke: `${color}85`, strokeWidth: 1 }, 4e9)
-    push({ type: 'circle', layer: 'dispatch', at: p, r: (selected ? 9 : 7.5) + ring, fill: color, stroke: '#141619', strokeWidth: 2 }, 4e9 + 1)
+    const color = plan?.phase === 'blocked' ? SANDBOX_THEME.blocked : person.role === 'external' ? SANDBOX_THEME.agentExternal : person.role === 'firefighter' ? SANDBOX_THEME.agentFirefighter : SANDBOX_THEME.agent
+    const moving = Boolean(plan && isMoving(plan))
+    let direction: Pt | undefined
+    if (plan && (moving || plan.phase === 'blocked' || plan.phase === 'delivered')) {
+      const path = plan.phase === 'external_enroute' ? plan.legs.external?.path : plan.legs.internal?.path ?? plan.legs.external?.path
+      if (path && path.length >= 2) {
+        const progress = plan.phase === 'delivered' ? 1 : plan.progress
+        const before = project(toV(pointAtFraction(path, Math.max(0, progress - 0.002))), 0)
+        const after = project(toV(pointAtFraction(path, Math.min(1, progress + 0.002))), 0)
+        direction = { x: after.x - before.x, y: after.y - before.y }
+      }
+    }
+    // Keep every person at their real position, including people sharing a handover point.
+    push({ type: 'actor', layer: 'dispatch', at: p, size: selected ? 7 : 6, fill: color, actorId: person.id, direction, motionState: plan?.phase === 'blocked' ? 'blocked' : moving ? engine.state.clock.running ? 'moving' : 'paused' : plan?.phase === 'delivered' || person.role === 'firefighter' ? 'arrived' : 'waiting' }, 4e9 + 1)
     // 同一接驳点可有多名人员：错开标签而不挪动真实位置，双方姓名和状态都可读。
     if (person.role === 'firefighter' || (layer === 'supply' && (selected || priority >= 2))) {
       const role = person.role === 'external' ? '外部志愿者' : '内部志愿者'
@@ -778,6 +864,7 @@ export function buildScene(input: SceneInput): Scene {
     items: items.sort((a, b) => a.depth - b.depth),
     bounds: camera.length ? { minX: Math.min(...xs), minY: Math.min(...ys), maxX: Math.max(...xs), maxY: Math.max(...ys) } : { minX: -100, minY: -100, maxX: 100, maxY: 100 },
     buildingCount: model.buildings.length,
+    buildings,
     roadCount: model.net.roads.length,
     damagedBuildingIds: [...damaged.keys()],
     buildingHeights: model.buildings.map((b) => Math.max(3, b.floors * b.floorHeightM)),

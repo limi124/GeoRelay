@@ -4,19 +4,29 @@ import os
 
 from playwright.sync_api import expect, sync_playwright
 
-from e2e_check import read_model
+from ui_check import model as read_model
+
+
+def open_details(page, test_id):
+    details = page.get_by_test_id(test_id)
+    if details.get_attribute("open") is None:
+        details.locator(":scope > summary").click()
+    expect(details).to_have_attribute("open", "")
 
 
 def enter_console(page):
     page.get_by_test_id("confirm-community").click()
-    expect(page.get_by_test_id("open-judgement")).to_be_visible()
+    expect(page.get_by_test_id("open-candidates")).to_be_visible()
 
 
 def load_preset(page):
-    page.get_by_test_id("open-judgement").click()
+    page.get_by_test_id("open-candidates").click()
+    open_details(page, "console-settings")
     page.once("dialog", lambda dialog: dialog.accept())
     page.get_by_test_id("preset-flood-detour").click()
-    expect(page.get_by_text("预置演练（独立副本）", exact=True)).to_be_visible()
+    expect(page.get_by_test_id("preset-flood-detour")).to_have_attribute("aria-pressed", "true")
+    expect(page.get_by_test_id("back-to-my-community")).to_be_visible()
+    expect(page.get_by_test_id("adopt-preset-community")).to_be_visible()
     page.get_by_test_id("close-drawer").click()
 
 
@@ -29,7 +39,8 @@ def main():
         page.on("pageerror", lambda error: errors.append(str(error)))
         page.goto(os.getenv("GEORELAY_BASE_URL", "http://127.0.0.1:8791"))
         page.get_by_role("button", name="载入演示社区").click()
-        expect(page.get_by_text("已载入演示社区", exact=False)).to_be_visible()
+        expect(page.get_by_text("演示社区已载入", exact=True)).to_be_visible()
+        open_details(page, "community-dashboard")
         page.get_by_role("button", name="增加每层户数").click()
         enter_console(page)
         original = read_model(page)
@@ -49,9 +60,10 @@ def main():
         assert read_model(page) == original
 
         load_preset(page)
-        page.get_by_test_id("open-judgement").click()
+        page.get_by_test_id("open-candidates").click()
         page.get_by_role("button", name="返回编辑", exact=True).click()
         expect(page.get_by_text("已回到「", exact=False)).to_be_visible()
+        open_details(page, "community-dashboard")
         expect(page.get_by_role("group", name="每层户数")).to_contain_text("5")
         assert read_model(page) == original
         page.reload()

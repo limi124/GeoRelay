@@ -3,7 +3,7 @@ import type { DrillPreset } from '../domain/sim/presets.ts'
 /**
  * 一键演练入口：三个固定场景。
  *
- * 只负责“选场景 + 展示下一步提示”，改派仍然由指挥员确认。
+ * 只负责选择场景与显示来源，改派仍然由指挥员确认。
  * 用预置场景时会话会进入「预置场景」模式：不写回用户保存的社区模型。
  */
 
@@ -20,8 +20,7 @@ export function PresetBar(props: PresetBarProps): React.ReactElement {
   return (
     <section className="panel" data-testid="preset-bar">
       <div className="panel-header">
-        <span className="panel-title">一键演练</span>
-        {props.presetMode ? <span className="badge info">预置场景</span> : <span className="badge muted">自定义社区</span>}
+        <span className="panel-title">预置演练</span>
       </div>
       <div className="panel-body stack-sm">
         <div className="btn-group">
@@ -29,6 +28,7 @@ export function PresetBar(props: PresetBarProps): React.ReactElement {
             <button
               key={p.id}
               className={`btn sm ${props.activeId === p.id ? 'is-active' : ''}`}
+              aria-pressed={props.activeId === p.id && props.presetMode}
               onClick={() => props.onLoad(p.id)}
               disabled={props.busy}
               data-testid={`preset-${p.id}`}
@@ -38,28 +38,16 @@ export function PresetBar(props: PresetBarProps): React.ReactElement {
             </button>
           ))}
         </div>
-        {props.presetMode ? (
-          <p className="field-hint">预置场景使用独立社区副本，不会覆盖你在编辑台保存的社区模型。</p>
-        ) : (
-          <p className="field-hint">载入预置场景会开一场新演练（固定种子与灾情序列），当前自定义社区不会被保存覆盖。</p>
-        )}
+        <p className="field-hint">独立社区副本，不覆盖当前社区。</p>
         {active ? (
-          <div className="panel" data-testid="preset-hint">
-            <div className="panel-body stack-sm">
-              <div className="row-between">
-                <strong>{active.title}</strong>
-                <span className="badge muted">种子 {active.seed}</span>
-              </div>
+          <details className="hud-details" data-testid="preset-hint">
+            <summary>{active.title} · 场景详情</summary>
+            <div className="hud-details-body">
               <p className="field-hint">{active.intro}</p>
-              <div className="field-hint">下一步：</div>
-              <ol className="field-hint" style={{ margin: 0, paddingLeft: 18 }}>
-                {active.nextSteps.map((s) => (
-                  <li key={s}>{s}</li>
-                ))}
-              </ol>
-              <div className="field-hint">关注点：{active.focus.join('；')}</div>
+              <p className="field-hint">{active.focus.join('；')}</p>
+              <span className="field-hint">随机种子 {active.seed}</span>
             </div>
-          </div>
+          </details>
         ) : null}
       </div>
     </section>
