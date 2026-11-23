@@ -1,9 +1,8 @@
-import { useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import type { CommunityModel } from '../domain/community/model.ts'
 import type { Engine } from '../domain/sim/engine.ts'
-import { planRoads } from '../domain/sim/engine.ts'
 import { RANKING_LABELS } from '../domain/sim/ranker.ts'
-import type { Candidate, InventoryPoint, PlanSet, Task } from '../domain/sim/types.ts'
+import type { Candidate, InventoryPoint, PlanSet } from '../domain/sim/types.ts'
 import type { ImpactEvent } from '../domain/disaster/types.ts'
 import { formatSimTime } from '../domain/sim/clock.ts'
 import { DisasterBar, type DisasterUiState } from './DisasterBar.tsx'
@@ -30,12 +29,10 @@ export interface ConsoleUiState {
   view: ViewMode
   selectedTaskId: string | null
   selectedRoadId: string | null
-  selectedPlanSetId: string | null
   selectedCandidateId: string | null
   aiText: string | null
   aiMode: 'rules' | 'ai'
   lbsMode: 'amap' | 'sample'
-  notice: { kind: string; text: string } | null
   busy: boolean
 }
 
@@ -43,15 +40,12 @@ export interface ConsoleActions {
   setView(v: ViewMode): void
   selectTask(id: string): void
   selectCandidate(id: string): void
-  selectPlanSet(id: string): void
   toggleClock(): void
   stepSeconds(s: number): void
   regenerate(): void | Promise<void>
-  confirm(planSetId: string, candidateId: string): void
   askAi(): void
   reset(): void
   backToEdit(): void
-  selectRoad(id: string | null): void
   setInventory(next: InventoryPoint[]): void
   exportRecord(): void
 }
@@ -103,15 +97,9 @@ export function ConsoleSidebar(props: ConsoleProps): React.ReactElement {
   const { engine, ui, planSet, actions } = props
   const s = engine.state
   const [stockDraft, setStockDraft] = useState<Record<string, number>>({})
-  const selectedTask = s.tasks.find((t) => t.id === ui.selectedTaskId) ?? null
   /** 数据来源：专业模型算例时非空（简化演示为空），徽标与证据面板据此切换 */
   const provenance = engine.disaster.plan.provenance ?? null
   const evidenceAnchorRef = useRef<HTMLDivElement | null>(null)
-
-  const tasksForView = useMemo(() => {
-    if (ui.view === 'external') return s.tasks
-    return s.tasks
-  }, [s.tasks, ui.view])
 
   const closure = ui.selectedRoadId ? s.closures[ui.selectedRoadId] : null
   const road = ui.selectedRoadId ? props.model.net.roads.find((r) => r.id === ui.selectedRoadId) : null
@@ -122,59 +110,48 @@ export function ConsoleSidebar(props: ConsoleProps): React.ReactElement {
         <span className="panel-title">指挥台</span>
         <span className={`badge ${s.clock.running ? 'ok' : 'muted'}`}>{s.clock.running ? '演练进行中' : '已暂停'}</span>
       </div>
-      <div className="tabs">
-        <button className={`tab ${ui.view === 'global' ? 'is-active' : ''}`} onClick={() => actions.setView('global')}>全局</button>
-        <button className={`tab ${ui.view === 'internal' ? 'is-active' : ''}`} onClick={() => actions.setView('internal')}>社区内部</button>
-        <button className={`tab ${ui.view === 'external' ? 'is-active' : ''}`} onClick={() => actions.setView('external')}>外部支援</button>
-      </div>
+      <nav className="tabs" aria-label="调度范围">
+        <button className={`tab ${ui.view === 'global' ? 'is-active' : ''}`} aria-pressed={ui.view === 'global'} onClick={() => actions.setView('global')}>全局</button>
+        <button className={`tab ${ui.view === 'internal' ? 'is-active' : ''}`} aria-pressed={ui.view === 'internal'} onClick={() => actions.setView('internal')}>社区内部</button>
+        <button className={`tab ${ui.view === 'external' ? 'is-active' : ''}`} aria-pressed={ui.view === 'external'} onClick={() => actions.setView('external')}>外部支援</button>
+      </nav>
 
       <div className="panel-scroll">
-        <PresetBar presets={props.presets} activeId={props.activePresetId} presetMode={props.presetMode} busy={props.disasterBusy} onLoad={props.onLoadPreset} />
-
-        <DisasterBar
-          ui={props.disaster}
-          busy={props.disasterBusy}
-          onSwitch={props.onSwitchDisaster}
-          onSelectImpact={props.onSelectImpact}
-          provenance={provenance}
-          onStartModelRun={props.onStartModelRun}
-          onSwitchProvenance={props.onSwitchProvenance}
-          onJumpToEvidence={() => evidenceAnchorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-        />
-
-        {/* 两层证据：模型算出了什么 / GeoRelay 按哪条规则判定（简化演示时不渲染） */}
-        <div ref={evidenceAnchorRef} className="evidence-anchor">
-          <ModelEvidencePanel engine={engine} onFocus={props.onFocusModelEvidence} />
-        </div>
-
-        {/* 时钟与灾情 */}
-        <section className="panel">
-          <div className="panel-body stack-sm">
-            <div className="row-between">
-              <span className="kbd">{formatSimTime(s.clock.t, s.config.startLabel)}</span>
-              <span className="field-hint">演练 {Math.floor(s.clock.t / 60)} 分 {Math.floor(s.clock.t % 60)} 秒</span>
+        {/* 候选比较 */}
+        {planSet ? (
+          <section className="panel">
+            <div className="panel-header">
+              <span className="panel-title">改派候选</span>
+              <span className={`badge ${planSet.rankingMode === 'rules' ? 'muted' : 'info'}`} title={planSet.rankingNote}>{RANKING_LABELS[planSet.rankingMode]}</span>
             </div>
-            <div className="row">
-              <button className="btn sm" onClick={actions.toggleClock}>{s.clock.running ? '暂停' : '继续'}</button>
-              <button className="btn sm ghost" onClick={() => actions.stepSeconds(60)}>+1 分钟</button>
-              <button className="btn sm ghost" onClick={() => actions.stepSeconds(300)}>+5 分钟</button>
-              <button className="btn sm" onClick={() => void actions.regenerate()} disabled={ui.busy || !Object.keys(s.closures).length}>重新生成候选</button>
+            <div className="panel-body stack-sm">
+              <details className="hud-details"><summary>规划快照</summary><p className="field-hint">{planSet.snapshot}</p></details>
+              {planSet.candidates.map((c) => (
+                <CandidateCard
+                  key={c.id}
+                  candidate={c}
+                  selected={ui.selectedCandidateId === c.id}
+                  confirmed={planSet.confirmedCandidateId === c.id}
+                  onSelect={() => actions.selectCandidate(c.id)}
+                />
+              ))}
+              {!planSet.candidates.length ? <div className="empty"><div className="empty-title">还没有可行候选</div><div className="empty-hint">调整接驳点或库存后重新生成</div></div> : null}
+              {planSet.confirmedCandidateId ? (
+                <div className="notice info">已确认：{planSet.candidates.find((c) => c.id === planSet.confirmedCandidateId)?.title}</div>
+              ) : (
+                <div className="notice warn">待确认，当前派单尚未改变。</div>
+              )}
+              <button className="btn sm block ghost" onClick={actions.askAi} disabled={ui.busy}>{ui.aiMode === 'ai' ? 'AI' : '规则'} 解释候选</button>
+              {ui.aiText ? <pre className="field-hint" style={{ whiteSpace: 'pre-wrap' }}>{ui.aiText}</pre> : null}
             </div>
-            <div className="metric">
-              <div><span className="metric-value">{Object.keys(s.closures).length}</span><span className="metric-label">封路</span></div>
-              <div><span className="metric-value">{Object.values(s.assignments).filter((id) => s.plans[id]?.phase === 'blocked').length}</span><span className="metric-label">受阻</span></div>
-              <div><span className="metric-value">{s.record.results.length}</span><span className="metric-label">已送达</span></div>
-              <div><span className="metric-value">{Object.keys(s.planSets).length}</span><span className="metric-label">候选集</span></div>
-            </div>
-            <p className="field-hint">水深阈值 {s.config.depthThresholdM.toFixed(2)} 米 · 种子 {engine.seed} · 演练数据</p>
-          </div>
-        </section>
+          </section>
+        ) : null}
 
         {/* 任务 */}
         <section className="panel">
           <div className="panel-header"><span className="panel-title">任务状态</span><span className="badge muted">{s.tasks.length}</span></div>
           <div className="panel-body stack-sm">
-            {tasksForView.map((t) => {
+            {s.tasks.map((t) => {
               const planId = s.assignments[t.id]
               const plan = planId ? s.plans[planId] : null
               const blocked = plan?.phase === 'blocked'
@@ -183,6 +160,7 @@ export function ConsoleSidebar(props: ConsoleProps): React.ReactElement {
                   key={t.id}
                   data-testid={`task-${t.id}`}
                   className={`task-card ${ui.selectedTaskId === t.id ? 'is-selected' : ''} ${blocked ? 'is-blocked' : ''}`}
+                  aria-pressed={ui.selectedTaskId === t.id}
                   onClick={() => actions.selectTask(t.id)}
                 >
                   <div className="row-between">
@@ -232,110 +210,139 @@ export function ConsoleSidebar(props: ConsoleProps): React.ReactElement {
           </section>
         ) : null}
 
-        {/* 候选比较 */}
-        {planSet ? (
-          <section className="panel">
-            <div className="panel-header">
-              <span className="panel-title">改派候选</span>
-              <span className={`badge ${planSet.rankingMode === 'rules' ? 'muted' : 'info'}`} title={planSet.rankingNote}>{RANKING_LABELS[planSet.rankingMode]}</span>
+        <details className="hud-details console-settings" data-testid="console-settings">
+          <summary>演练设置与灾情</summary>
+          <div className="hud-details-body">
+            <PresetBar presets={props.presets} activeId={props.activePresetId} presetMode={props.presetMode} busy={props.disasterBusy} onLoad={props.onLoadPreset} />
+
+            <DisasterBar
+              ui={props.disaster}
+              busy={props.disasterBusy}
+              onSwitch={props.onSwitchDisaster}
+              onSelectImpact={props.onSelectImpact}
+              provenance={provenance}
+              onStartModelRun={props.onStartModelRun}
+              onSwitchProvenance={props.onSwitchProvenance}
+              onJumpToEvidence={() => evidenceAnchorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            />
+
+            {/* 两层证据：模型算出了什么 / GeoRelay 按哪条规则判定（简化演示时不渲染） */}
+            <div ref={evidenceAnchorRef} className="evidence-anchor">
+              <ModelEvidencePanel engine={engine} onFocus={props.onFocusModelEvidence} />
             </div>
-            <div className="panel-body stack-sm">
-              <div className="notice info">
-                状态快照：{planSet.snapshot}
-              </div>
-              {planSet.candidates.map((c) => (
-                <CandidateCard
-                  key={c.id}
-                  candidate={c}
-                  task={selectedTask}
-                  selected={ui.selectedCandidateId === c.id}
-                  confirmed={planSet.confirmedCandidateId === c.id}
-                  onSelect={() => actions.selectCandidate(c.id)}
-                  onConfirm={() => actions.confirm(planSet.id, c.id)}
-                  roads={planRoads(engine, s.plans[s.assignments[c.taskId]] ?? emptyPlan)}
-                />
-              ))}
-              {!planSet.candidates.length ? <div className="empty"><div className="empty-title">还没有可行候选</div><div className="empty-hint">查看上方任务的缺项说明，或调整接驳点/库存后重新生成</div></div> : null}
-              {planSet.confirmedCandidateId ? (
-                <div className="notice info">已确认：{planSet.candidates.find((c) => c.id === planSet.confirmedCandidateId)?.title}（确认前不改派）</div>
-              ) : (
-                <div className="notice warn">候选已生成但未生效：受阻 Agent 原地等待，确认后才改派。</div>
-              )}
-              <button className="btn sm block ghost" onClick={actions.askAi} disabled={ui.busy}>让 {ui.aiMode === 'ai' ? 'AI' : '规则'} 解释候选（不自动生效）</button>
-              {ui.aiText ? <pre className="field-hint" style={{ whiteSpace: 'pre-wrap' }}>{ui.aiText}</pre> : null}
-            </div>
-          </section>
-        ) : null}
 
-        <AiPanel ui={props.ai} modeLabel={props.aiModeLabel} onAsk={props.onAskAi} onJumpTask={props.onJumpToTask} onJumpCandidate={props.onJumpToCandidate} />
-
-        <RelayBoard engine={engine} selectedTaskId={ui.selectedTaskId} />
-
-        {provenance ? (
-          <p className="field-hint replay-provenance" data-testid="replay-provenance">
-            复盘来源：{provenance.label} · {provenance.caseId} · 引擎 {provenance.engineVersion}
-            （条目保留演练时刻，判据里写明 FDS/OpenQuake 输出）
-          </p>
-        ) : null}
-        <ReplayPanel
-          entries={buildReplay(engine.state)}
-          selectedId={props.replaySelectedId}
-          tasks={engine.state.tasks.map((t) => ({ id: t.id, code: t.code, targetName: t.targetName }))}
-          onSelect={props.onSelectReplay}
-        />
-
-        <ComparePanel />
-
-        {/* 药店与库存 */}
-        <section className="panel">
-          <div className="panel-header"><span className="panel-title">物资点（{ui.lbsMode === 'amap' ? '高德周边' : '示例数据'}）</span></div>
-          <div className="panel-body stack-sm">
-            {props.inventory.map((p) => (
-              <div key={p.id} className="panel">
+            {/* 时钟与灾情 */}
+            <section className="panel">
+              <div className="panel-body stack-sm">
                 <div className="row-between">
-                  <span>{p.name}</span>
-                  <span className={`badge ${p.availability === 'out' ? 'warn' : 'ok'}`}>{p.availability === 'out' ? '不可用' : p.availability === 'limited' ? '有限' : '可用'}</span>
+                  <span className="kbd">{formatSimTime(s.clock.t, s.config.startLabel)}</span>
+                  <span className="field-hint">演练 {Math.floor(s.clock.t / 60)} 分 {Math.floor(s.clock.t % 60)} 秒</span>
                 </div>
-                <div className="field-hint">{p.address ?? '（示例地址）'} · <span className="data-flag">演练库存</span></div>
                 <div className="row">
-                  {Object.entries(p.stock).map(([item, qty]) => (
-                    <label key={item} className="field" style={{ minWidth: 92 }}>
-                      <span className="field-label">{item}</span>
-                      <input
-                        className="input"
-                        type="number"
-                        value={stockDraft[`${p.id}:${item}`] ?? qty}
-                        onChange={(e) => setStockDraft({ ...stockDraft, [`${p.id}:${item}`]: Number(e.target.value) })}
-                        onBlur={() => {
-                          const v = stockDraft[`${p.id}:${item}`]
-                          if (v === undefined) return
-                          actions.setInventory(props.inventory.map((x) => (x.id === p.id ? { ...x, stock: { ...x.stock, [item]: v } } : x)))
-                        }}
-                      />
-                    </label>
+                  <button className="btn sm" onClick={actions.toggleClock}>{s.clock.running ? '暂停' : '继续'}</button>
+                  <button className="btn sm ghost" onClick={() => actions.stepSeconds(60)}>+1 分钟</button>
+                  <button className="btn sm ghost" onClick={() => actions.stepSeconds(300)}>+5 分钟</button>
+                  <button className="btn sm" onClick={() => void actions.regenerate()} disabled={ui.busy || !Object.keys(s.closures).length}>重新生成候选</button>
+                </div>
+                <div className="metric">
+                  <div><span className="metric-value">{Object.keys(s.closures).length}</span><span className="metric-label">封路</span></div>
+                  <div><span className="metric-value">{Object.values(s.assignments).filter((id) => s.plans[id]?.phase === 'blocked').length}</span><span className="metric-label">受阻</span></div>
+                  <div><span className="metric-value">{s.record.results.length}</span><span className="metric-label">已送达</span></div>
+                  <div><span className="metric-value">{Object.keys(s.planSets).length}</span><span className="metric-label">候选集</span></div>
+                </div>
+                <p className="field-hint">水深阈值 {s.config.depthThresholdM.toFixed(2)} 米 · 种子 {engine.seed} · 演练数据</p>
+              </div>
+            </section>
+
+          </div>
+        </details>
+
+        <details className="hud-details" data-testid="console-replay">
+          <summary>分析与复盘</summary>
+          <div className="hud-details-body">
+            <AiPanel ui={props.ai} modeLabel={props.aiModeLabel} onAsk={props.onAskAi} onJumpTask={props.onJumpToTask} onJumpCandidate={props.onJumpToCandidate} />
+
+            <RelayBoard engine={engine} selectedTaskId={ui.selectedTaskId} />
+
+            {provenance ? (
+              <p className="field-hint replay-provenance" data-testid="replay-provenance">
+                复盘来源：{provenance.label} · {provenance.caseId} · 引擎 {provenance.engineVersion}
+              </p>
+            ) : null}
+            <ReplayPanel
+              entries={buildReplay(engine.state)}
+              selectedId={props.replaySelectedId}
+              tasks={engine.state.tasks.map((t) => ({ id: t.id, code: t.code, targetName: t.targetName }))}
+              onSelect={props.onSelectReplay}
+            />
+
+            <ComparePanel />
+
+          </div>
+        </details>
+
+        <details className="hud-details" data-testid="console-inventory">
+          <summary>物资点与库存</summary>
+          <div className="hud-details-body">
+            {/* 药店与库存 */}
+            <section className="panel">
+              <div className="panel-header"><span className="panel-title">物资点（{ui.lbsMode === 'amap' ? '高德周边' : '示例数据'}）</span></div>
+              <div className="panel-body stack-sm">
+                {props.inventory.map((p) => (
+                  <div key={p.id} className="panel">
+                    <div className="row-between">
+                      <span>{p.name}</span>
+                      <span className={`badge ${p.availability === 'out' ? 'warn' : 'ok'}`}>{p.availability === 'out' ? '不可用' : p.availability === 'limited' ? '有限' : '可用'}</span>
+                    </div>
+                    <div className="field-hint">{p.address ?? '（示例地址）'} · <span className="data-flag">演练库存</span></div>
+                    <div className="row">
+                      {Object.entries(p.stock).map(([item, qty]) => (
+                        <label key={item} className="field" style={{ minWidth: 92 }}>
+                          <span className="field-label">{item}</span>
+                          <input
+                            className="input"
+                            type="number"
+                            value={stockDraft[`${p.id}:${item}`] ?? qty}
+                            onChange={(e) => setStockDraft({ ...stockDraft, [`${p.id}:${item}`]: Number(e.target.value) })}
+                            onBlur={() => {
+                              const v = stockDraft[`${p.id}:${item}`]
+                              if (v === undefined) return
+                              actions.setInventory(props.inventory.map((x) => (x.id === p.id ? { ...x, stock: { ...x.stock, [item]: v } } : x)))
+                            }}
+                          />
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+                <p className="field-hint">药店位置来自{ui.lbsMode === 'amap' ? '高德周边搜索' : '示例数据'}；库存与可用性由演练配置或指挥员录入。</p>
+              </div>
+            </section>
+
+          </div>
+        </details>
+
+        <details className="hud-details" data-testid="console-events">
+          <summary>事件记录 · {s.events.length}</summary>
+          <div className="hud-details-body">
+            {/* 事件记录 */}
+            <section className="panel">
+              <div className="panel-header"><span className="panel-title">事件记录</span><span className="badge muted">{s.events.length}</span></div>
+              <div className="panel-body">
+                <div className="event-log">
+                  {[...s.events].reverse().slice(0, 40).map((e) => (
+                    <div key={e.id} className="event-item">
+                      <span className="event-time">{formatSimTime(e.at, s.config.startLabel)}</span>
+                      <span className={`event-kind ${e.kind === 'road_closed' ? 'badge warn' : e.kind === 'plan_confirmed' ? 'badge ok' : 'badge muted'}`}>{e.kind}</span>
+                      <span>{e.message}</span>
+                    </div>
                   ))}
                 </div>
               </div>
-            ))}
-            <p className="field-hint">药店位置来自{ui.lbsMode === 'amap' ? '高德周边搜索' : '示例数据'}；库存与可用性由演练配置或指挥员录入。</p>
-          </div>
-        </section>
+            </section>
 
-        {/* 事件记录 */}
-        <section className="panel">
-          <div className="panel-header"><span className="panel-title">事件记录</span><span className="badge muted">{s.events.length}</span></div>
-          <div className="panel-body">
-            <div className="event-log">
-              {[...s.events].reverse().slice(0, 40).map((e) => (
-                <div key={e.id} className="event-item">
-                  <span className="event-time">{formatSimTime(e.at, s.config.startLabel)}</span>
-                  <span className={`event-kind ${e.kind === 'road_closed' ? 'badge warn' : e.kind === 'plan_confirmed' ? 'badge ok' : 'badge muted'}`}>{e.kind}</span>
-                  <span>{e.message}</span>
-                </div>
-              ))}
-            </div>
           </div>
-        </section>
+        </details>
 
         <section className="panel">
           <div className="panel-body stack-sm">
@@ -344,38 +351,11 @@ export function ConsoleSidebar(props: ConsoleProps): React.ReactElement {
               <button className="btn sm" onClick={actions.reset}>重置演练</button>
               <button className="btn sm ghost" onClick={actions.backToEdit}>返回编辑</button>
             </div>
-            <p className="field-hint">记录包含：状态快照 → 可行候选 → 选中方案 → 执行结果。同一随机种子可复现封路序列。</p>
           </div>
         </section>
       </div>
     </aside>
   )
-}
-
-const emptyPlan = {
-  id: '',
-  version: 1,
-  taskId: '',
-  agentId: '',
-  agentName: '',
-  carryAgentId: '',
-  relay: false,
-  carry: 'external' as const,
-  pharmacyId: null,
-  origin: 'baseline' as const,
-  createdBy: 'system' as const,
-  rationale: '',
-  legs: { external: null, internal: null },
-  networkVersion: '',
-  confirmedAt: 0,
-  phase: 'planned' as const,
-  progress: 0,
-  blockedRoadId: null,
-  deliveredAt: null,
-  pickupAt: null,
-  relayAt: null,
-  eta: [],
-  risk: 'unknown' as const,
 }
 
 function roadName(model: CommunityModel, id: string): string {
@@ -384,25 +364,22 @@ function roadName(model: CommunityModel, id: string): string {
 
 function CandidateCard(props: {
   candidate: Candidate
-  task: Task | null
   selected: boolean
   confirmed: boolean
   onSelect(): void
-  onConfirm(): void
-  roads: string[]
 }): React.ReactElement {
   const { candidate: c } = props
   const arrival = Math.max(...c.eta)
   const minutes = Math.round(arrival / 60)
   return (
-    <div className={`candidate-card ${props.selected ? 'is-selected' : ''} ${c.feasible ? '' : 'is-infeasible'}`} onClick={props.onSelect}>
+    <article className={`candidate-card ${props.selected ? 'is-selected' : ''} ${c.feasible ? '' : 'is-infeasible'}`} aria-label={c.title} data-candidate-id={c.id}>
       <div className="row-between">
-        <strong>{c.title}</strong>
+        <button className="sb-link candidate-title" type="button" aria-pressed={props.selected} aria-label={`预览方案：${c.title}`} onClick={props.onSelect}>{c.title}</button>
         <span className={`badge ${c.feasible ? 'ok' : 'warn'}`}>{c.feasible ? `可行 · 第 ${c.rank} 位` : '不可行'}</span>
       </div>
       <div className="field-hint">{c.summary}</div>
       <div className="field-hint">
-        预计 {minutes} 分钟送达 · 时限余量 {(c.slackS / 60).toFixed(1)} 分钟 · {c.isRelay ? '含接力交接' : '同一 Agent 完成'}
+        预计 {minutes} 分钟送达 · 时限余量 {(c.slackS / 60).toFixed(1)} 分钟 · {c.isRelay ? '接力配送' : '直接配送'}
       </div>
       <div className="check-list">
         {c.checks.map((ck) => (
@@ -417,10 +394,8 @@ function CandidateCard(props: {
       <div className="row">
         {props.confirmed ? (
           <span className="chip is-active">已确认生效</span>
-        ) : (
-          <button className="btn sm primary" disabled={!c.feasible} onClick={(e) => { e.stopPropagation(); props.onConfirm() }}>确认此方案</button>
-        )}
+        ) : null}
       </div>
-    </div>
+    </article>
   )
 }

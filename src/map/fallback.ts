@@ -1,4 +1,5 @@
 import type { HazardSpec } from '../domain/disaster/types.ts'
+import { MAP_COLORS, mapLabelColor } from './palette.ts'
 import type {
   BuildingSpec,
   FenceEditorOptions,
@@ -23,18 +24,18 @@ import type {
 type LngLat = [number, number]
 
 const COLORS = {
-  bg: '#0E211E',
-  block: '#22423A',
-  blockEdge: '#2C5048',
-  road: '#4A6A60',
-  fenceFill: 'rgba(195,244,119,0.10)',
-  fenceStroke: '#C3F477',
-  approved: '#C3F477',
-  pending: '#FFAE84',
-  closed: '#FF6B6B',
+  bg: '#F4F3EF',
+  block: '#E9E7E1',
+  blockEdge: '#DDDAD2',
+  road: '#D6D3CA',
+  fenceFill: `${MAP_COLORS.fence}1A`,
+  fenceStroke: MAP_COLORS.fence,
+  approved: MAP_COLORS.active,
+  pending: MAP_COLORS.pending,
+  closed: MAP_COLORS.blocked,
   water: 'rgba(90,160,220,0.38)',
-  text: '#F4F8EF',
-  text2: '#B9CBC3',
+  text: '#343936',
+  text2: '#71746E',
 }
 
 const M_PER_DEG_LAT = 110574.0
@@ -56,6 +57,18 @@ interface View {
   zoom: number
 }
 
+interface CanvasLabel {
+  key: string
+  text: string
+  compact?: string
+  x: number
+  y: number
+  priority: number
+  color: string
+}
+
+interface LabelBox { x: number; y: number; width: number; height: number }
+
 export function createFallbackAdapter(container: HTMLDivElement, opts: { center?: LngLat; zoom?: number } = {}): MapAdapter {
   const view: View = { center: opts.center ?? [121.4737, 31.2304], zoom: opts.zoom ?? 16 }
   const lat0 = view.center[1]
@@ -71,6 +84,7 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
   let hazards: HazardSpec[] = []
   let fence: FenceEditorOptions = { mode: 'off', draft: [], hoverPoint: null, closed: false, invalidPoint: null }
   let basemapVisible = true
+  let labels: CanvasLabel[] = []
 
   const canvas = document.createElement('canvas')
   canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab'
@@ -305,13 +319,9 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
         ctx.strokeStyle = color
         ctx.lineWidth = focused ? 3 : 2
         ctx.stroke()
-        ctx.font = 'bold 12px sans-serif'
-        ctx.textAlign = 'center'
-        ctx.lineWidth = 4
-        ctx.strokeStyle = '#241d16'
-        ctx.strokeText(h.label, x, y - 12)
-        ctx.fillStyle = '#ffe3a5'
-        ctx.fillText(h.label, x, y - 12)
+        const building = buildings.find(building => building.id === h.id)
+        const selected = building?.selected || h.kind === 'urgency' && building?.label !== h.label
+        labels.push({ key: `hazard-${h.id}`, text: h.label, x, y: y - 12, priority: focused || selected ? 110 : h.kind === 'risk' ? 95 : 35, color: h.kind === 'risk' ? COLORS.closed : COLORS.text })
       } else if (h.kind === 'smoke') {
         const [x, y] = project(h.center)
         const r = h.radiusM / mpp()
@@ -334,7 +344,7 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
         ctx.beginPath()
         ctx.arc(x, y, 7, 0, Math.PI * 2)
         ctx.fill()
-        ctx.strokeStyle = '#F4F8EF'
+        ctx.strokeStyle = '#343936'
         ctx.lineWidth = 2
         ctx.stroke()
       } else if (h.kind === 'damage') {
@@ -370,9 +380,9 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
       ctx.beginPath()
       pts.forEach(([x, y], i) => (i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)))
       const styleColor =
-        r.style === 'evacuation' ? '#C2A1FA' : r.style === 'response' ? '#FF9478' : r.style === 'approved' ? COLORS.approved : r.style === 'rejected' ? COLORS.closed : r.style === 'baseline' ? COLORS.text2 : COLORS.pending
+        r.style === 'evacuation' ? MAP_COLORS.evacuation : r.style === 'response' ? MAP_COLORS.firefighter : r.style === 'approved' ? COLORS.approved : r.style === 'rejected' ? COLORS.closed : r.style === 'baseline' ? MAP_COLORS.original : COLORS.pending
       // 深色描边提升在浅色街区上的可读性
-      ctx.strokeStyle = 'rgba(16,39,36,0.85)'
+      ctx.strokeStyle = 'rgba(255,255,255,0.85)'
       ctx.lineWidth = 7
       ctx.setLineDash(r.style === 'approved' ? [] : [9, 7])
       ctx.stroke()
@@ -382,10 +392,7 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
       ctx.setLineDash([])
       if (r.label) {
         const mid = pts[Math.floor(pts.length / 2)]
-        ctx.font = '11px ui-monospace, Consolas, monospace'
-        ctx.fillStyle = styleColor
-        ctx.textAlign = 'center'
-        ctx.fillText(r.label, mid[0], mid[1] - 8)
+        labels.push({ key: `route-${r.id}`, text: r.label, x: mid[0], y: mid[1], priority: r.style === 'rejected' ? 95 : r.style === 'pending' ? 75 : 45, color: styleColor })
       }
     }
   }
@@ -426,19 +433,13 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
       ctx.closePath()
       ctx.fillStyle = topColor
       ctx.fill()
-      ctx.strokeStyle = selected ? COLORS.fenceStroke : target ? COLORS.pending : 'rgba(32,40,38,0.55)'
+      ctx.strokeStyle = selected ? COLORS.fenceStroke : target ? COLORS.pending : 'rgba(70,74,67,0.4)'
       ctx.lineWidth = selected ? 2.2 : 1
       ctx.stroke()
       ctx.restore()
-      if (b.label && (selected || target || b.floors >= 12)) {
+      if (b.label && !hazards.some(hazard => hazard.kind === 'urgency' && hazard.id === b.id && hazard.label)) {
         const c = project(b.footprint.reduce((acc, p) => [acc[0] + p[0] / b.footprint.length, acc[1] + p[1] / b.footprint.length] as LngLat, [0, 0] as LngLat))
-        ctx.font = `${selected ? '600 ' : ''}11px 'Segoe UI', 'Microsoft YaHei', sans-serif`
-        ctx.textAlign = 'center'
-        ctx.lineWidth = 3
-        ctx.strokeStyle = 'rgba(14,24,22,0.55)'
-        ctx.strokeText(b.label, c[0], c[1] - lift - 6)
-        ctx.fillStyle = selected ? COLORS.fenceStroke : '#0F2A26'
-        ctx.fillText(b.label, c[0], c[1] - lift - 6)
+        labels.push({ key: `building-${b.id}`, text: b.label, x: c[0], y: c[1] - lift, priority: selected ? 110 : target ? 85 : 30, color: selected ? COLORS.fenceStroke : COLORS.text })
       }
     }
   }
@@ -456,7 +457,7 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
       const [x, y] = project(mk.lngLat)
       const size = mk.size === 'lg' ? 26 : mk.size === 'sm' ? 14 : 20
       const roleColor =
-        mk.kind === 'agent-external' ? '#75BFFF' : mk.kind === 'agent-internal' ? '#C3F477' : mk.kind === 'agent-firefighter' ? '#FF9478' : mk.kind === 'evacuation' ? '#D9C1FF' : null
+        mk.kind === 'agent-external' ? MAP_COLORS.external : mk.kind === 'agent-internal' ? MAP_COLORS.internal : mk.kind === 'agent-firefighter' ? MAP_COLORS.firefighter : mk.kind === 'evacuation' ? MAP_COLORS.evacuation : null
       const color = roleColor ?? (
         mk.kind === 'pharmacy'
           ? '#8FD4F4'
@@ -467,7 +468,7 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
               : COLORS.text
       )
       ctx.save()
-      ctx.shadowColor = 'rgba(0,0,0,0.55)'
+      ctx.shadowColor = 'rgba(40,40,36,0.12)'
       ctx.shadowBlur = 6
       ctx.fillStyle = roleColor ?? (mk.selected ? COLORS.fenceStroke : color)
       ctx.strokeStyle = mk.selected && roleColor ? COLORS.text : '#102724'
@@ -487,31 +488,74 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
       ctx.fill()
       ctx.stroke()
       ctx.restore()
-      ctx.font = "11px 'Segoe UI', 'Microsoft YaHei', sans-serif"
-      ctx.textAlign = 'left'
-      if (mk.label) {
-        ctx.lineWidth = 3
-        ctx.strokeStyle = 'rgba(16,39,36,0.92)'
-        ctx.strokeText(mk.label, x + size / 2 + 4, y + 3)
-        ctx.fillStyle = COLORS.text
-        ctx.fillText(mk.label, x + size / 2 + 4, y + 3)
-      }
-      if (mk.relayState) {
-        const txt = RELAY_TEXT[mk.relayState] ?? ''
-        const bw = ctx.measureText(txt).width + 10
-        const bx = x - bw / 2
-        const by = y - size / 2 - 20
-        ctx.fillStyle =
-          mk.relayState === 'blocked' ? '#7A2B2B' : mk.relayState === 'delivered' || mk.relayState === 'relayed' ? '#1F4A2E' : mk.relayState === 'pending_handover' ? '#5A3A22' : '#1E3A52'
-        ctx.beginPath()
-        ctx.roundRect(bx, by, bw, 15, 7)
-        ctx.fill()
-        ctx.fillStyle = mk.relayState === 'blocked' ? '#FFD3BA' : '#F4F8EF'
-        ctx.font = "10px 'Segoe UI', 'Microsoft YaHei', sans-serif"
-        ctx.textAlign = 'center'
-        ctx.fillText(txt, x, by + 11)
+      if (mk.label || mk.relayState) {
+        const state = mk.relayState ? RELAY_TEXT[mk.relayState] ?? '' : ''
+        const parts = (mk.label ?? '').split(' · ')
+        const compact = parts.slice(0, 2).join(' · ')
+        const withState = (text: string): string => state && !text.includes(state) ? `${text}${text ? ' · ' : ''}${state}` : text
+        const blocked = mk.relayState === 'blocked'
+        labels.push({
+          key: `marker-${mk.id}`, text: withState(mk.selected ? mk.label ?? '' : compact), compact: withState(compact), x, y,
+          priority: mk.selected ? 120 : blocked ? 100 : mk.kind === 'agent-firefighter' ? 90 : mk.relayState === 'pending_handover' ? 80 : mk.kind === 'evacuation' ? 70 : mk.label?.includes('待命') ? 15 : 50,
+          color: blocked ? COLORS.closed : roleColor ?? COLORS.text,
+        })
       }
     }
+  }
+
+  /** All geographic labels share one screen-space pass, including status badges.
+   * Geometry and hit targets remain available when a low-priority label cannot fit. */
+  function drawLabels(): void {
+    const canvasRect = canvas.getBoundingClientRect()
+    const workspace = container.closest('.workspace') ?? container
+    const occupied: LabelBox[] = Array.from(workspace.querySelectorAll('.console-map-switch, .console-focus-switch, .console-map-key, .map-controls, .map-attribution, .map-object-browser, .map-overlay-top, .fence-toolbar, .workspace-feedback'))
+      .filter(element => element.checkVisibility({ checkVisibilityCSS: true, checkOpacity: true }))
+      .map(element => element.getBoundingClientRect())
+      .filter(rect => rect.right > canvasRect.left && rect.left < canvasRect.right && rect.bottom > canvasRect.top && rect.top < canvasRect.bottom)
+      .map(rect => ({ x: rect.left - canvasRect.left, y: rect.top - canvasRect.top, width: rect.width, height: rect.height }))
+    const overlaps = (a: LabelBox, b: LabelBox): boolean => a.x < b.x + b.width + 4 && a.x + a.width + 4 > b.x && a.y < b.y + b.height + 4 && a.y + a.height + 4 > b.y
+    const seen = new Set<string>()
+    ctx.save()
+    ctx.font = "11px 'Segoe UI', 'Microsoft YaHei', sans-serif"
+    ctx.textAlign = 'left'
+    ctx.textBaseline = 'middle'
+    for (const label of [...labels].sort((a, b) => b.priority - a.priority || a.key.localeCompare(b.key))) {
+      if (!label.text || seen.has(label.text) || label.x < -16 || label.x > w + 16 || label.y < -16 || label.y > h + 16) continue
+      let placed: { box: LabelBox; text: string } | undefined
+      for (const text of label.compact && label.compact !== label.text ? [label.text, label.compact] : [label.text]) {
+        const width = Math.ceil(ctx.measureText(text).width) + 12
+        if (width > w - 20) continue
+        // Keep labels near their object; critical labels get extra rows before
+        // lower-priority names are considered. Every candidate stays on screen.
+        const offsets = [[12, -10], [-width - 12, -10], [-width / 2, -32], [-width / 2, 12], [-width / 2, -56], [-width / 2, 36], [-width - 12, -56], [12, 36]]
+        if (label.priority >= 80) offsets.push([-width / 2, -80], [-width / 2, 60], [-width / 2, -104], [-width / 2, 84])
+        for (const [dx, dy] of offsets) {
+          const box = { x: Math.max(10, Math.min(w - width - 10, label.x + dx)), y: Math.max(10, Math.min(h - 30, label.y + dy)), width, height: 20 }
+          if (occupied.some(other => overlaps(box, other))) continue
+          placed = { box, text }
+          break
+        }
+        if (placed) break
+      }
+      if (!placed) continue
+      const { box, text } = placed
+      occupied.push(box)
+      seen.add(label.text)
+      ctx.strokeStyle = 'rgba(75,81,71,0.35)'
+      ctx.lineWidth = 1
+      ctx.setLineDash([])
+      ctx.beginPath()
+      ctx.moveTo(label.x, label.y)
+      ctx.lineTo(Math.max(box.x, Math.min(box.x + box.width, label.x)), Math.max(box.y, Math.min(box.y + box.height, label.y)))
+      ctx.stroke()
+      ctx.fillStyle = 'rgba(255,255,253,0.96)'
+      ctx.beginPath()
+      ctx.roundRect(box.x, box.y, box.width, box.height, 3)
+      ctx.fill()
+      ctx.fillStyle = mapLabelColor(label.color)
+      ctx.fillText(text, box.x + 6, box.y + 10)
+    }
+    ctx.restore()
   }
 
   function drawFenceEditor(): void {
@@ -524,8 +568,8 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
       const a = project(fence.rectAnchor)
       const b = project(fence.hoverPoint)
       ctx.save()
-      ctx.fillStyle = 'rgba(195,244,119,0.08)'
-      ctx.strokeStyle = 'rgba(217,255,154,0.9)'
+      ctx.fillStyle = 'rgba(84,133,107,0.08)'
+      ctx.strokeStyle = 'rgba(84,133,107,0.9)'
       ctx.lineWidth = 2.5
       ctx.setLineDash([7, 5])
       ctx.beginPath()
@@ -547,7 +591,7 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
       }
       if (n >= 2) {
         trace()
-        ctx.strokeStyle = 'rgba(234,255,158,0.22)'
+        ctx.strokeStyle = 'rgba(84,133,107,0.22)'
         ctx.lineWidth = 14
         ctx.stroke()
         trace()
@@ -556,7 +600,7 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
         ctx.stroke()
       }
       trace()
-      ctx.strokeStyle = '#EAFF9E'
+      ctx.strokeStyle = '#49775E'
       ctx.lineWidth = 3
       ctx.setLineDash([6, 4])
       ctx.stroke()
@@ -564,7 +608,7 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
       if (fence.hoverPoint && !fence.closed && n) {
         const last = pts[n - 1]
         const [hx, hy] = project(fence.hoverPoint)
-        ctx.strokeStyle = 'rgba(195,244,119,0.55)'
+        ctx.strokeStyle = 'rgba(84,133,107,0.55)'
         ctx.lineWidth = 2
         ctx.setLineDash([5, 4])
         ctx.beginPath()
@@ -572,7 +616,7 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
         ctx.lineTo(hx, hy)
         ctx.stroke()
         if (n >= 3) {
-          ctx.strokeStyle = 'rgba(195,244,119,0.28)'
+          ctx.strokeStyle = 'rgba(84,133,107,0.28)'
           ctx.beginPath()
           ctx.moveTo(hx, hy)
           ctx.lineTo(pts[0][0], pts[0][1])
@@ -603,14 +647,14 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
           const b = pts[(i + 1) % n]
           const mx = (a[0] + b[0]) / 2
           const my = (a[1] + b[1]) / 2
-          ctx.fillStyle = 'rgba(16,39,36,0.85)'
-          ctx.strokeStyle = 'rgba(217,255,154,0.75)'
+          ctx.fillStyle = 'rgba(255,255,255,0.85)'
+          ctx.strokeStyle = 'rgba(84,133,107,0.75)'
           ctx.lineWidth = 1.5
           ctx.beginPath()
           ctx.arc(mx, my, 8, 0, Math.PI * 2)
           ctx.fill()
           ctx.stroke()
-          ctx.strokeStyle = '#D9FF9A'
+          ctx.strokeStyle = '#49775E'
           ctx.beginPath()
           ctx.moveTo(mx - 3.5, my)
           ctx.lineTo(mx + 3.5, my)
@@ -623,14 +667,14 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
         const bad = fence.invalidPoint === i
         const snap = i === 0 && fence.mode === 'draw' && Boolean(fence.snapFirst)
         if (snap) {
-          ctx.strokeStyle = 'rgba(195,244,119,0.55)'
+          ctx.strokeStyle = 'rgba(84,133,107,0.55)'
           ctx.lineWidth = 3
           ctx.beginPath()
           ctx.arc(x, y, 14, 0, Math.PI * 2)
           ctx.stroke()
         }
         const r = snap ? 7 : 4
-        ctx.fillStyle = bad ? COLORS.closed : '#102724'
+        ctx.fillStyle = bad ? COLORS.closed : '#FFFFFF'
         ctx.strokeStyle = bad ? '#FFD3BA' : COLORS.fenceStroke
         ctx.lineWidth = 2
         ctx.beginPath()
@@ -642,46 +686,8 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
     }
   }
 
-  function drawChrome(): void {
-    // 画布状态归零：前面图层的 save/restore 一旦不配对，标签会被旋转/平移
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-    ctx.globalAlpha = 1
-    ctx.setLineDash([])
-    // 明确的示例地图标签：不能让用户误以为是真实地图
-    const label = '示例地图 · 非真实地理数据'
-    ctx.font = "600 12px 'Segoe UI', 'Microsoft YaHei', sans-serif"
-    const tw = ctx.measureText(label).width
-    ctx.fillStyle = 'rgba(16,39,36,0.92)'
-    ctx.strokeStyle = '#FFAE84'
-    ctx.lineWidth = 1
-    ctx.beginPath()
-    ctx.roundRect(12, 12, tw + 20, 26, 8)
-    ctx.fill()
-    ctx.stroke()
-    ctx.fillStyle = '#FFD3BA'
-    ctx.textAlign = 'left'
-    ctx.fillText(label, 22, 29)
-    // 缩放控件
-    const bx = w - 46
-    const by = 12
-    ctx.fillStyle = 'rgba(16,39,36,0.92)'
-    ctx.strokeStyle = '#365A51'
-    for (let i = 0; i < 3; i++) {
-      ctx.beginPath()
-      ctx.roundRect(bx, by + i * 30, 34, 28, 6)
-      ctx.fill()
-      ctx.stroke()
-    }
-    ctx.fillStyle = COLORS.text
-    ctx.font = "16px 'Segoe UI', sans-serif"
-    ctx.textAlign = 'center'
-    ctx.fillText('+', bx + 17, by + 20)
-    ctx.fillText('−', bx + 17, by + 50)
-    ctx.font = "11px 'Segoe UI', 'Microsoft YaHei', sans-serif"
-    ctx.fillText('复位', bx + 17, by + 80)
-  }
-
   function draw(): void {
+    labels = []
     ctx.save()
     ctx.fillStyle = COLORS.bg
     ctx.fillRect(0, 0, w, h)
@@ -696,8 +702,8 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
     // 早画会被楼栋填充完全盖住（火灾烟雾半径大，顺序影响不明显，但同理）。
     drawHazards()
     drawMarkers()
+    drawLabels()
     drawFenceEditor()
-    drawChrome()
   }
 
   // ---------------- 交互 ----------------
@@ -792,7 +798,6 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
 
   function onPointerDown(e: MouseEvent): void {
     if (e.button !== 0) return
-    if (onClickChrome(e, false)) return
     const [x, y] = localXY(e)
     const v = events.collectingPoints ? null : hitVertex(x, y)
     if (v !== null) {
@@ -904,32 +909,34 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
     events.onCameraChange?.(view.center, view.zoom)
   }
 
-  function onClickChrome(e: MouseEvent, activate = true): boolean {
-    const [x, y] = localXY(e)
-    const bx = w - 46
-    if (x >= bx && x <= bx + 34) {
-      if (y >= 12 && y <= 40) {
-        if (!activate) return true
-        view.zoom = Math.min(20, view.zoom + 0.5)
-        draw()
-        return true
-      }
-      if (y >= 42 && y <= 70) {
-        if (!activate) return true
-        view.zoom = Math.max(12, view.zoom - 0.5)
-        draw()
-        return true
-      }
-      if (y >= 72 && y <= 100) {
-        if (!activate) return true
-        view.zoom = opts.zoom ?? 16
-        view.center = opts.center ?? view.center
-        draw()
-        return true
-      }
-    }
-    return false
+  const controls = document.createElement('div')
+  controls.className = 'map-controls'
+  controls.setAttribute('role', 'group')
+  controls.setAttribute('aria-label', '地图视角')
+  const viewActions = [
+    { label: '地图放大', text: '+', run: () => { view.zoom = Math.min(20, view.zoom + 0.5) } },
+    { label: '地图缩小', text: '−', run: () => { view.zoom = Math.max(12, view.zoom - 0.5) } },
+    { label: '地图复位', text: '↺', run: () => { view.zoom = opts.zoom ?? 16; view.center = opts.center ?? view.center } },
+  ]
+  for (const action of viewActions) {
+    const button = document.createElement('button')
+    button.type = 'button'
+    button.className = 'sb-btn'
+    button.textContent = action.text
+    button.title = action.label
+    button.setAttribute('aria-label', action.label)
+    button.addEventListener('click', () => {
+      action.run()
+      draw()
+      events.onCameraChange?.(view.center, view.zoom)
+    })
+    controls.appendChild(button)
   }
+  const attribution = document.createElement('span')
+  attribution.className = 'map-attribution'
+  attribution.textContent = '示例地图 · 非真实地理数据'
+  canvas.setAttribute('aria-label', '社区地图')
+  container.append(controls, attribution)
 
   canvas.addEventListener('pointerdown', onPointerDown)
   canvas.addEventListener('pointermove', onPointerMove)
@@ -937,9 +944,8 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
   canvas.addEventListener('dblclick', onDblClick)
   canvas.addEventListener('contextmenu', onContextMenu)
   canvas.addEventListener('wheel', onWheel, { passive: false })
-  canvas.addEventListener('click', (e) => {
-    onClickChrome(e)
-  })
+  const workspace = container.closest('.workspace') ?? container
+  workspace.addEventListener('toggle', draw, true)
 
   resize()
 
@@ -1024,6 +1030,7 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
       events = ev
     },
     destroy() {
+      workspace.removeEventListener('toggle', draw, true)
       ro.disconnect()
       canvas.removeEventListener('pointerdown', onPointerDown)
       canvas.removeEventListener('pointermove', onPointerMove)
@@ -1032,6 +1039,8 @@ export function createFallbackAdapter(container: HTMLDivElement, opts: { center?
       canvas.removeEventListener('contextmenu', onContextMenu)
       canvas.removeEventListener('wheel', onWheel)
       canvas.remove()
+      controls.remove()
+      attribution.remove()
     },
   }
   return adapter
